@@ -16,9 +16,6 @@ SIZE		:= $(PREFIX)-size
 OBJDUMP		:= $(PREFIX)-objdump
 GDB		:= $(PREFIX)-gdb
 STFLASH		= $(shell which st-flash)
-STYLECHECK	:= /checkpatch.pl
-STYLECHECKFLAGS	:= --no-tree -f --terse --mailback
-STYLECHECKFILES	:= $(shell find . -name '*.[ch]')
 OPT		:= -Os -g3
 CSTD		?= -std=c99
 
@@ -108,6 +105,10 @@ print-%:
 
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $*.o -c $<
+
+# check sources. -$(CSTD) translate -std=... to --std=...
+check:
+	cppcheck cppcheck -q --enable=all -$(CSTD) --check-config --includes-file=mk/cppcheck.includes ./*.c ./*.h ./*.cpp ./*.cxx
 
 clean:
 	@#printf "  CLEAN\n"
