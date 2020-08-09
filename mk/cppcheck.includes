@@ -1,3 +1,4 @@
 ./rtos
 ./libopencm3/include
 /usr/include/newlib
+/usr/lib/gcc/arm-none-eabi/7.3.1/include
