@@ -6,7 +6,7 @@ Someday i will create control board with LCD+encoder+...
 
 ## ToDo:
 
-###1:
+### 1:
 
   * display (and choose it)
   * buttons (choose input method)
@@ -15,19 +15,19 @@ Someday i will create control board with LCD+encoder+...
 
 may be testing adc + pwm
 
-###2:
+### 2:
 
   * si5351 (quadrature output + may be modulate third output)
   * quadrature ADC input from mixer and AM,NFM,SSB demodulation
   * output to audio codec (may be PWM for testing)
 
-###3:
+### 3:
 
   * audio mono input
   * AM,NFM,SSB digital modulation
   * quadrature output to mixer
   * modulated si5351 third output
 
-###4:
+### 4:
 
   * digital filtering of modulating and demodulated audio
