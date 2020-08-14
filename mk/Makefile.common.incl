@@ -2,6 +2,18 @@
 #  Rules etc. adapted from libopencm3
 ######################################################################
 
+ifeq ($(TARGET_CPU),stm32f103)
+include $(abspath $(TOP_DIR))/mk/Makefile.stm32f103.incl
+DOMAKE = 1
+endif
+
+ifeq ($(TARGET_CPU),stm32f303)
+include $(abspath $(TOP_DIR))/mk/Makefile.stm32f303.incl
+DOMAKE = 1
+endif
+
+# correct target - working make
+ifdef DOMAKE
 PREFIX		?= arm-none-eabi
 
 OPENCM3_DIR 	:= $(abspath $(TOP_DIR))/libopencm3
@@ -127,4 +139,10 @@ bigflash: $(BINARY).bin
 
 -include $(OBJS:.o=.d)
 
+
+# undefined DOMAKE
+else
+all clean flash bigflash :
+	@echo "BAD TARGET: $(TARGET_CPU)"
+endif
 # End
