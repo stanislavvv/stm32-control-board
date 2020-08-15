@@ -1,5 +1,5 @@
-/* 
- * The LED on PC13 is sending string s content in Morse code
+/*
+ * Control board experiments
  */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -7,12 +7,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-#ifdef STM32F1
 #include "init_f103.h"
-#else
-#include "init_f303.h"
-#endif
-
 
 #include "morse.h"
 
