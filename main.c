@@ -1,3 +1,4 @@
+/* copyright  */
 /*
  * Control board experiments
  */
@@ -13,6 +14,7 @@
 
 static char s[] = "Hello world!!!";
 
+/* stuff for freertos - catch stack overflow error and hang */
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
 
@@ -21,13 +23,15 @@ static char s[] = "Hello world!!!";
         /* This function will get called if a task overflows its stack. */
         ( void ) pxTask;
         ( void ) pcTaskName;
-        for( ;; );
+        for (;;) { };
     }
 #endif
 
 static void
-task_hello(void *args __attribute((unused))) {
-    for (;;) {
+task_hello(void *args __attribute((unused)))
+{
+    for (;;)
+    {
         send_string(s);
         lspc();
     }
@@ -35,14 +39,15 @@ task_hello(void *args __attribute((unused))) {
 
 
 int
-main(void) {
+main(void)
+{
 
     init_gpio();
 
-    xTaskCreate(task_hello,"hello",100,NULL,configMAX_PRIORITIES-1,NULL);
+    xTaskCreate(task_hello, "hello", 100, NULL, configMAX_PRIORITIES-1, NULL);
     vTaskStartScheduler();
 
-    for (;;);
+    for (;;) { };
     return 0;
 }
 

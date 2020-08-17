@@ -14,6 +14,7 @@ endif
 
 # correct target - working make
 ifdef DOMAKE
+TOCHECK := $(wildcard ./*.c ./*.h ./*.cpp ./*.cxx)
 PREFIX		?= arm-none-eabi
 
 OPENCM3_DIR 	:= $(abspath $(TOP_DIR))/libopencm3
@@ -120,7 +121,8 @@ print-%:
 
 # check sources. -$(CSTD) translate -std=... to --std=...
 check:
-	cppcheck cppcheck -q --enable=all -$(CSTD) --check-config --includes-file=mk/cppcheck.includes ./*.c ./*.h ./*.cpp ./*.cxx
+	cppcheck -q --enable=all -$(CSTD) --check-config --includes-file=mk/cppcheck.includes $(TOCHECK)
+	vera++ -s -e $(TOCHECK)
 
 clean:
 	@#printf "  CLEAN\n"
