@@ -1,9 +1,18 @@
+/* copyright  */
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
+#define LED_PORT            GPIOC
+#define LED_PIN             GPIO13
+#define ENCODER_BUTTON_PORT GPIOA
+#define ENCODER_BUTTON_PIN  GPIO15
+#define ENCODER_QUAD_PORT   GPIOB
+#define ENCODER_QUAD_PIN1   GPIO3
+#define ENCODER_QUAD_PIN2   GPIO4
 
-static inline void init_gpio(void) {
+static inline void init_gpio(void)
+{
     rcc_clock_setup_in_hse_8mhz_out_72mhz(); // For "blue pill"
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
@@ -12,17 +21,17 @@ static inline void init_gpio(void) {
 
     /* LED on PC13 */
     gpio_set_mode(
-        GPIOC,
+        LED_PORT,
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
-        GPIO13);
+        LED_PIN);
 
-    /* encoder button on PA13 */
+    /* encoder button on PA15 */
     gpio_set_mode(
-        GPIOA,
+        ENCODER_BUTTON_PORT,
         GPIO_MODE_INPUT,
         GPIO_CNF_INPUT_PULL_UPDOWN,
-        GPIO15);
+        ENCODER_BUTTON_PIN);
 
     /* pull up button */
     uint32_t port = GPIO_ODR(GPIOA);
@@ -30,10 +39,10 @@ static inline void init_gpio(void) {
 
     /* encoder quadrature on PB4,PB5 */
     gpio_set_mode(
-        GPIOB,
+        ENCODER_QUAD_PORT,
         GPIO_MODE_INPUT,
         GPIO_CNF_INPUT_FLOAT,
-        GPIO3|GPIO4);
+        ENCODER_QUAD_PIN1|ENCODER_QUAD_PIN2);
 
     /* uart tx PA9 */
     gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
