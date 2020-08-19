@@ -8,9 +8,10 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-#include "init_f103.h"
+#include "init_hw.h"
 
 #include "morse.h"
+#include "shell.h"
 
 static char s[] = "Hello world!!!";
 
@@ -45,6 +46,7 @@ main(void)
     init_gpio();
 
     xTaskCreate(task_hello, "hello", 100, NULL, configMAX_PRIORITIES-1, NULL);
+    xTaskCreate(task_process_shell, "shell", 200, NULL, 1, NULL);
     vTaskStartScheduler();
 
     for (;;) { };
