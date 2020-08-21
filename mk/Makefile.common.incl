@@ -127,7 +127,7 @@ check:
 clean:
 	@#printf "  CLEAN\n"
 	$(RM) *.o *.d generated.* $(OBJS) $(patsubst %.o,%.d,$(OBJS)) $(patsubst %.o,%.su,$(OBJS))
-	$(RM) *.elf *.bin *.hex *.srec *.list *.map
+	$(RM) *.elf *.bin *.hex *.srec *.list *.map tests
 
 # Flash 64k (by default) Device
 flash:	$(BINARY).bin

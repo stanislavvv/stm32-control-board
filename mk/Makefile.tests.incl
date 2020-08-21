@@ -1,0 +1,39 @@
+SRC_EXT = c
+
+# tool macros
+CC := gcc
+CCFLAG := -std=c99 -I.
+DBGFLAG := -g
+CCOBJFLAG := $(CCFLAG) -c
+LDFLAGS := -lc -lgcc
+
+# path macros
+BIN_PATH := bin
+OBJ_PATH := obj
+SRC_PATH := src
+DBG_PATH := debug
+
+# compile macros
+TARGET_NAME := tests
+TARGET := $(TARGET_NAME)
+MAIN_SRC := tests.c
+
+OBJS = $(SRCFILES:%.$(SRC_EXT)=%.o)
+DEPS = $(OBJECTS:.o=.d)
+
+# default rule
+default: all
+
+# non-phony targets
+$(TARGET): $(OBJS)
+	#$(CC) $(CCFLAG) -o
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
+	./tests
+
+$%.o: %.c*
+	@#$(CC) $(CCOBJFLAG) -o $@ $<
+	(CC) $(CCOBJFLAG) -o $(*).o -c $(*).c
+
+# phony rules
+.PHONY: all
+all: $(TARGET)
