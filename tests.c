@@ -9,8 +9,12 @@
 
 int main(int argc, char *argv[])
 {
-    printf("testing shell_process\n");
-    test_shell_process();
-    printf("ok\n");
-    printf("All tests passed\n");
+    int i = 0;
+    while (test_list[i].test_proc != NULL)
+    {
+        printf("%d %s\n", i+1, test_list[i].test_str);
+        test_list[i].test_proc();
+        i++;
+    }
+    printf("All tests passed\n\n");
 }
