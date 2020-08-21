@@ -1,3 +1,10 @@
+TGT_CFLAGS	+= -I.
+TGT_CXXFLAGS	+= -I.
+
+BINARY		= tests
+SRCFILES	= tests.c shell_process.c
+
+
 SRC_EXT = c
 
 # tool macros
