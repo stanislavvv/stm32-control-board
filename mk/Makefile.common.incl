@@ -122,7 +122,7 @@ print-%:
 # check sources. -$(CSTD) translate -std=... to --std=...
 check:
 	cppcheck -q --enable=all -$(CSTD) --check-config --includes-file=mk/cppcheck.includes $(TOCHECK)
-	vera++ -s -e $(TOCHECK)
+	vera++ --exclusions mk/vera++.excl -s -e $(TOCHECK)
 
 clean:
 	@#printf "  CLEAN\n"

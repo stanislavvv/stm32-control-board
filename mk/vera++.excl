@@ -1,0 +1,3 @@
+set ruleExclusions(T012) {
+    minunit.h
+}
