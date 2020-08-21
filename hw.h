@@ -10,3 +10,6 @@ void send_char(unsigned char c);
 
 /* char is received */
 uint16_t char_is_recv(void);
+
+/* setup pin and other hardware modes */
+void init_gpio(void);
