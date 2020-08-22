@@ -1,11 +1,17 @@
-/* frameworkless tests... */
+/* copyright https://github.com/stanislavvv/stm32-control-board
+ *
+ * frameworkless tests...
+ * all tests here
+ *
+ * test_list[] - list of test functions with short description
+ *
+ */
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include "shell_process.h"
 
-//void test_shell_process(void);
 
 void test_shell_process(void)
 {
