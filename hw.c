@@ -1,17 +1,30 @@
 /* copyright  */
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "config_hw.h"
+#include "hw.h"
 #include <libopencm3/stm32/usart.h>
 
-#define LED_PORT            GPIOC
-#define LED_PIN             GPIO13
-#define ENCODER_BUTTON_PORT GPIOA
-#define ENCODER_BUTTON_PIN  GPIO15
-#define ENCODER_QUAD_PORT   GPIOB
-#define ENCODER_QUAD_PIN1   GPIO3
-#define ENCODER_QUAD_PIN2   GPIO4
+/* receive char from uart */
+unsigned char recv_char(void)
+{
+    return (unsigned char) (0xff & usart_recv_blocking(UART));
+}
 
-static inline void init_gpio(void)
+/* send char to uart */
+void send_char(unsigned char c)
+{
+    usart_send_blocking(UART, (uint16_t)(c));
+}
+
+/* char is received */
+uint16_t char_is_recv(void)
+{
+    /* STM32F1 specific */
+    return (USART_SR(UART) & USART_SR_RXNE) == 0;
+}
+
+void init_gpio(void)
 {
     rcc_clock_setup_in_hse_8mhz_out_72mhz(); // For "blue pill"
     rcc_periph_clock_enable(RCC_GPIOA);
@@ -52,13 +65,13 @@ static inline void init_gpio(void)
         GPIO_CNF_INPUT_FLOAT, GPIO_USART1_TX);
 
     /* setup uart parameters */
-    usart_set_baudrate(USART1, 115200);
-    usart_set_databits(USART1, 8);
-    usart_set_stopbits(USART1, USART_STOPBITS_1);
-    usart_set_mode(USART1, USART_MODE_TX_RX);
-    usart_set_parity(USART1, USART_PARITY_NONE);
-    usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
+    usart_set_baudrate(UART, 115200);
+    usart_set_databits(UART, 8);
+    usart_set_stopbits(UART, USART_STOPBITS_1);
+    usart_set_mode(UART, USART_MODE_TX_RX);
+    usart_set_parity(UART, USART_PARITY_NONE);
+    usart_set_flow_control(UART, USART_FLOWCONTROL_NONE);
 
     /* enable uart */
-    usart_enable(USART1);
+    usart_enable(UART);
 }

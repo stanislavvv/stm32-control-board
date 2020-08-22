@@ -8,11 +8,11 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-#include "init_f103.h"
+#include "config_hw.h"
+#include "hw.h"
 
-#include "morse.h"
+#include "shell.h"
 
-static char s[] = "Hello world!!!";
 
 /* stuff for freertos - catch stack overflow error and hang */
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
@@ -27,24 +27,13 @@ static char s[] = "Hello world!!!";
     }
 #endif
 
-static void
-task_hello(void *args __attribute((unused)))
-{
-    for (;;)
-    {
-        send_string(s);
-        lspc();
-    }
-}
 
-
-int
-main(void)
+int main(void)
 {
 
     init_gpio();
 
-    xTaskCreate(task_hello, "hello", 100, NULL, configMAX_PRIORITIES-1, NULL);
+    xTaskCreate(task_process_shell, "shell", 200, NULL, 1, NULL);
     vTaskStartScheduler();
 
     for (;;) { };

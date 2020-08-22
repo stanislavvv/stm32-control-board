@@ -42,7 +42,7 @@ TGT_CFLAGS	+= -Wextra -Wshadow -Wimplicit-function-declaration
 TGT_CFLAGS	+= -Wlogical-op -Wconversion -Wsign-conversion -Wcast-align
 TGT_CFLAGS	+= -Wdouble-promotion -Wundef -Wunused-parameter -pedantic
 TGT_CFLAGS	+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
-TGT_CFLAGS	+= -fno-common -ffunction-sections -fdata-sections
+TGT_CFLAGS	+= -fno-common -ffunction-sections -fdata-sections -fstack-usage
 TGT_CFLAGS	+= -I$(OPENCM3_DIR)/include
 
 TGT_CXXFLAGS	+= $(OPT) $(CXXSTD)
@@ -122,12 +122,12 @@ print-%:
 # check sources. -$(CSTD) translate -std=... to --std=...
 check:
 	cppcheck -q --enable=all -$(CSTD) --check-config --includes-file=mk/cppcheck.includes $(TOCHECK)
-	vera++ -s -e $(TOCHECK)
+	vera++ --exclusions mk/vera++.excl -s -e $(TOCHECK)
 
 clean:
 	@#printf "  CLEAN\n"
-	$(RM) *.o *.d generated.* $(OBJS) $(patsubst %.o,%.d,$(OBJS))
-	rm -f *.elf *.bin *.hex *.srec *.list *.map
+	$(RM) *.o *.d generated.* $(OBJS) $(patsubst %.o,%.d,$(OBJS)) $(patsubst %.o,%.su,$(OBJS))
+	$(RM) *.elf *.bin *.hex *.srec *.list *.map tests tests.su
 
 # Flash 64k (by default) Device
 flash:	$(BINARY).bin
