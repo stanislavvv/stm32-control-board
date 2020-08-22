@@ -2,7 +2,12 @@
 
 #include "shell_init.h"
 
-/* init shell structures */
+/*
+ *
+ * name: shell_init
+ *
+ * init serial shell structures
+ */
 void shell_init(void)
 {
     /* dummy realisation */
