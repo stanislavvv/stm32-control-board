@@ -4,8 +4,6 @@
 #include "hw.h"
 #include "shell_process.h"
 #include "shell.h"
-//debug
-#include "task.h"
 
 /*
  *

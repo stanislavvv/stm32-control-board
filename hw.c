@@ -39,7 +39,7 @@ void send_char(char c)
  *
  * send null-terminated string to uart
  */
-void send_string(char s[])
+void send_string(const char s[])
 {
     uint16_t i = 0;
     while (s[i] != 0)

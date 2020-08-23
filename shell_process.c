@@ -4,7 +4,12 @@
 #include <stdio.h>
 #include "strings_local.h"
 #include "shell_process.h"
-//#include "shell_hw.h"
+
+#ifndef UNITTEST
+
+#include "shell_hw.h"
+
+#endif
 
 /* shell input buffer */
 char shell_input_buffer[SHELL_MAX_CLI_LENGTH] = "\0";
@@ -32,9 +37,12 @@ typedef struct {
 
 /* shell commands list */
 static shell_cmd_def_t cmds[] = {
-//    {"led_on", shell_led_on},
-//    {"led_off", shell_led_off},
     {"hello", shell_hello_cmd},
+#ifndef UNITTEST
+// not include hardware functions in unit test
+    {"led_on", shell_led_on},
+    {"led_off", shell_led_off},
+#endif
     {NULL, NULL}
 };
 
@@ -102,7 +110,7 @@ void shell_process(void)
     {
         if (compare_strings(cmds[i].cmd_str, cmd)) {
             known_cmd = (1 == 1);
-            cmds->cmd();
+            cmds[i].cmd();
         }
         i++;
     }

@@ -4,12 +4,11 @@ TGT_CXXFLAGS	+= -I.
 BINARY		= tests
 SRCFILES	= shell_process.c tests.c
 
-
 SRC_EXT = c
 
 # tool macros
 CC := gcc
-CCFLAG := -std=c99 -I.
+CCFLAG := -std=c99 -I. -DUNITTEST
 DBGFLAG := -g
 CCOBJFLAG := $(CCFLAG) -c
 LDFLAGS := -lc -lgcc
@@ -39,7 +38,7 @@ $(TARGET): $(OBJS)
 
 $%.o: %.c*
 	@#$(CC) $(CCOBJFLAG) -o $@ $<
-	(CC) $(CCOBJFLAG) -o $(*).o -c $(*).c
+	$(CC) $(CCOBJFLAG) -o $(*).o -c $(*).c
 
 # phony rules
 .PHONY: all

@@ -1,4 +1,7 @@
 /* copyright  */
+
+#ifndef UNITTEST
+// NORMAL WORK
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
@@ -17,7 +20,7 @@
  *
  * receive char from uart
  */
- char recv_char(void);
+char recv_char(void);
 
 /*
  *
@@ -35,7 +38,7 @@ void send_char(char c);
  *
  * send null-terminated string to uart
  */
-void send_string(char s[]);
+void send_string(const char s[]);
 
 /*
  *
@@ -53,3 +56,40 @@ uint16_t char_is_recv(void);
  * set gpio and other hardware modes
  */
 void init_gpio(void);
+
+#else
+// UNIT TESTS
+
+// dummy realisation for tests.c
+char recv_char(void);
+void send_char(char c);
+void send_string(char s[]);
+uint16_t char_is_recv(void);
+void init_gpio(void);
+
+char recv_char(void) {
+    return " ";
+}
+
+void send_char(char c)
+{
+}
+
+void send_string(const char s[])
+{
+}
+
+uint16_t char_is_recv(void)
+{
+    return (1==0)
+}
+
+void init_gpio(void)
+{
+}
+
+#define LED_on()
+#define LED_off()
+
+
+#endif
