@@ -2,7 +2,7 @@ TGT_CFLAGS	+= -I.
 TGT_CXXFLAGS	+= -I.
 
 BINARY		= tests
-SRCFILES	= shell_process.c tests.c
+SRCFILES	= shell_hw.c shell_process.c tests.c
 
 SRC_EXT = c
 
@@ -32,12 +32,11 @@ default: all
 
 # non-phony targets
 $(TARGET): $(OBJS)
-	#$(CC) $(CCFLAG) -o
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
-	./tests
+	./$(TARGET)
 
-$%.o: %.c*
-	@#$(CC) $(CCOBJFLAG) -o $@ $<
+%.o: %.c*
+	echo $(CCOBJFLAG)
 	$(CC) $(CCOBJFLAG) -o $(*).o -c $(*).c
 
 # phony rules
