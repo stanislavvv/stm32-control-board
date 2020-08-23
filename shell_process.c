@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include "bool.h"
 #include "strings_local.h"
 #include "shell_process.h"
 
@@ -30,13 +31,15 @@ void shell_hello_cmd(void);
 
 typedef void (*shell_cmd_handler_t)(void);
 
-typedef struct {
+typedef struct // command + function
+{
     const char* cmd_str;
     shell_cmd_handler_t cmd;
 } shell_cmd_def_t;
 
 /* shell commands list */
-static shell_cmd_def_t cmds[] = {
+static shell_cmd_def_t cmds[] =
+{
     {"hello", shell_hello_cmd},
 #ifndef UNITTEST
 // not include hardware functions in unit test
@@ -50,7 +53,7 @@ static shell_cmd_def_t cmds[] = {
 void shell_out_buffer_add(char s[])
 {
     uint16_t i = 0;
-    while(shell_out_lastchar < SHELL_MAX_OUT_LENGTH && s[i] != 0)
+    while (shell_out_lastchar < SHELL_MAX_OUT_LENGTH && s[i] != 0)
     {
         shell_output_buffer[shell_out_lastchar] = s[i];
         i++;
@@ -83,7 +86,7 @@ void shell_cleanup_output(void)
 void shell_get_cmd(char command_s[])
 {
     uint16_t i = 0;
-    while(i < SHELL_MAX_CLI_LENGTH && (char)shell_input_buffer[i] != ' ')
+    while (i < SHELL_MAX_CLI_LENGTH && (char)shell_input_buffer[i] != ' ')
     {
         command_s[i] = shell_input_buffer[i];
         i++;
@@ -100,23 +103,23 @@ void shell_get_cmd(char command_s[])
  */
 void shell_process(void)
 {
-    char unknown[] = "UNKNOWN: ";
     char cmd[SHELL_MAX_CLI_LENGTH];
     shell_cleanup_output();
     shell_get_cmd(cmd);
-    uint16_t known_cmd = (1 == 0);
+    uint16_t known_cmd = FALSE;
     uint16_t i = 0;
-    while(cmds[i].cmd != NULL)
+    while (cmds[i].cmd != NULL)
     {
-        if (compare_strings(cmds[i].cmd_str, cmd)) {
-            known_cmd = (1 == 1);
+        if (compare_strings(cmds[i].cmd_str, cmd))
+        {
+            known_cmd = TRUE;
             cmds[i].cmd();
         }
         i++;
     }
     if (!known_cmd)
     {
-        shell_out_buffer_add(unknown);
+        shell_out_buffer_add("UNKNOWN: ");
         shell_out_buffer_add(cmd);
     }
 }
@@ -130,13 +133,15 @@ void shell_process(void)
  */
 uint16_t shell_in_buffer_add(char c)
 {
-    if (shell_in_lastchar >= SHELL_MAX_CLI_LENGTH) {
+    if (shell_in_lastchar >= SHELL_MAX_CLI_LENGTH)
+    {
         return 1 == 0;
-    } else
+    }
+    else
     {
         shell_input_buffer[shell_in_lastchar] = c;
         shell_in_lastchar++;
         shell_input_buffer[shell_in_lastchar] = '\0';
-        return 0 == 0;
+        return TRUE;
     }
 }

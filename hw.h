@@ -68,7 +68,8 @@ void send_string(const char s[]);
 uint16_t char_is_recv(void);
 void init_gpio(void);
 
-char recv_char(void) {
+char recv_char(void)
+{
     return ' ';
 }
 

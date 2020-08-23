@@ -26,7 +26,7 @@ void shell_send_result(void)
 void task_process_shell(void *args __attribute((unused)))
 {
     send_string("shell started\r\n");
-    for(;;)
+    for (;;)
     {
         if (char_is_recv())
         {
@@ -34,7 +34,8 @@ void task_process_shell(void *args __attribute((unused)))
 #ifdef SHELL_ECHO
             send_char(c);
 #endif
-            if (c != 0xa && c != 0xd && shell_in_buffer_add(c)) {
+            if (c != 0xa && c != 0xd && shell_in_buffer_add(c))
+            {
                 taskYIELD();
             }
             else

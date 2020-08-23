@@ -1,3 +1,5 @@
+# not applicable to C
 set ruleExclusions(T012) {
-    minunit.h
+    tests.h
+    shell_process.c
 }

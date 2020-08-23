@@ -41,7 +41,8 @@ void test_shell_buffer_add(void)
 
 typedef void (*test_handler_t)(void);
 
-typedef struct {
+typedef struct // test name + test function
+{
     const char* test_str;
     test_handler_t test_proc;
 } test_def_t;
