@@ -13,19 +13,29 @@
 #include "shell_process.h"
 
 
-void test_shell_process(void)
+void test_shell_process_unknown(void)
 {
-    char cmd[32] = "aaa bbb";
-    char out[32] = "\0";
-    shell_process(out,cmd);
-    assert(!strcmp("Processed: aaa", out));
+    // prepare data
+    strcpy(shell_input_buffer, "aaa bbb");
+    shell_process();
+    // test
+    assert(!strcmp("UNKNOWN: aaa", shell_output_buffer));
+}
+
+void test_shell_process_hello(void)
+{
+    // prepare data
+    strcpy(shell_input_buffer, "hello");
+    shell_process();
+    // test
+    assert(!strcmp("Hello world!!!", shell_output_buffer));
 }
 
 void test_shell_buffer_add(void)
 {
     char c = 'A';
     assert(!strcmp(shell_input_buffer, ""));
-    shell_buffer_add(c);
+    shell_in_buffer_add(c);
     assert(!strcmp(shell_input_buffer, "A"));
 }
 
@@ -40,6 +50,7 @@ typedef struct {
 static test_def_t test_list[] =
 {
     {"shell_buffer_add", test_shell_buffer_add},
-    {"shell_process", test_shell_process},
+    {"shell_process_hello", test_shell_process_hello},
+    {"shell_process_unknown", test_shell_process_unknown},
     {NULL, NULL}
 };

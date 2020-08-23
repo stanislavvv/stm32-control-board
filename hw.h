@@ -1,4 +1,8 @@
 /* copyright  */
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config_hw.h"
@@ -23,6 +27,15 @@
  * send char to uart
  */
 void send_char(char c);
+
+/*
+ *
+ * name: send_string
+ * @param char s[] - string for sending to uart
+ *
+ * send null-terminated string to uart
+ */
+void send_string(char s[]);
 
 /*
  *

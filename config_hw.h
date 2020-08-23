@@ -1,7 +1,4 @@
 /* copyright  */
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/usart.h>
 
 /* onboard blue pill led */
 #define LED_PORT            GPIOC
@@ -16,3 +13,6 @@
 
 /* define for external use */
 #define UART USART1
+
+/* echo input in shell */
+#define SHELL_ECHO

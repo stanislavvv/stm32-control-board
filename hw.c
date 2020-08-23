@@ -3,6 +3,8 @@
 #include "task.h"
 #include "config_hw.h"
 #include "hw.h"
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
 
@@ -28,6 +30,23 @@ char recv_char(void)
 void send_char(char c)
 {
     usart_send_blocking(UART, (uint16_t)(c));
+}
+
+/*
+ *
+ * name: send_string
+ * @param char s[] - string for sending to uart
+ *
+ * send null-terminated string to uart
+ */
+void send_string(char s[])
+{
+    uint16_t i = 0;
+    while (s[i] != 0)
+    {
+        send_char(s[i]);
+        i++;
+    }
 }
 
 /*
@@ -89,15 +108,15 @@ void init_gpio(void)
         GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
     /* uart rx PA10 */
     gpio_set_mode(GPIOA, GPIO_MODE_INPUT,
-        GPIO_CNF_INPUT_FLOAT, GPIO_USART1_TX);
+        GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
 
     /* setup uart parameters */
     usart_set_baudrate(UART, 115200);
     usart_set_databits(UART, 8);
     usart_set_stopbits(UART, USART_STOPBITS_1);
-    usart_set_mode(UART, USART_MODE_TX_RX);
     usart_set_parity(UART, USART_PARITY_NONE);
     usart_set_flow_control(UART, USART_FLOWCONTROL_NONE);
+    usart_set_mode(UART, USART_MODE_TX_RX);
 
     /* enable uart */
     usart_enable(UART);

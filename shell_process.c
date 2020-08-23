@@ -1,7 +1,10 @@
 /* copyright https://github.com/stanislavvv/stm32-control-board */
 
 #include <stdint.h>
+#include <stdio.h>
+#include "strings_local.h"
 #include "shell_process.h"
+//#include "shell_hw.h"
 
 /* shell input buffer */
 char shell_input_buffer[SHELL_MAX_CLI_LENGTH] = "\0";
@@ -12,6 +15,74 @@ uint16_t shell_in_lastchar = 0;
 /* shell output buffer */
 char shell_output_buffer[SHELL_MAX_OUT_LENGTH] = "\0";
 
+/* shell output buffer length */
+uint16_t shell_out_lastchar = 0;
+
+/* internal functions forward defs */
+void shell_get_cmd(char command_s[]);
+void shell_out_buffer_add(char s[]);
+void shell_hello_cmd(void);
+
+typedef void (*shell_cmd_handler_t)(void);
+
+typedef struct {
+    const char* cmd_str;
+    shell_cmd_handler_t cmd;
+} shell_cmd_def_t;
+
+/* shell commands list */
+static shell_cmd_def_t cmds[] = {
+//    {"led_on", shell_led_on},
+//    {"led_off", shell_led_off},
+    {"hello", shell_hello_cmd},
+    {NULL, NULL}
+};
+
+/* add string to output buffer */
+void shell_out_buffer_add(char s[])
+{
+    uint16_t i = 0;
+    while(shell_out_lastchar < SHELL_MAX_OUT_LENGTH && s[i] != 0)
+    {
+        shell_output_buffer[shell_out_lastchar] = s[i];
+        i++;
+        shell_out_lastchar++;
+    }
+}
+
+/* hello command */
+void shell_hello_cmd(void)
+{
+    shell_out_buffer_add("Hello world!!!");
+}
+
+/*
+ *
+ * name: shell_cleanup_output
+ *
+ * clean shell output buffer
+ */
+void shell_cleanup_output(void)
+{
+    shell_out_lastchar = 0;
+    for (uint16_t i = 0; i < SHELL_MAX_OUT_LENGTH; i++)
+    {
+        shell_output_buffer[i] = 0;
+    }
+}
+
+/* get first word from shell_input_buffer and place it to command_s */
+void shell_get_cmd(char command_s[])
+{
+    uint16_t i = 0;
+    while(i < SHELL_MAX_CLI_LENGTH && (char)shell_input_buffer[i] != ' ')
+    {
+        command_s[i] = shell_input_buffer[i];
+        i++;
+    }
+    command_s[i] = 0;
+}
+
 /*
  *
  * name: shell_process
@@ -19,21 +90,26 @@ char shell_output_buffer[SHELL_MAX_OUT_LENGTH] = "\0";
  * @param  command_line  command from user input, zero-terminated string
  *
  */
-void shell_process(char outbuffer[], char command_line[])
+void shell_process(void)
 {
-    /* simply send 'processed' and copy first word ([^ ]) */
-    char pr[13] = "Processed: ";
-    int i;
-    i = 0;
-    for (i = 0; pr[i] != 0; i++)
+    char unknown[] = "UNKNOWN: ";
+    char cmd[SHELL_MAX_CLI_LENGTH];
+    shell_cleanup_output();
+    shell_get_cmd(cmd);
+    uint16_t known_cmd = (1 == 0);
+    uint16_t i = 0;
+    while(cmds[i].cmd != NULL)
     {
-        outbuffer[i] = pr[i];
+        if (compare_strings(cmds[i].cmd_str, cmd)) {
+            known_cmd = (1 == 1);
+            cmds->cmd();
+        }
+        i++;
     }
-    int l = i;
-    for (i = 0 ; command_line[i] != ' ' && i < 256; i++)
+    if (!known_cmd)
     {
-        outbuffer[l] = command_line[i];
-        l++;
+        shell_out_buffer_add(unknown);
+        shell_out_buffer_add(cmd);
     }
 }
 
@@ -44,15 +120,15 @@ void shell_process(char outbuffer[], char command_line[])
  * @return bool - non-true on overflow
  *
  */
-uint16_t shell_buffer_add(char c)
+uint16_t shell_in_buffer_add(char c)
 {
     if (shell_in_lastchar >= SHELL_MAX_CLI_LENGTH) {
-        return 1;
+        return 1 == 0;
     } else
     {
         shell_input_buffer[shell_in_lastchar] = c;
         shell_in_lastchar++;
         shell_input_buffer[shell_in_lastchar] = '\0';
-        return 0;
+        return 0 == 0;
     }
 }
