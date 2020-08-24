@@ -11,7 +11,7 @@ Someday i will create control board with LCD+encoder+...
   * display (and choose it)
   * buttons (choose input method)
   * encoder with button (interrupt or timer?)
-  * serial interface (shell)
+  * serial interface (shell) -- mostly done
 
 may be testing adc + pwm
 
@@ -31,3 +31,4 @@ may be testing adc + pwm
 ### 4:
 
   * digital filtering of modulating and demodulated audio
+  * standard CAT interface
