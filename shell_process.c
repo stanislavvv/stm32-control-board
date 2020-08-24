@@ -26,10 +26,11 @@ uint16_t shell_out_lastchar = 0;
 
 /* internal functions forward defs */
 void shell_get_cmd(char command_s[]);
-void shell_out_buffer_add(char s[]);
-void shell_hello_cmd(void);
+void shell_get_args(uint16_t cmdlen);
+void shell_hello_cmd(char* argv[], uint16_t argc);
+void args_cmd( char* argv[], uint16_t argc );
 
-typedef void (*shell_cmd_handler_t)(void);
+typedef void (*shell_cmd_handler_t)(char* argv[], uint16_t argc);
 
 typedef struct // command + function
 {
@@ -41,10 +42,13 @@ typedef struct // command + function
 static shell_cmd_def_t cmds[] =
 {
     {"hello", shell_hello_cmd},
+    {"args", args_cmd},
 #ifndef UNITTEST
 // not include hardware functions in unit test
     {"led_on", shell_led_on},
     {"led_off", shell_led_off},
+    {"led_state", shell_led_state},
+    {"led", shell_led},
 #endif
     {NULL, NULL}
 };
@@ -62,9 +66,30 @@ void shell_out_buffer_add(char s[])
 }
 
 /* hello command */
-void shell_hello_cmd(void)
+void shell_hello_cmd(char* argv[], uint16_t argc)
 {
-    shell_out_buffer_add("Hello world!!!");
+    (void)(argv);
+    (void)(argc);
+    shell_out_buffer_add("Hello world!!!\r\n");
+}
+
+/* test arguments for command */
+void args_cmd( char* argv[], uint16_t argc )
+{
+    uint16_t i;
+    char num[6];
+    shell_out_buffer_add("arguments count: ");
+    itoa_u16(argc, num);
+    shell_out_buffer_add(num);
+    shell_out_buffer_add("\r\n");
+    for(i = 0; i< argc; ++i) {
+        shell_out_buffer_add("argument ");
+        itoa_u16(i, num);
+        shell_out_buffer_add(num);
+        shell_out_buffer_add(": ");
+        shell_out_buffer_add(argv[i]);
+        shell_out_buffer_add("\r\n");
+    }
 }
 
 /*
@@ -104,16 +129,41 @@ void shell_get_cmd(char command_s[])
 void shell_process(void)
 {
     char cmd[SHELL_MAX_CLI_LENGTH];
+    char *cmd_argv[SHELL_MAX_ARGS];
+    uint16_t cmd_argc = 0;
+
     shell_cleanup_output();
     shell_get_cmd(cmd);
+
+    /* temporary vars */
     uint16_t known_cmd = FALSE;
     uint16_t i = 0;
+    char c;
+
     while (cmds[i].cmd != NULL)
     {
         if (compare_strings(cmds[i].cmd_str, cmd))
         {
             known_cmd = TRUE;
-            cmds[i].cmd();
+            uint16_t cmdpos = strlen_local(cmd);
+            /*Ok that is our function! Let's parse args*/
+            do {
+                c = shell_input_buffer[cmdpos++];
+                if((c == '\0')) {
+                    break;
+                }
+                if((c == ' ')) {
+                    cmd_argv[cmd_argc++] = shell_input_buffer+cmdpos;
+                }
+            } while(c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
+
+            /*arguments must be separate by zero to be parsable like strings*/
+            for(uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++) {
+                if(shell_input_buffer[ch] == ' ') {
+                    shell_input_buffer[ch] = '\0';
+                }
+            }
+            cmds[i].cmd(cmd_argv, cmd_argc);
         }
         i++;
     }
@@ -121,6 +171,7 @@ void shell_process(void)
     {
         shell_out_buffer_add("UNKNOWN: ");
         shell_out_buffer_add(cmd);
+        shell_out_buffer_add("\r\n");
     }
 }
 

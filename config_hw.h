@@ -3,6 +3,7 @@
 /* onboard blue pill led */
 #define LED_PORT            GPIOC
 #define LED_PIN             GPIO13
+#define LED_PIN_NUM         13
 
 /* rotary encoder with button */
 #define ENCODER_BUTTON_PORT GPIOA

@@ -10,6 +10,7 @@
 
 #define SHELL_MAX_CLI_LENGTH 64
 #define SHELL_MAX_OUT_LENGTH 256
+#define SHELL_MAX_ARGS 4
 
 /* shell input buffer */
 extern char shell_input_buffer[SHELL_MAX_CLI_LENGTH];
@@ -40,6 +41,9 @@ void shell_process(void);
  *
  */
 uint16_t shell_in_buffer_add(char c);
+
+/* add string to output buffer */
+void shell_out_buffer_add(char s[]);
 
 /*
  *

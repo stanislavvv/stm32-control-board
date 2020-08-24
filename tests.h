@@ -12,6 +12,14 @@
 #include <string.h>
 #include "shell_process.h"
 
+void test_shell_process_args(void)
+{
+    // prepare data
+    strcpy(shell_input_buffer, "args aaa bbb");
+    shell_process();
+    //test
+    assert(!strcmp("arguments count: 2\r\nargument 0: aaa\r\nargument 1: bbb\r\n", shell_output_buffer));
+}
 
 void test_shell_process_unknown(void)
 {
@@ -19,7 +27,7 @@ void test_shell_process_unknown(void)
     strcpy(shell_input_buffer, "aaa bbb");
     shell_process();
     // test
-    assert(!strcmp("UNKNOWN: aaa", shell_output_buffer));
+    assert(!strcmp("UNKNOWN: aaa\r\n", shell_output_buffer));
 }
 
 void test_shell_process_hello(void)
@@ -28,7 +36,7 @@ void test_shell_process_hello(void)
     strcpy(shell_input_buffer, "hello");
     shell_process();
     // test
-    assert(!strcmp("Hello world!!!", shell_output_buffer));
+    assert(!strcmp("Hello world!!!\r\n", shell_output_buffer));
 }
 
 void test_shell_buffer_add(void)
@@ -52,6 +60,7 @@ static test_def_t test_list[] =
 {
     {"shell_buffer_add", test_shell_buffer_add},
     {"shell_process_hello", test_shell_process_hello},
+    {"shell_process_args", test_shell_process_args},
     {"shell_process_unknown", test_shell_process_unknown},
     {NULL, NULL}
 };

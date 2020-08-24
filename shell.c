@@ -13,8 +13,10 @@
  */
 void shell_send_result(void)
 {
+#ifdef SHELL_ECHO
+    send_string("\r\n"); // shift output down
+#endif
     send_string(shell_output_buffer);
-    send_string("\r\n");
     /* cleaning */
     shell_out_lastchar = 0;
     shell_output_buffer[0] = 0;

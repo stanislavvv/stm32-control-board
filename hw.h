@@ -10,8 +10,9 @@
 #include "task.h"
 #include "config_hw.h"
 
-#define LED_on() gpio_clear(LED_PORT, LED_PIN);
-#define LED_off() gpio_set(LED_PORT, LED_PIN);
+#define LED_on() gpio_clear(LED_PORT, LED_PIN)
+#define LED_off() gpio_set(LED_PORT, LED_PIN)
+#define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
 
 /*
  *
@@ -92,6 +93,6 @@ void init_gpio(void)
 
 #define LED_on()
 #define LED_off()
-
+#define LED_state() 1
 
 #endif
