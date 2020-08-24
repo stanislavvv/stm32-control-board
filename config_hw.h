@@ -1,4 +1,6 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
+
+/* hardware definitions for STM32F103 */
 
 /* onboard blue pill led */
 #define LED_PORT            GPIOC

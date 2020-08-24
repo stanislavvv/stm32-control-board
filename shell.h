@@ -8,7 +8,9 @@ void task_process_shell(void *args __attribute((unused)));
 /*
  *
  * name: shell_send_result
+ * @brief send content of shell_output_buffer to uart console and clean
+ * @param none
+ * @return none
  *
- * send content of shell_output_buffer to uart console and clean
  */
 void shell_send_result(void);

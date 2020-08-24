@@ -1,4 +1,7 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
+
+/* hardware interface functions */
+
 
 #ifndef UNITTEST
 // NORMAL WORK
@@ -17,27 +20,30 @@
 /*
  *
  * name: recv_chars
+ * @brief receive char from uart
+ * @param none
  * @return received char
  *
- * receive char from uart
  */
 char recv_char(void);
 
 /*
  *
  * name: send_char
+ * @brief send char to uart
  * @param char c - char for sending to uart
+ * @return none
  *
- * send char to uart
  */
 void send_char(char c);
 
 /*
  *
  * name: send_string
+ * @brief send null-terminated string to uart
  * @param char s[] - string for sending to uart
+ * @return none
  *
- * send null-terminated string to uart
  */
 void send_string(const char s[]);
 
@@ -52,9 +58,11 @@ uint16_t char_is_recv(void);
 
 /*
  *
- * name: init_gpio
+ * name: char_is_recv
+ * @brief return true if uart has received char in register
+ * @param none
+ * @return bool char received state
  *
- * set gpio and other hardware modes
  */
 void init_gpio(void);
 
@@ -91,6 +99,7 @@ void init_gpio(void)
 {
 }
 
+//ToDo: make test mocks for this defs
 #define LED_on()
 #define LED_off()
 #define LED_state() 1

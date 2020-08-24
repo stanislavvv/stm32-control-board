@@ -1,4 +1,4 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
 /*
  * Control board experiments
  */

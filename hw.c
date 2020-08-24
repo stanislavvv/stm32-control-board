@@ -1,4 +1,4 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config_hw.h"
@@ -11,9 +11,10 @@
 /*
  *
  * name: recv_chars
+ * @brief receive char from uart
+ * @param none
  * @return received char
  *
- * receive char from uart
  */
 char recv_char(void)
 {
@@ -23,9 +24,10 @@ char recv_char(void)
 /*
  *
  * name: send_char
+ * @brief send char to uart
  * @param char c - char for sending to uart
+ * @return none
  *
- * send char to uart
  */
 void send_char(char c)
 {
@@ -35,9 +37,10 @@ void send_char(char c)
 /*
  *
  * name: send_string
+ * @brief send null-terminated string to uart
  * @param char s[] - string for sending to uart
+ * @return none
  *
- * send null-terminated string to uart
  */
 void send_string(const char s[])
 {
@@ -52,9 +55,10 @@ void send_string(const char s[])
 /*
  *
  * name: char_is_recv
+ * @brief return true if uart has received char in register
+ * @param none
  * @return bool char received state
  *
- * return true if uart has received char in register
  */
 uint16_t char_is_recv(void)
 {
@@ -66,8 +70,10 @@ uint16_t char_is_recv(void)
 /*
  *
  * name: init_gpio
+ * @brief set gpio and other hardware modes
+ * @param none
+ * @return none
  *
- * set gpio and other hardware modes
  */
 void init_gpio(void)
 {
