@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-/*
+/**
  *
  * name: shell_led_on()
  * @brief switch on led on PC13
@@ -17,7 +17,7 @@
  */
 void shell_led_on(char* argv[], uint16_t argc);
 
-/*
+/**
  *
  * name: shell_led_off()
  * @brief switch off led on PC13
@@ -27,7 +27,7 @@ void shell_led_on(char* argv[], uint16_t argc);
  */
 void shell_led_off(char* argv[], uint16_t argc);
 
-/*
+/**
  *
  * name: shell_led_state()
  * @brief say to shell buffer state of led on PC13
@@ -37,7 +37,7 @@ void shell_led_off(char* argv[], uint16_t argc);
  */
 void shell_led_state(char* argv[], uint16_t argc);
 
-/*
+/**
  *
  * name: shell_led
  * @brief control led on PC13 and say to shell buffer its state

@@ -17,7 +17,7 @@
 #define LED_off() gpio_set(LED_PORT, LED_PIN)
 #define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
 
-/*
+/**
  *
  * name: recv_chars
  * @brief receive char from uart
@@ -27,7 +27,7 @@
  */
 char recv_char(void);
 
-/*
+/**
  *
  * name: send_char
  * @brief send char to uart
@@ -37,7 +37,7 @@ char recv_char(void);
  */
 void send_char(char c);
 
-/*
+/**
  *
  * name: send_string
  * @brief send null-terminated string to uart
@@ -47,7 +47,7 @@ void send_char(char c);
  */
 void send_string(const char s[]);
 
-/*
+/**
  *
  * name: char_is_recv
  * @return bool char received state
@@ -56,7 +56,7 @@ void send_string(const char s[]);
  */
 uint16_t char_is_recv(void);
 
-/*
+/**
  *
  * name: char_is_recv
  * @brief return true if uart has received char in register

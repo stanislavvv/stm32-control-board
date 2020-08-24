@@ -3,12 +3,13 @@
 #include "task.h"
 #include "config_hw.h"
 #include "hw.h"
+#include "bool.h"
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
 
-/*
+/**
  *
  * name: recv_chars
  * @brief receive char from uart
@@ -21,7 +22,7 @@ char recv_char(void)
     return (char) (0xff & usart_recv_blocking(UART));
 }
 
-/*
+/**
  *
  * name: send_char
  * @brief send char to uart
@@ -34,7 +35,7 @@ void send_char(char c)
     usart_send_blocking(UART, (uint16_t)(c));
 }
 
-/*
+/**
  *
  * name: send_string
  * @brief send null-terminated string to uart
@@ -52,7 +53,7 @@ void send_string(const char s[])
     }
 }
 
-/*
+/**
  *
  * name: char_is_recv
  * @brief return true if uart has received char in register
@@ -60,14 +61,14 @@ void send_string(const char s[])
  * @return bool char received state
  *
  */
-uint16_t char_is_recv(void)
+boolean char_is_recv(void)
 {
     /* STM32F1 specific */
     return (USART_SR(UART) & USART_SR_RXNE) != 0;
 }
 
 
-/*
+/**
  *
  * name: init_gpio
  * @brief set gpio and other hardware modes
