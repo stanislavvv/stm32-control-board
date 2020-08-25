@@ -29,51 +29,80 @@
 #define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
 
 /**
- *
- * name: recv_chars
  * @brief receive char from uart
  * @param none
  * @return received char
- *
  */
-char recv_char(void);
+#define recv_char() (char)(0xff & usart_recv_blocking(UART))
+/*
+static inline char recv_char(void)
+{
+    return (char) (0xff & usart_recv_blocking(UART));
+}
+*/
 
 /**
- *
- * name: send_char
  * @brief send char to uart
  * @param char c - char for sending to uart
  * @return none
- *
  */
-void send_char(char c);
+static inline void send_char(char c)
+{
+    usart_send_blocking(UART, (uint16_t)(c));
+}
 
 /**
- *
- * name: send_string
  * @brief send null-terminated string to uart
  * @param char s[] - string for sending to uart
  * @return none
- *
  */
 void send_string(const char s[]);
 
-/**
- *
- * name: char_is_recv
- * @return bool char received state
- *
- * return true if uart has received char in register
- */
-uint16_t char_is_recv(void);
 
 /**
- *
- * name: char_is_recv
  * @brief return true if uart has received char in register
  * @param none
  * @return bool char received state
+ */
+#define char_is_recv() (USART_SR(UART) & USART_SR_RXNE) != 0
+
+
+/**
+ * @brief delay to given time in ms
+ * @param ms  time in milliseconds up to 65535
+ * @return none
+ */
+static inline void delay_ms(uint16_t ms)
+{
+    vTaskDelay(pdMS_TO_TICKS(ms));
+}
+
+/**
+ * @brief delay to given time in rtos ticks
+ * @param ticks  time in ticks up to portMAX_DELAY
+ * @return none
+ */
+static inline void delay_ticks(TickType_t ticks)
+{
+    vTaskDelay(ticks);
+}
+
+/**
+ * @brief send buffer to spi with timeout
+ * @param spi  spi port, ex. SPI1 in libopencm3
+ * @param buffer  buffer of bytes for sending
+ * @param length  length of buffer
+ * @param timeout  timeout in ticks, portMAX_DELAY and 0 - switch off
+ * @return errno - 0 (ok) or EBUSY (busy), ETIME (timeout), EIO (error)
  *
+ * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
+ */
+uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer, uint16_t length, TickType_t timeout);
+
+/**
+ * @brief return true if uart has received char in register
+ * @param none
+ * @return bool char received state
  */
 void init_gpio(void);
 

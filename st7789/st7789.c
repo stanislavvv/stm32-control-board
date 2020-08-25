@@ -1,4 +1,5 @@
 #include "st7789.h"
+#include "config_hw.h"
 
 //FixME: change hal to libopencm3
 
@@ -11,6 +12,7 @@ static void ST7789_WriteCommand(uint8_t cmd)
 {
         ST7789_Select();
         ST7789_DC_Clr();
+        // write data with given size to spi with timeout
         HAL_SPI_Transmit(&ST7789_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
         ST7789_UnSelect();
 }
@@ -112,7 +114,7 @@ static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
  */
 void ST7789_Init(void)
 {
-        HAL_Delay(25);
+    HAL_Delay(25);
     ST7789_RST_Clr();
     HAL_Delay(25);
     ST7789_RST_Set();

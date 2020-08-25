@@ -1,48 +1,20 @@
 /* copyright https://github.com/stanislavvv/stm32-control-board */
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
+#include <libopencm3/stm32/spi.h>
+#include <errno.h>  //replace HAL_StatusTypeDef to normal error codes
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config_hw.h"
 #include "hw.h"
 #include "bool.h"
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/usart.h>
-#include <libopencm3/stm32/spi.h>
 
 
 /**
- *
- * name: recv_chars
- * @brief receive char from uart
- * @param none
- * @return received char
- *
- */
-char recv_char(void)
-{
-    return (char) (0xff & usart_recv_blocking(UART));
-}
-
-/**
- *
- * name: send_char
- * @brief send char to uart
- * @param char c - char for sending to uart
- * @return none
- *
- */
-void send_char(char c)
-{
-    usart_send_blocking(UART, (uint16_t)(c));
-}
-
-/**
- *
- * name: send_string
  * @brief send null-terminated string to uart
  * @param char s[] - string for sending to uart
  * @return none
- *
  */
 void send_string(const char s[])
 {
@@ -55,37 +27,70 @@ void send_string(const char s[])
 }
 
 /**
+ * @brief send buffer to spi with timeout
+ * @param spi  spi port, ex. SPI1 in libopencm3
+ * @param buffer  buffer of bytes for sending
+ * @param length  length of buffer
+ * @param timeout  timeout in ticks, portMAX_DELAY and 0 - switch off
+ * @return errno - 0 (ok) or EBUSY (busy), ETIME (timeout), EIO (error)
  *
- * name: char_is_recv
- * @brief return true if uart has received char in register
- * @param none
- * @return bool char received state
- *
+ * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
  */
-boolean char_is_recv(void)
+uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer, uint16_t length, TickType_t timeout)
 {
-    /* STM32F1 specific */
-    return (USART_SR(UART) & USART_SR_RXNE) != 0;
+    TickType_t tickstart = xTaskGetTickCount();
+    uint16_t initial_count = length;
+
+    /* bad parameters */
+    if ((buffer == NULL) || (length == 0U))
+    {
+        return EIO;
+    }
+
+    /* transmit to spi now */
+    spi_set_bidirectional_transmit_only_mode(spi);
+
+    while (length > 0)
+    {
+        if (SPI_SR(spi) & SPI_SR_TXE)
+        {
+            SPI_DR(spi) = (*buffer);
+            buffer += sizeof(uint8_t);
+            initial_count--;
+        }
+        else
+        {
+            /* timeout management */
+            if (
+                 ((xTaskGetTickCount() - tickstart) >= timeout) &&
+                 (timeout != portMAX_DELAY) &&
+                 (timeout != (TickType_t)0)
+               )
+            {
+                return ETIME;
+            }
+        }
+    }
+    return 0;
 }
 
 
 /**
- *
- * name: init_gpio
  * @brief set gpio and other hardware modes
  * @param none
  * @return none
- *
  */
 void init_gpio(void)
 {
+    /* switch to quartz 8MHz + pll 72MHz */
     rcc_clock_setup_in_hse_8mhz_out_72mhz(); // For "blue pill"
+
+    /* periferial clock */
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
     rcc_periph_clock_enable(RCC_USART1);
     rcc_periph_clock_enable(RCC_SPI1);
-
 
     /* LED on PC13 */
     gpio_set_mode(
@@ -93,6 +98,7 @@ void init_gpio(void)
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
         LED_PIN);
+    /* led is on after pin init - switch off */
     LED_off();
 
     /* encoder button on PA15 */
@@ -171,8 +177,8 @@ void init_gpio(void)
     spi_enable_software_slave_management(ST7789_SPI);
     spi_set_nss_high(ST7789_SPI);
 
-    /* unidirectional spi - use only MOSI for data transfer */
-    spi_set_unidirectional_mode(ST7789_SPI);
+    /* bidirectional spi - use only MOSI for data transfer */
+    spi_set_bidirectional_mode(ST7789_SPI);
 
     /* Enable ST7789_SPI periph. */
     spi_enable(ST7789_SPI);

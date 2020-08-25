@@ -27,7 +27,8 @@
 #define ST7789_CS_PIN ST7789_CS_Pin
 */
 
-/***** Use if need backlight control *****
+/* may be defined in config_hw.h */
+/* **** Use if need backlight control *****
 #define BLK_PORT
 #define BLK_PIN
 ******************************************/
