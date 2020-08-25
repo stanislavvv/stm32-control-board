@@ -13,8 +13,19 @@
 #include "task.h"
 #include "config_hw.h"
 
+/**
+ * switch on led
+ */
+
 #define LED_on() gpio_clear(LED_PORT, LED_PIN)
+/**
+ * switch off led
+ */
+
 #define LED_off() gpio_set(LED_PORT, LED_PIN)
+/**
+ * get led state
+ */
 #define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
 
 /**
@@ -70,6 +81,7 @@ void init_gpio(void);
 // UNIT TESTS
 #include <stdint.h>
 
+//ToDo: make mocks for this functions
 // dummy realisation for tests.c
 char recv_char(void);
 void send_char(char c);

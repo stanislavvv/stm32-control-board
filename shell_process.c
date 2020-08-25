@@ -12,16 +12,24 @@
 
 #endif
 
-/* shell input buffer */
+/**
+ * shell input buffer, received from uart
+ */
 char shell_input_buffer[SHELL_MAX_CLI_LENGTH] = "\0";
 
-/* shell input buffer length */
+/**
+ * shell input buffer length
+ */
 uint16_t shell_in_lastchar = 0;
 
-/* shell output buffer */
+/**
+ * shell output buffer, will be sent to uart
+ */
 char shell_output_buffer[SHELL_MAX_OUT_LENGTH] = "\0";
 
-/* shell output buffer length */
+/**
+ * shell output buffer length
+ */
 uint16_t shell_out_lastchar = 0;
 
 /* internal functions forward defs */
@@ -30,15 +38,23 @@ void shell_get_args(uint16_t cmdlen);
 void shell_hello_cmd(char* argv[], uint16_t argc);
 void args_cmd( char* argv[], uint16_t argc );
 
+/**
+ * shell command handler type
+ */
 typedef void (*shell_cmd_handler_t)(char* argv[], uint16_t argc);
 
+/**
+ * shell command structure, used in command list
+ */
 typedef struct // command + function
 {
     const char* cmd_str;
     shell_cmd_handler_t cmd;
 } shell_cmd_def_t;
 
-/* shell commands list */
+/**
+ * shell commands list
+ */
 static shell_cmd_def_t cmds[] =
 {
     {"hello", shell_hello_cmd},
@@ -53,7 +69,11 @@ static shell_cmd_def_t cmds[] =
     {NULL, NULL}
 };
 
-/* add string to output buffer */
+/**
+ * @brief add string to output buffer
+ * @param s[] string which content will be added to {@link #shell_output_buffer}
+ * @return none
+ */
 void shell_out_buffer_add(char s[])
 {
     uint16_t i = 0;
@@ -65,7 +85,11 @@ void shell_out_buffer_add(char s[])
     }
 }
 
-/* hello command */
+/**
+ * @brief send 'Hello World!!!' string as shell output
+ * @param none
+ * @return none
+ */
 void shell_hello_cmd(char* argv[], uint16_t argc)
 {
     (void)(argv);
@@ -73,7 +97,13 @@ void shell_hello_cmd(char* argv[], uint16_t argc)
     shell_out_buffer_add("Hello world!!!\r\n");
 }
 
-/* test arguments for command */
+/**
+ * @brief argumets test command
+ * @param any strings or none
+ * @return none
+ *
+ * send arguments count and its contents
+ */
 void args_cmd( char* argv[], uint16_t argc )
 {
     uint16_t i;
@@ -92,11 +122,12 @@ void args_cmd( char* argv[], uint16_t argc )
     }
 }
 
-/*
+/**
+ * @brief clean shell output buffer
+ * @param none
+ * @return none
  *
- * name: shell_cleanup_output
- *
- * clean shell output buffer
+ * clean {@link #shell_output_buffer} for later use
  */
 void shell_cleanup_output(void)
 {
@@ -107,7 +138,11 @@ void shell_cleanup_output(void)
     }
 }
 
-/* get first word from shell_input_buffer and place it to command_s */
+/**
+ * @brief get command name
+ * @param command_s[] - command name will be place here
+ * @return none
+ * get first word from shell_input_buffer and place it to command_s */
 void shell_get_cmd(char command_s[])
 {
     uint16_t i = 0;
@@ -119,12 +154,12 @@ void shell_get_cmd(char command_s[])
     command_s[i] = 0;
 }
 
-/*
- *
- * name: shell_process
- * @param  outbuffer  output buffer zero-terminated string
- * @param  command_line  command from user input, zero-terminated string
- *
+/**
+ * @brief shell cli processing
+ * @param outbuffer  output buffer zero-terminated string
+ * @param command_line  command from user input, zero-terminated string
+ * see in {@link #shell_input_buffer} and run corresponding commands
+ * from {@link #cmds[]}
  */
 void shell_process(void)
 {
@@ -175,14 +210,12 @@ void shell_process(void)
     }
 }
 
-/*
- *
- * name: shell_buffer_add
- * @param char c - received character
- * @return bool - non-true on overflow
- *
+/**
+ * @brief add char to {@link #shell_input_buffer}
+ * @param c - received character
+ * @return boolean - non-true on overflow
  */
-uint16_t shell_in_buffer_add(char c)
+boolean shell_in_buffer_add(char c)
 {
     if (shell_in_lastchar >= SHELL_MAX_CLI_LENGTH)
     {

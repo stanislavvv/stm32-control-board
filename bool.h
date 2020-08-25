@@ -6,6 +6,9 @@
 
 #include <stdint.h>
 
+/**
+ * boolean type definition
+ */
 typedef uint16_t boolean;
 #define TRUE 1
 #define FALSE 0

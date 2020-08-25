@@ -5,17 +5,16 @@
 #include "shell_process.h"
 #include "shell.h"
 
-/*
- *
- * name: shell_send_result
- * @brief send content of shell_output_buffer to uart console and clean
+/**
+ * @brief send content of {@link #shell_output_buffer} to uart
  * @param none
  * @return none
- *
+ * will send to uart {@link #shell_output_buffer} and clean
+ * {@link #shell_input_buffer} and {@link #shell_output_buffer}
  */
 void shell_send_result(void)
 {
-#ifdef SHELL_ECHO
+#if SHELL_ECHO==1
     send_string("\r\n"); // shift output down
 #endif
     send_string(shell_output_buffer);
@@ -26,7 +25,11 @@ void shell_send_result(void)
     shell_input_buffer[0] = 0;
 }
 
-/* shell processing rtos task */
+/**
+ * @brief shell processing rtos task
+ * @param none - no parameters used
+ * @return none
+ */
 void task_process_shell(void *args __attribute((unused)))
 {
     send_string("shell started\r\n");
@@ -35,7 +38,7 @@ void task_process_shell(void *args __attribute((unused)))
         if (char_is_recv())
         {
             char c = recv_char();
-#ifdef SHELL_ECHO
+#if SHELL_ECHO==1
             send_char(c);
 #endif
             if (c != 0xa && c != 0xd && shell_in_buffer_add(c))

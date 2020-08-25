@@ -2,9 +2,19 @@
 
 /* hardware definitions for STM32F103 */
 
-/* onboard blue pill led */
+/**
+ * onboard blue pill led port
+ */
 #define LED_PORT            GPIOC
+
+/**
+ * onboard blue pill led pin
+ */
 #define LED_PIN             GPIO13
+
+/**
+ * onboard blue pill led pin number
+ */
 #define LED_PIN_NUM         13
 
 /* rotary encoder with button */
@@ -14,8 +24,12 @@
 #define ENCODER_QUAD_PIN1   GPIO3
 #define ENCODER_QUAD_PIN2   GPIO4
 
-/* define for external use */
+/**
+ * uart port
+ */
 #define UART USART1
 
-/* echo input in shell */
-#define SHELL_ECHO
+/**
+ * shell will be echo input chars
+ */
+#define SHELL_ECHO 1

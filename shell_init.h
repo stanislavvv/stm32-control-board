@@ -1,9 +1,8 @@
 /* copyright https://github.com/stanislavvv/stm32-control-board */
 
-/*
- *
- * name: shell_init
- *
- * init serial shell structures
+/**
+ * @brief init serial shell structures
+ * @param none
+ * @return none
  */
 void shell_init(void);
