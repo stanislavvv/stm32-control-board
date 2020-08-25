@@ -7,6 +7,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
+#include <libopencm3/stm32/spi.h>
 
 
 /**
@@ -83,6 +84,8 @@ void init_gpio(void)
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
     rcc_periph_clock_enable(RCC_USART1);
+    rcc_periph_clock_enable(RCC_SPI1);
+
 
     /* LED on PC13 */
     gpio_set_mode(
@@ -127,4 +130,50 @@ void init_gpio(void)
 
     /* enable uart */
     usart_enable(UART);
+
+    /* LCD on SPI */
+    /* DC pin */
+    gpio_set_mode(ST7789_DC_PORT,
+        GPIO_MODE_OUTPUT_50_MHZ,
+        GPIO_CNF_OUTPUT_PUSHPULL,
+        ST7789_DC_PIN);
+    /* RST pin */
+    gpio_set_mode(ST7789_RST_PORT,
+        GPIO_MODE_OUTPUT_50_MHZ,
+        GPIO_CNF_OUTPUT_PUSHPULL,
+        ST7789_RST_PIN);
+
+    /* SCK, MOSI(SDA) */
+    gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
+
+    /* Reset SPI, SPI_CR1 register cleared, SPI is disabled */
+    spi_reset(ST7789_SPI);
+
+    /* Set up SPI in Master mode with:
+    * Clock baud rate: 1/64 of peripheral clock frequency
+    * Clock polarity: Idle High
+    * Clock phase: Data valid on 1nd clock pulse
+    * Data frame format: 8-bit
+    * Frame format: MSB First
+    */
+    spi_init_master(ST7789_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_64, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE,
+                  SPI_CR1_CPHA_CLK_TRANSITION_1, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+
+    /*
+    * Set NSS management to software.
+    *
+    * Note:
+    * Setting nss high is very important, even if we are controlling the GPIO
+    * ourselves this bit needs to be at least set to 1, otherwise the spi
+    * peripheral will not send any data out.
+    */
+    spi_enable_software_slave_management(ST7789_SPI);
+    spi_set_nss_high(ST7789_SPI);
+
+    /* unidirectional spi - use only MOSI for data transfer */
+    spi_set_unidirectional_mode(ST7789_SPI);
+
+    /* Enable ST7789_SPI periph. */
+    spi_enable(ST7789_SPI);
 }
