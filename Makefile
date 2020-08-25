@@ -10,10 +10,12 @@ TGT_CFLAGS	+= -I./rtos -I.
 TGT_CXXFLAGS	+= -I./rtos -I.
 
 BINARY		= main
-SRCFILES	= main.c rtos/heap_4.c rtos/list.c rtos/port.c rtos/tasks.c rtos/opencm3.c shell.c hw.c
+SRCFILES	= rtos/heap_4.c rtos/list.c rtos/port.c rtos/tasks.c rtos/opencm3.c
+SRCFILES	+= shell_hw.c shell_process.c hw.c shell.c main.c
 
 include mk/Makefile.common.incl
 
 # tests
-test:
+test: clean
 	make -f Makefile.tests
+	make clean

@@ -1,29 +1,81 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config_hw.h"
 #include "hw.h"
+#include "bool.h"
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
-/* receive char from uart */
-unsigned char recv_char(void)
+
+/**
+ *
+ * name: recv_chars
+ * @brief receive char from uart
+ * @param none
+ * @return received char
+ *
+ */
+char recv_char(void)
 {
-    return (unsigned char) (0xff & usart_recv_blocking(UART));
+    return (char) (0xff & usart_recv_blocking(UART));
 }
 
-/* send char to uart */
-void send_char(unsigned char c)
+/**
+ *
+ * name: send_char
+ * @brief send char to uart
+ * @param char c - char for sending to uart
+ * @return none
+ *
+ */
+void send_char(char c)
 {
     usart_send_blocking(UART, (uint16_t)(c));
 }
 
-/* char is received */
-uint16_t char_is_recv(void)
+/**
+ *
+ * name: send_string
+ * @brief send null-terminated string to uart
+ * @param char s[] - string for sending to uart
+ * @return none
+ *
+ */
+void send_string(const char s[])
 {
-    /* STM32F1 specific */
-    return (USART_SR(UART) & USART_SR_RXNE) == 0;
+    uint16_t i = 0;
+    while (s[i] != 0)
+    {
+        send_char(s[i]);
+        i++;
+    }
 }
 
+/**
+ *
+ * name: char_is_recv
+ * @brief return true if uart has received char in register
+ * @param none
+ * @return bool char received state
+ *
+ */
+boolean char_is_recv(void)
+{
+    /* STM32F1 specific */
+    return (USART_SR(UART) & USART_SR_RXNE) != 0;
+}
+
+
+/**
+ *
+ * name: init_gpio
+ * @brief set gpio and other hardware modes
+ * @param none
+ * @return none
+ *
+ */
 void init_gpio(void)
 {
     rcc_clock_setup_in_hse_8mhz_out_72mhz(); // For "blue pill"
@@ -38,6 +90,7 @@ void init_gpio(void)
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
         LED_PIN);
+    LED_off();
 
     /* encoder button on PA15 */
     gpio_set_mode(
@@ -62,15 +115,15 @@ void init_gpio(void)
         GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
     /* uart rx PA10 */
     gpio_set_mode(GPIOA, GPIO_MODE_INPUT,
-        GPIO_CNF_INPUT_FLOAT, GPIO_USART1_TX);
+        GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
 
     /* setup uart parameters */
     usart_set_baudrate(UART, 115200);
     usart_set_databits(UART, 8);
     usart_set_stopbits(UART, USART_STOPBITS_1);
-    usart_set_mode(UART, USART_MODE_TX_RX);
     usart_set_parity(UART, USART_PARITY_NONE);
     usart_set_flow_control(UART, USART_FLOWCONTROL_NONE);
+    usart_set_mode(UART, USART_MODE_TX_RX);
 
     /* enable uart */
     usart_enable(UART);

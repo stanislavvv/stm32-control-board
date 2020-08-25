@@ -1,4 +1,4 @@
-/* copyright  */
+/* copyright https://github.com/stanislavvv/stm32-control-board */
 /*
  * Control board experiments
  */
@@ -14,8 +14,10 @@
 #include "shell.h"
 
 
-/* stuff for freertos - catch stack overflow error and hang */
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
+/**
+ * stuff for freertos - catch stack overflow error and hang
+ */
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
 
     void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
@@ -27,13 +29,16 @@
     }
 #endif
 
-
+/**
+ * @brief main procedure
+ * init hardware, create FreeRTOS tasks and run scheduler
+ */
 int main(void)
 {
 
     init_gpio();
 
-    xTaskCreate(task_process_shell, "shell", 200, NULL, 1, NULL);
+    xTaskCreate(task_process_shell, "shell", 300, NULL, 1, NULL);
     vTaskStartScheduler();
 
     for (;;) { };
