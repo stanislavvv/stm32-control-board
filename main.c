@@ -1,6 +1,9 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-/*
- * Control board experiments
+/**
+ * @file main.c
+ * @brief main procedure of control board experiments
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
  */
 #include "FreeRTOS.h"
 #include "task.h"

@@ -1,10 +1,10 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board
+/**
+ * @file tests.h
+ * @brief frameworkless functions testing procedures
  *
- * frameworkless tests...
- * all tests here
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
- * test_list[] - list of test functions with short description
- *
+ * All tests here. See test_list[]
  */
 
 #include <assert.h>
@@ -12,6 +12,7 @@
 #include <string.h>
 #include "shell_process.h"
 
+/** test shell command arguments processing */
 void test_shell_process_args(void)
 {
     // prepare data
@@ -21,6 +22,7 @@ void test_shell_process_args(void)
     assert(!strcmp("arguments count: 2\r\nargument 0: aaa\r\nargument 1: bbb\r\n", shell_output_buffer));
 }
 
+/** test shell reaction to unknown command */
 void test_shell_process_unknown(void)
 {
     // prepare data
@@ -30,6 +32,7 @@ void test_shell_process_unknown(void)
     assert(!strcmp("UNKNOWN: aaa\r\n", shell_output_buffer));
 }
 
+/** test hello shell command */
 void test_shell_process_hello(void)
 {
     // prepare data
@@ -39,7 +42,8 @@ void test_shell_process_hello(void)
     assert(!strcmp("Hello world!!!\r\n", shell_output_buffer));
 }
 
-void test_shell_buffer_add(void)
+/** test shell_in_buffer_add */
+void test_shell_in_buffer_add(void)
 {
     char c = 'A';
     assert(!strcmp(shell_input_buffer, ""));
@@ -47,18 +51,26 @@ void test_shell_buffer_add(void)
     assert(!strcmp(shell_input_buffer, "A"));
 }
 
+/**
+ * test procedure pointer type
+ */
 typedef void (*test_handler_t)(void);
 
+/**
+ * test procedure list entry type
+ */
 typedef struct // test name + test function
 {
-    const char* test_str;
-    test_handler_t test_proc;
+    const char* test_str; /** name of test, usually testing function name */
+    test_handler_t test_proc; /** test procedure */
 } test_def_t;
 
-/* list of running tests */
+/**
+ * list of running tests
+ */
 static test_def_t test_list[] =
 {
-    {"shell_buffer_add", test_shell_buffer_add},
+    {"shell_in_buffer_add", test_shell_in_buffer_add},
     {"shell_process_hello", test_shell_process_hello},
     {"shell_process_args", test_shell_process_args},
     {"shell_process_unknown", test_shell_process_unknown},

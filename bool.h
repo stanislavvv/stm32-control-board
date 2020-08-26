@@ -1,5 +1,10 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-/* boolean defines */
+/**
+ * @file bool.h
+ * @brief boolean definitions
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 #ifndef BOOL_H_
 #define BOOL_H_

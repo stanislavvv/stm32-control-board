@@ -1,6 +1,10 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-
-/* hardware interface functions */
+/**
+ * @file hw.h
+ * @brief hardware interface functions
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 
 #ifndef UNITTEST

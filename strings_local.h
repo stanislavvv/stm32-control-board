@@ -1,5 +1,11 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-/* string functions */
+/**
+ * @file strings_local.h
+ * @brief local functions for working with strings
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
+
 
 #include <stdint.h>
 #include "bool.h"
@@ -51,11 +57,9 @@ static inline boolean compare_strings(const char *first, const char *second)
    {
       if (*first == '\0' || *second == '\0')
          { break; }
-
       first++;
       second++;
    }
-
    if (*first == '\0' && *second == '\0')
       { return TRUE; }
    else
@@ -69,8 +73,7 @@ static inline boolean compare_strings(const char *first, const char *second)
   */
 static inline void reverse(char s[])
 {
-     int i, j;
-
+     uint16_t i, j;
      for (i = 0, j = strlen_local(s)-1; i<j; i++, j--)
      {
          char c = s[i];
@@ -87,13 +90,12 @@ static inline void reverse(char s[])
  */
 static inline void itoa_u16(uint16_t n, char s[])
 {
-    uint16_t i;
-
-    i = 0;
+    uint16_t i = 0;
     do
-    {       /* generate digits in reverse order */
-        s[i++] = (char)(n % 10 + '0');   /* get next digit */
-    } while ((n /= 10) > 0);     /* delete it */
+    {
+        /* generate digits in reverse order */
+        s[i++] = (char)(n % 10 + '0');  /* get next digit */
+    } while ((n /= 10) > 0);  /* delete it */
     s[i] = '\0';
     reverse(s);
 }
@@ -108,15 +110,18 @@ static inline void itoa_s16(int16_t n, char s[])
 {
     int16_t i, sign;
 
-    if ((sign = n) < 0)  /* record sign */
+    /* record sign and check n negativeness */
+    if ((sign = n) < 0)
     {
-        n = (int16_t)(-n);          /* make n positive */
+        /* n must be positive for processing */
+        n = (int16_t)(-n);
     }
     i = 0;
     do
-    {       /* generate digits in reverse order */
-        s[i++] = (char)(n % 10 + '0');   /* get next digit */
-    } while ((n /= 10) > 0);     /* delete it */
+    {
+        /* generate digits in reverse order */
+        s[i++] = (char)(n % 10 + '0');  /* get next digit */
+    } while ((n /= 10) > 0);  /* delete it */
     if (sign < 0)
     {
         s[i++] = '-';

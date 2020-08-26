@@ -1,3 +1,10 @@
+/**
+ * @file shell.c
+ * @brief rtos shell task
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 /* copyright https://github.com/stanislavvv/stm32-control-board */
 #include "FreeRTOS.h"
 #include "task.h"

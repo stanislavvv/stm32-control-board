@@ -1,4 +1,11 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/**
+ * @file hw.c
+ * @brief hardware interface functions
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
+
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>

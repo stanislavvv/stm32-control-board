@@ -1,4 +1,10 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/**
+ * @file shell_hw.c
+ * @brief hardware-related shell commands and functions
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 /* shell hardware-related functions */
 #include <stdint.h>

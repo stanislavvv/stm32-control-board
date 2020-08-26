@@ -1,4 +1,10 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/**
+ * @file shell_process.c
+ * @brief shell processing functions and shell commands
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 #include <stdint.h>
 #include <stdio.h>

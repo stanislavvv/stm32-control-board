@@ -1,17 +1,16 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board
+/**
+ * @file tests.c
+ * @brief frameworkless functions testing main executable
  *
- * frameworkless tests...
- * all test functions see in tests.h
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
- * main executable
  * run tests from test_list with some output
- *
+ * all test functions see in tests.h
  */
 
 #include <stdio.h>
 #include <string.h>
 #include "tests.h"
-
 
 int main(int argc, char *argv[])
 {

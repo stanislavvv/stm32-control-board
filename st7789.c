@@ -1,6 +1,9 @@
-/* Copyright https://github.com/Floyd-Fish/ST7789-STM32
- * Driver for ST7789
- * Adapted from hal to libopencm3
+/**
+ * @file st7789.c
+ * @brief Driver for ST7789 LCD adapted from hal to libopencm3
+ *
+ * Copyright https://github.com/Floyd-Fish/ST7789-STM32
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  */
 
 #include <libopencm3/stm32/spi.h>

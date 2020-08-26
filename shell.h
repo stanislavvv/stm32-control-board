@@ -1,16 +1,26 @@
+/**
+ * @file shell.h
+ * @brief rtos shell task
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 /* copyright https://github.com/stanislavvv/stm32-control-board */
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* shell processing rtos task */
+/**
+ * @brief shell processing rtos task
+ * @param none - no parameters used
+ * @return none
+ */
 void task_process_shell(void *args __attribute((unused)));
 
-/*
- *
- * name: shell_send_result
- * @brief send content of shell_output_buffer to uart console and clean
+/**
+ * @brief send content of {@link #shell_output_buffer} to uart
  * @param none
  * @return none
- *
+ * will send to uart {@link #shell_output_buffer} and clean
+ * {@link #shell_input_buffer} and {@link #shell_output_buffer}
  */
 void shell_send_result(void);

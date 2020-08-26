@@ -1,3 +1,10 @@
+/**
+ * @file fonts.h
+ * @brief fonts definitions
+ *
+ * Copyright https://github.com/Floyd-Fish/ST7789-STM32
+ *
+ */
 #ifndef __FONT_H
 #define __FONT_H
 
@@ -26,7 +33,7 @@ extern FontDef Font_16x26;
 /* 128x128 pixel RGB565 image */
 extern const uint16_t saber[][128];
 
-/* 240x240 pixel RGB565 image 
+/* 240x240 pixel RGB565 image
 extern const uint16_t knky[][240];
 extern const uint16_t tek[][240];
 extern const uint16_t adi1[][240];

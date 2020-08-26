@@ -1,6 +1,12 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/**
+ * @file config_hw.h
+ * @brief hardware configuration definitions
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
-/* hardware definitions for STM32F103 */
+/* hardware definitions for STM32F103 now */
 
 /**
  * onboard blue pill led port

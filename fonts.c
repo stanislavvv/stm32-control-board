@@ -1,3 +1,10 @@
+/**
+ * @file fonts.c
+ * @brief fonts data
+ *
+ * Copyright https://github.com/Floyd-Fish/ST7789-STM32
+ *
+ */
 #include "fonts.h"
 
 static const uint16_t Font7x10 [] = {
