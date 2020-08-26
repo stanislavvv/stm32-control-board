@@ -3,7 +3,7 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/spi.h>
-#include <errno.h>  //replace HAL_StatusTypeDef to normal error codes
+#include <errno.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config_hw.h"
@@ -36,7 +36,8 @@ void send_string(const char s[])
  *
  * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
  */
-uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer, uint16_t length, TickType_t timeout)
+uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
+                            uint16_t length, TickType_t timeout)
 {
     TickType_t tickstart = xTaskGetTickCount();
     uint16_t initial_count = length;

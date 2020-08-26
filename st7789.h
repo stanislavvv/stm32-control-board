@@ -1,4 +1,7 @@
-//FixME: change hal to libopencm3
+/* Copyright https://github.com/Floyd-Fish/ST7789-STM32
+ * Driver for ST7789
+ * Adapted from hal to libopencm3
+ */
 
 #ifndef __ST7789_H
 #define __ST7789_H
@@ -8,8 +11,9 @@
 #include "config_hw.h"
 
 /* choose a Hardware SPI port to use. */
-//HAL #define ST7789_SPI_PORT hspi1
-//HAL extern SPI_HandleTypeDef ST7789_SPI_PORT;
+/* HAL not used - does not define any data for it */
+//#define ST7789_SPI_PORT hspi1
+//extern SPI_HandleTypeDef ST7789_SPI_PORT;
 
 /**
  * if you predefined pin names in CubeMX,
@@ -48,37 +52,37 @@
 /* Choose a display rotation you want to use: (0-3) */
 //#define ST7789_ROTATION 0
 //#define ST7789_ROTATION 1
-#define ST7789_ROTATION 2                               //  use Normally on 240x240
+#define ST7789_ROTATION 2                   //  use Normally on 240x240
 //#define ST7789_ROTATION 3
 
 #ifdef USING_135X240
 
     #if ST7789_ROTATION == 0
-        #define ST7789_WIDTH 135
-        #define ST7789_HEIGHT 240
-        #define X_SHIFT 53
-        #define Y_SHIFT 40
+    #define ST7789_WIDTH 135
+    #define ST7789_HEIGHT 240
+    #define X_SHIFT 53
+    #define Y_SHIFT 40
     #endif
 
     #if ST7789_ROTATION == 1
-        #define ST7789_WIDTH 240
-        #define ST7789_HEIGHT 135
-        #define X_SHIFT 40
-        #define Y_SHIFT 52
+    #define ST7789_WIDTH 240
+    #define ST7789_HEIGHT 135
+    #define X_SHIFT 40
+    #define Y_SHIFT 52
     #endif
 
     #if ST7789_ROTATION == 2
-        #define ST7789_WIDTH 135
-        #define ST7789_HEIGHT 240
-        #define X_SHIFT 52
-        #define Y_SHIFT 40
+    #define ST7789_WIDTH 135
+    #define ST7789_HEIGHT 240
+    #define X_SHIFT 52
+    #define Y_SHIFT 40
     #endif
 
     #if ST7789_ROTATION == 3
-        #define ST7789_WIDTH 240
-        #define ST7789_HEIGHT 135
-        #define X_SHIFT 40
-        #define Y_SHIFT 53
+    #define ST7789_WIDTH 240
+    #define ST7789_HEIGHT 135
+    #define X_SHIFT 40
+    #define Y_SHIFT 53
     #endif
 
 #endif
@@ -88,19 +92,19 @@
     #define ST7789_WIDTH 240
     #define ST7789_HEIGHT 240
 
-                #if ST7789_ROTATION == 0
-                        #define X_SHIFT 0
-                        #define Y_SHIFT 80
-                #elif ST7789_ROTATION == 1
-                        #define X_SHIFT 80
-                        #define Y_SHIFT 0
-                #elif ST7789_ROTATION == 2
-                        #define X_SHIFT 0
-                        #define Y_SHIFT 0
-                #elif ST7789_ROTATION == 3
-                        #define X_SHIFT 0
-                        #define Y_SHIFT 0
-                #endif
+        #if ST7789_ROTATION == 0
+            #define X_SHIFT 0
+            #define Y_SHIFT 80
+        #elif ST7789_ROTATION == 1
+            #define X_SHIFT 80
+            #define Y_SHIFT 0
+        #elif ST7789_ROTATION == 2
+            #define X_SHIFT 0
+            #define Y_SHIFT 0
+        #elif ST7789_ROTATION == 3
+            #define X_SHIFT 0
+            #define Y_SHIFT 0
+        #endif
 
 #endif
 
@@ -189,21 +193,21 @@
 #define ST7789_COLOR_MODE_18bit 0x66    //  RGB666 (18bit)
 
 /* Basic operations */
-#define ST7789_RST_Clr() HAL_GPIO_WritePin(ST7789_RST_PORT, ST7789_RST_PIN, GPIO_PIN_RESET)
-#define ST7789_RST_Set() HAL_GPIO_WritePin(ST7789_RST_PORT, ST7789_RST_PIN, GPIO_PIN_SET)
+#define ST7789_RST_Clr() gpio_clear(ST7789_RST_PORT, ST7789_RST_PIN)
+#define ST7789_RST_Set() gpio_set(ST7789_RST_PORT, ST7789_RST_PIN)
 
-#define ST7789_DC_Clr() HAL_GPIO_WritePin(ST7789_DC_PORT, ST7789_DC_PIN, GPIO_PIN_RESET)
-#define ST7789_DC_Set() HAL_GPIO_WritePin(ST7789_DC_PORT, ST7789_DC_PIN, GPIO_PIN_SET)
+#define ST7789_DC_Clr() gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN)
+#define ST7789_DC_Set() gpio_set(ST7789_DC_PORT, ST7789_DC_PIN)
 
 #ifdef ST7789_CS_PORT
 /* display have CS pin*/
-#define ST7789_Select() HAL_GPIO_WritePin(ST7789_CS_PORT, ST7789_CS_PIN, GPIO_PIN_RESET)
-#define ST7789_UnSelect() HAL_GPIO_WritePin(ST7789_CS_PORT, ST7789_CS_PIN, GPIO_PIN_SET)
+#define ST7789_Select() gpio_clear(ST7789_CS_PORT, ST7789_CS_PIN)
+#define ST7789_UnSelect() gpio_set(ST7789_CS_PORT, ST7789_CS_PIN)
 #else
 /* no CS pin */
 #define ST7789_Select()
 #define ST7789_UnSelect()
-#end
+#endif
 
 #define ABS(x) ((x) > 0 ? (x) : -(x))
 
@@ -239,15 +243,15 @@ void ST7789_TearEffect(uint8_t tear);
 void ST7789_Test(void);
 
 #if !defined(USING_240X240)
-        #if !defined(USING_135X240)
-            #error      You should at least choose one display resolution!
-        #endif
+    #if !defined(USING_135X240)
+        #error      You should at least choose one display resolution!
+    #endif
 #endif
 
 #if !defined(USING_135X240)
-        #if !defined(USING_240X240)
-            #error      You should at least choose one display resolution!
-        #endif
+    #if !defined(USING_240X240)
+        #error      You should at least choose one display resolution!
+    #endif
 #endif
 
 
