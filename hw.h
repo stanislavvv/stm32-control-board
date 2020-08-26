@@ -102,7 +102,8 @@ static inline void delay_ticks(TickType_t ticks)
  *
  * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
  */
-uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer, uint16_t length, TickType_t timeout);
+uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
+                                    uint16_t length, TickType_t timeout);
 
 /**
  * @brief return true if uart has received char in register

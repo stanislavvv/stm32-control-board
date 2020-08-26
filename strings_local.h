@@ -74,7 +74,7 @@ static inline boolean compare_strings(const char *first, const char *second)
 static inline void reverse(char s[])
 {
      uint16_t i, j;
-     for (i = 0, j = strlen_local(s)-1; i<j; i++, j--)
+     for (i = 0, j = (uint16_t)(strlen_local(s)-1); i<j; i++, j--)
      {
          char c = s[i];
          s[i] = s[j];

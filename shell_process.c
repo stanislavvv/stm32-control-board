@@ -118,7 +118,8 @@ void args_cmd( char* argv[], uint16_t argc )
     itoa_u16(argc, num);
     shell_out_buffer_add(num);
     shell_out_buffer_add("\r\n");
-    for(i = 0; i< argc; ++i) {
+    for (i = 0; i< argc; ++i)
+    {
         shell_out_buffer_add("argument ");
         itoa_u16(i, num);
         shell_out_buffer_add(num);
@@ -188,19 +189,24 @@ void shell_process(void)
             known_cmd = TRUE;
             uint16_t cmdpos = strlen_local(cmd);
             /*Ok that is our function! Let's parse args*/
-            do {
+            do
+            {
                 c = shell_input_buffer[cmdpos++];
-                if((c == '\0')) {
+                if ((c == '\0'))
+                {
                     break;
                 }
-                if((c == ' ')) {
+                if ((c == ' '))
+                {
                     cmd_argv[cmd_argc++] = shell_input_buffer+cmdpos;
                 }
-            } while(c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
+            } while (c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
 
             /*arguments must be separate by zero to be parsable like strings*/
-            for(uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++) {
-                if(shell_input_buffer[ch] == ' ') {
+            for (uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++)
+            {
+                if (shell_input_buffer[ch] == ' ')
+                {
                     shell_input_buffer[ch] = '\0';
                 }
             }

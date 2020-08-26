@@ -75,11 +75,14 @@ void shell_led_state(char* argv[], uint16_t argc)
  */
 void shell_led(char* argv[], uint16_t argc)
 {
-    if (argc > 0) {
-        if (compare_strings(argv[0], "on") || compare_strings(argv[0], "1")) {
+    if (argc > 0)
+    {
+        if (compare_strings(argv[0], "on") || compare_strings(argv[0], "1"))
+        {
             LED_on();
         }
-        if (compare_strings(argv[0], "off") || compare_strings(argv[0], "9")) {
+        if (compare_strings(argv[0], "off") || compare_strings(argv[0], "9"))
+        {
             LED_off();
         }
     }

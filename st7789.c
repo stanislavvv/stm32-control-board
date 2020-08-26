@@ -103,8 +103,8 @@ static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
     ST7789_WriteCommand(ST7789_CASET);
     {
         uint8_t data[] = {(uint8_t)(x_start >> 8), (uint8_t)(x_start & 0xFF),
-                  (uint8_t)(x_end >> 8), (uint8_t)(x_end & 0xFF)
-                 };
+                          (uint8_t)(x_end >> 8), (uint8_t)(x_end & 0xFF)
+                         };
         ST7789_WriteData(data, sizeof(data));
     }
 
@@ -112,8 +112,8 @@ static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
     ST7789_WriteCommand(ST7789_RASET);
     {
         uint8_t data[] = {(uint8_t)(y_start >> 8), (uint8_t)(y_start & 0xFF),
-                  (uint8_t)(y_end >> 8), (uint8_t)(y_end & 0xFF)
-                 };
+                          (uint8_t)(y_end >> 8), (uint8_t)(y_end & 0xFF)
+                         };
         ST7789_WriteData(data, sizeof(data));
     }
     /* Write to RAM */
@@ -166,16 +166,16 @@ void ST7789_Init(void)
     ST7789_WriteCommand(0xE0);
     {
         uint8_t data[] = {0xD0, 0x04, 0x0D, 0x11, 0x13, 0x2B, 0x3F,
-                  0x54, 0x4C, 0x18, 0x0D, 0x0B, 0x1F, 0x23
-                 };
+                          0x54, 0x4C, 0x18, 0x0D, 0x0B, 0x1F, 0x23
+                         };
         ST7789_WriteData(data, sizeof(data));
     }
 
     ST7789_WriteCommand(0xE1);
     {
         uint8_t data[] = {0xD0, 0x04, 0x0C, 0x11, 0x13, 0x2C, 0x3F,
-                  0x44, 0x51, 0x2F, 0x1F, 0x1F, 0x20, 0x23
-                 };
+                          0x44, 0x51, 0x2F, 0x1F, 0x1F, 0x20, 0x23
+                         };
         ST7789_WriteData(data, sizeof(data));
     }
     ST7789_WriteCommand (ST7789_INVON);     //      Inversion ON
@@ -480,15 +480,15 @@ void ST7789_WriteChar(uint16_t x, uint16_t y, char ch,
             if ((b << j) & 0x8000)
             {
                 uint8_t data[] = {(uint8_t)(color >> 8),
-                          (uint8_t)(color & 0xFF)
-                         };
+                                  (uint8_t)(color & 0xFF)
+                                 };
                 ST7789_WriteData(data, sizeof(data));
             }
             else
             {
                 uint8_t data[] = {(uint8_t)(bgcolor >> 8),
-                          (uint8_t)(bgcolor & 0xFF)
-                         };
+                                  (uint8_t)(bgcolor & 0xFF)
+                                 };
                 ST7789_WriteData(data, sizeof(data));
             }
         }

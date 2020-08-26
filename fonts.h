@@ -5,12 +5,13 @@
  * Copyright https://github.com/Floyd-Fish/ST7789-STM32
  *
  */
-#ifndef __FONT_H
-#define __FONT_H
+#ifndef FONT_H_
+#define FONT_H_
 
 #include "stdint.h"
 
-typedef struct {
+typedef struct //vera++ blamed for single space
+{
     const uint8_t width;
     uint8_t height;
     const uint16_t *data;
