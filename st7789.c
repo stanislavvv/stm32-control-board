@@ -184,7 +184,9 @@ void ST7789_Init(void)
     ST7789_WriteCommand (ST7789_DISPON);    //      Main screen turned on
 
     delay_ms(50);
+    send_string("filling black... ");
     ST7789_Fill_Color(BLACK);                   //      Fill with Black.
+    send_string("end\r\n");
 }
 
 /**
@@ -216,18 +218,14 @@ void ST7789_Fill_Color(uint16_t color)
  */
 void ST7789_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
-// x & y always > 0
-/*    if ((x < 0) || (x >= ST7789_WIDTH) ||
-         (y < 0) || (y >= ST7789_HEIGHT))       return; */
     if ((x < ST7789_WIDTH) &&
          (y < ST7789_HEIGHT))
     {
-
-    ST7789_SetAddressWindow(x, y, x, y);
-    uint8_t data[] = {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
-    ST7789_Select();
-    ST7789_WriteData(data, sizeof(data));
-    ST7789_UnSelect();
+        ST7789_SetAddressWindow(x, y, x, y);
+        uint8_t data[] = {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
+        ST7789_Select();
+        ST7789_WriteData(data, sizeof(data));
+        ST7789_UnSelect();
     }
 }
 
@@ -240,23 +238,21 @@ void ST7789_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
  */
 void ST7789_Fill(uint16_t xSta, uint16_t ySta, uint16_t xEnd, uint16_t yEnd, uint16_t color)
 {
-/*    if ((xEnd < 0) || (xEnd >= (uint16_t)(ST7789_WIDTH)) ||
-         (yEnd < 0) || (yEnd >= (uint16_t)(ST7789_HEIGHT))) return; */
     if ((xEnd < (uint16_t)(ST7789_WIDTH)) ||
          (yEnd < (uint16_t)(ST7789_HEIGHT)))
     {
-    ST7789_Select();
-    uint16_t i, j;
-    ST7789_SetAddressWindow(xSta, ySta, xEnd, yEnd);
-    for (i = ySta; i <= yEnd; i++)
-    {
-        for (j = xSta; j <= xEnd; j++)
+        ST7789_Select();
+        uint16_t i, j;
+        ST7789_SetAddressWindow(xSta, ySta, xEnd, yEnd);
+        for (i = ySta; i <= yEnd; i++)
         {
-            uint8_t data[] = {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
-            ST7789_WriteData(data, sizeof(data));
+            for (j = xSta; j <= xEnd; j++)
+            {
+                uint8_t data[] = {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
+                ST7789_WriteData(data, sizeof(data));
+            }
         }
-    }
-    ST7789_UnSelect();
+        ST7789_UnSelect();
     }
 }
 
@@ -268,8 +264,6 @@ void ST7789_Fill(uint16_t xSta, uint16_t ySta, uint16_t xEnd, uint16_t yEnd, uin
  */
 void ST7789_DrawPixel_4px(uint16_t x, uint16_t y, uint16_t color)
 {
-/*    if ((x <= 0) || (x > ST7789_WIDTH) ||
-         (y <= 0) || (y > ST7789_HEIGHT))       return; */
     if ((x < ST7789_WIDTH) &&
          (y < ST7789_HEIGHT))
     {
@@ -738,7 +732,10 @@ void ST7789_TearEffect(uint8_t tear)
  */
 void ST7789_Test(void)
 {
+//    for (uint8_t i = 0; i <= 10; i++)
+//    {
     ST7789_Fill_Color(WHITE);
+    send_string("filled white\r\n");
     delay_ms(1000);
     ST7789_WriteString(10, 20, "Speed Test", Font_11x18, RED, WHITE);
     delay_ms(1000);
@@ -797,4 +794,5 @@ void ST7789_Test(void)
     ST7789_Fill_Color(WHITE);
     ST7789_DrawImage(0, 0, 128, 128, (uint16_t *)saber);
     delay_ms(3000);
+//    }
 }

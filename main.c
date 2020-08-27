@@ -41,7 +41,7 @@ int main(void)
 
     init_gpio();
 
-    xTaskCreate(task_process_shell, "shell", 300, NULL, 1, NULL);
+    xTaskCreate(task_process_shell, "shell", 500, NULL, 1, NULL);
     vTaskStartScheduler();
 
     for (;;) { };

@@ -16,7 +16,7 @@
 #include "config_hw.h"
 #include "hw.h"
 #include "bool.h"
-
+#include "strings_local.h"
 
 /**
  * @brief send null-terminated string to uart
@@ -58,7 +58,7 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
     /* transmit to spi now */
     spi_set_bidirectional_transmit_only_mode(spi);
 
-    while (length > 0)
+    while (initial_count > 0)
     {
         if (SPI_SR(spi) & SPI_SR_TXE)
         {
@@ -75,10 +75,12 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
                  (timeout != (TickType_t)0)
                )
             {
+//    send_string("spi_send_buffer_2wire_8bit end ETIME");
                 return ETIME;
             }
         }
     }
+//    send_string("spi_send_buffer_2wire_8bit end success");
     return 0;
 }
 
@@ -135,7 +137,8 @@ void init_gpio(void)
         GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
 
     /* setup uart parameters */
-    usart_set_baudrate(UART, 115200);
+    /* usart_set_baudrate(UART, 115200); */
+    usart_set_baudrate(UART, 921600);
     usart_set_databits(UART, 8);
     usart_set_stopbits(UART, USART_STOPBITS_1);
     usart_set_parity(UART, USART_PARITY_NONE);
@@ -190,4 +193,24 @@ void init_gpio(void)
 
     /* Enable ST7789_SPI periph. */
     spi_enable(ST7789_SPI);
+
+    /* init by register access */
+    //uint32_t reg32 = SPI_CR1(ST7789_SPI);
+    /* Reset all bits omitting SPE, CRCEN and CRCNEXT bits. */
+    //reg32 &= SPI_CR1_SPE | SPI_CR1_CRCEN | SPI_CR1_CRCNEXT;
+    //reg32 |= (uint32_t)SPI_CR1_MSTR;                    /* Configure SPI as master. */
+    //reg32 |= (uint32_t)SPI_CR1_BAUDRATE_FPCLK_DIV_64;   /* Set baud rate bits. */
+    //reg32 |= (uint32_t)SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE; /* Set CPOL value. */
+    //reg32 |= (uint32_t)SPI_CR1_CPHA_CLK_TRANSITION_1;   /* Set CPHA value. */
+    //reg32 |= (uint32_t)SPI_CR1_DFF_8BIT;                /* Set data format (8 or 16 bits). */
+    //reg32 |= (uint32_t)SPI_CR1_MSBFIRST;                /* Set frame format (LSB- or MSB-first). */
+    //reg32 |= (uint32_t)SPI_CR1_SSM;                     /* Set software slave management */
+    //reg32 |= (uint32_t)SPI_CR1_BIDIMODE;                /* Set bidirectional mode */
+    //reg32 |= (uint32_t)SPI_CR1_BIDIOE;                  /* Set bidirectional transmit-only mode */
+    //reg32 &= (uint32_t)(~SPI_CR1_CRCEN);                /* Set no CRC */
+    //reg32 |= (uint32_t)SPI_CR1_SPE;                     /* enable SPI */
+    //reg32 &= (uint32_t)(~SPI_CR1_CRCNEXT);              /* transmit data, not crc*/
+
+    //SPI_CR1(ST7789_SPI) = reg32;
+    //SPI_CR2(ST7789_SPI) &= (uint32_t)(~SPI_CR2_SSOE);     /* allow slave select to be an input */
 }

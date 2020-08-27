@@ -52,5 +52,15 @@ void shell_led_state(char* argv[], uint16_t argc);
  */
 void shell_led(char* argv[], uint16_t argc);
 
+#ifndef UNITTEST
+// Can't be tested without uC
+
+/**
+ * @brief start lcd test
+ * @param none - any may be given, none used
+ * @return none
+ */
+void shell_lcd_test(char* argv[], uint16_t argc);
+#endif
 
 #endif

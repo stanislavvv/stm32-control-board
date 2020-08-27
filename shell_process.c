@@ -63,14 +63,15 @@ typedef struct // command + function
  */
 static shell_cmd_def_t cmds[] =
 {
-    {"hello", shell_hello_cmd},
-    {"args", args_cmd},
+    {"hello",     shell_hello_cmd},
+    {"args",      args_cmd},
 #ifndef UNITTEST
 // not include hardware functions in unit test
-    {"led_on", shell_led_on},
-    {"led_off", shell_led_off},
+    {"led_on",    shell_led_on},
+    {"led_off",   shell_led_off},
     {"led_state", shell_led_state},
-    {"led", shell_led},
+    {"led",       shell_led},
+    {"lcdtest",   shell_lcd_test},
 #endif
     {NULL, NULL}
 };

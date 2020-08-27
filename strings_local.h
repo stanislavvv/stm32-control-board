@@ -129,3 +129,22 @@ static inline void itoa_s16(int16_t n, char s[])
     s[i] = '\0';
     reverse(s);
 }
+
+/**
+ * @brief convert uint16_t n to hex string in s
+ * @param n number to convert
+ * @param s[] result will be here
+ * @return none
+ */
+static inline void itohex_u32(uint32_t n, char s[])
+{
+    uint32_t i = 0;
+    char ch[] = "0123456789abcdef";
+    do
+    {
+        /* generate digits in reverse order */
+        s[i++] = ch[n % 16];  /* get next digit */
+    } while ((n /= 16) > 0);  /* delete it */
+    s[i] = '\0';
+    reverse(s);
+}
