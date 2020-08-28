@@ -34,6 +34,7 @@
  * uart port
  */
 #define UART USART1
+#define UART_RCC RCC_USART1
 
 /**
  * shell will be echo input chars
@@ -54,6 +55,7 @@
 /* CS/SS not used in my display - stay undef */
 //#define ST7789_CS_PORT
 //#define ST7789_CS_PIN
+#define ST7789_RCC      RCC_SPI1
 #define ST7789_SPI      SPI1
 #define ST7789_SPI_PORT GPIOA
 #define ST7789_SCK      GPIO5

@@ -99,8 +99,8 @@ void init_gpio(void)
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
-    rcc_periph_clock_enable(RCC_USART1);
-    rcc_periph_clock_enable(RCC_SPI1);
+    rcc_periph_clock_enable(UART_RCC);
+    rcc_periph_clock_enable(ST7789_RCC);
 
     /* LED on PC13 */
     gpio_set_mode(
@@ -164,9 +164,17 @@ void init_gpio(void)
     gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
 
+//  /*
+//   * According the STM32 Datasheet for SPI peripheral we need to PULLDOWN
+//   * or PULLUP the SCK pin according the polarity used.
+//   */
+//  pull = (handle->Init.CLKPolarity == SPI_POLARITY_LOW) ? GPIO_PULLDOWN : GPIO_PULLUP;
+//  pin_PullConfig(get_GPIO_Port(STM_PORT(obj->pin_sclk)), STM_LL_GPIO_PIN(obj->pin_sclk), pull);
+//  pinmap_pinout(obj->pin_ssel, PinMap_SPI_SSEL);
+
     /* Reset SPI, SPI_CR1 register cleared, SPI is disabled */
     spi_reset(ST7789_SPI);
-
+// 3.3V ST7789 display that has no CS pin.   It needs SPI mode#3.
     /* Set up SPI in Master mode with:
     * Clock baud rate: 1/64 of peripheral clock frequency
     * Clock polarity: Idle High
