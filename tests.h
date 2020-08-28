@@ -55,6 +55,14 @@ void test_shell_out_buffer_add(void)
     assert(!strcmp(shell_output_buffer, "B"));
 }
 
+/** test shell_cleanup_output */
+void test_shell_cleanup_output(void)
+{
+    char c[] = "ABCDEF";
+    strncpy(shell_output_buffer, c, strlen(c));
+    assert(!(strlen(shell_output_buffer)==0));
+}
+
 /** test shell_in_buffer_add */
 void test_shell_in_buffer_add(void)
 {
@@ -85,6 +93,7 @@ static test_def_t test_list[] =
 {
     {"shell_in_buffer_add",   test_shell_in_buffer_add},
     {"shell_out_buffer_add",  test_shell_out_buffer_add},
+    {"shell_cleanup_output",  test_shell_cleanup_output},
     {"shell_process_hello",   test_shell_process_hello},
     {"shell_process_args",    test_shell_process_args},
     {"shell_process_unknown", test_shell_process_unknown},
