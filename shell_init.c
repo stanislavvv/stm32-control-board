@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell_init.c
  * @brief shell init procedure
@@ -17,3 +20,5 @@ void shell_init(void)
 {
     /* dummy realisation */
 }
+
+/** @}*/

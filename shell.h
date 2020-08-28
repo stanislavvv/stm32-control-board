@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell.h
  * @brief rtos shell task
@@ -24,3 +27,5 @@ void task_process_shell(void *args __attribute((unused)));
  * {@link #shell_input_buffer} and {@link #shell_output_buffer}
  */
 void shell_send_result(void);
+
+/** @}*/

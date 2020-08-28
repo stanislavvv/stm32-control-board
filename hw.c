@@ -1,3 +1,6 @@
+/** @addtogroup hardware
+ *  @{
+ */
 /**
  * @file hw.c
  * @brief hardware interface functions
@@ -222,3 +225,5 @@ void init_gpio(void)
     //SPI_CR1(ST7789_SPI) = reg32;
     //SPI_CR2(ST7789_SPI) &= (uint32_t)(~SPI_CR2_SSOE);     /* allow slave select to be an input */
 }
+
+/** @}*/

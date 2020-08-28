@@ -1,3 +1,7 @@
+/** @addtogroup hardware
+ *  @{
+ */
+
 /**
  * @file hw_int.c
  * @brief interrupt vector procedures (most of them for debug)
@@ -248,3 +252,5 @@ void hard_fault_handler(void)
         send_string("hard_fault_handler int\r\n");
         while (1) { };
 }
+
+/** @}*/

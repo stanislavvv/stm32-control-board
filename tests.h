@@ -1,3 +1,6 @@
+/** @addtogroup tests
+ *  @{
+ */
 /**
  * @file tests.h
  * @brief frameworkless functions testing procedures
@@ -87,3 +90,5 @@ static test_def_t test_list[] =
     {"shell_process_unknown", test_shell_process_unknown},
     {NULL, NULL}
 };
+
+/** @}*/

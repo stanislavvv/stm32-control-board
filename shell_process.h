@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell_process.h
  * @brief shell processing functions and shell commands
@@ -81,3 +84,5 @@ void shell_out_buffer_add(char s[]);
 void shell_cleanup_output(void);
 
 #endif
+
+/** @}*/

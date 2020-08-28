@@ -1,3 +1,6 @@
+/** @addtogroup tests
+ *  @{
+ */
 /**
  * @file tests.c
  * @brief frameworkless functions testing main executable
@@ -28,3 +31,6 @@ int main(int argc, char *argv[])
     printf("*       All tests passed!      *\n");
     printf("********************************\n\n");
 }
+
+
+/** @}*/

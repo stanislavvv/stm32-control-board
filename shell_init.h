@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell_init.h
  * @brief shell init procedure
@@ -12,3 +15,5 @@
  * @return none
  */
 void shell_init(void);
+
+/** @}*/

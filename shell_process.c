@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell_process.c
  * @brief shell processing functions and shell commands
@@ -242,3 +245,5 @@ boolean shell_in_buffer_add(char c)
         return TRUE;
     }
 }
+
+/** @}*/

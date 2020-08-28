@@ -1,3 +1,6 @@
+/** @addtogroup hardware
+ *  @{
+ */
 /**
  * @file st7789.c
  * @brief Driver for ST7789 LCD adapted from hal to libopencm3
@@ -796,3 +799,6 @@ void ST7789_Test(void)
     delay_ms(3000);
 //    }
 }
+
+
+/** @}*/

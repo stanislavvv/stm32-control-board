@@ -1,3 +1,6 @@
+/** @addtogroup hardware
+ *  @{
+ */
 /**
  * @file st7789.h
  * @brief Driver for ST7789 LCD adapted from hal to libopencm3
@@ -267,3 +270,6 @@ void ST7789_Test(void);
 #endif
 
 #endif
+
+
+/** @}*/

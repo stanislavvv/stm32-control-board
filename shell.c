@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell.c
  * @brief rtos shell task
@@ -66,3 +69,5 @@ void task_process_shell(void *args __attribute((unused)))
         }
     }
 }
+
+/** @}*/

@@ -1,3 +1,6 @@
+/** @addtogroup hardware
+ *  @{
+ */
 /**
  * @file hw.h
  * @brief hardware interface functions
@@ -152,3 +155,5 @@ void init_gpio(void)
 #define LED_state() 1
 
 #endif
+
+/** @}*/

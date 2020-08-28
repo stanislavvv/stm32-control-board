@@ -1,3 +1,6 @@
+/** @addtogroup shell
+ *  @{
+ */
 /**
  * @file shell_hw.h
  * @brief hardware-related shell commands and functions
@@ -64,3 +67,5 @@ void shell_lcd_test(char* argv[], uint16_t argc);
 #endif
 
 #endif
+
+/** @}*/

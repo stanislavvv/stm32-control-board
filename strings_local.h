@@ -1,3 +1,6 @@
+/** @addtogroup utils
+ *  @{
+ */
 /**
  * @file strings_local.h
  * @brief local functions for working with strings
@@ -148,3 +151,6 @@ static inline void itohex_u32(uint32_t n, char s[])
     s[i] = '\0';
     reverse(s);
 }
+
+
+/** @}*/
