@@ -1,4 +1,4 @@
-# Control Board
+# Control Board     {#mainpage}
 
 This is old copy of [stm32-base](https://github.com/stanislavvv/stm32-control-board) at this moment.
 
@@ -11,7 +11,7 @@ Someday i will create control board with LCD+encoder+...
   * display (and choose it)
   * buttons (choose input method)
   * encoder with button (interrupt or timer?)
-  * serial interface (shell) -- mostly done
+  * serial interface (shell) -- done, some commands may be added later
 
 may be testing adc + pwm
 
