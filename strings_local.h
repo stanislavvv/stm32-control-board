@@ -1,4 +1,4 @@
-/** @addtogroup utils
+/** @weakgroup utils
  *  @{
  */
 /**

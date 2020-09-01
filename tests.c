@@ -1,4 +1,4 @@
-/** @addtogroup tests
+/** @weakgroup tests
  *  @{
  */
 /**

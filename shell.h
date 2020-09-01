@@ -1,4 +1,4 @@
-/** @addtogroup shell
+/** @weakgroup shell
  *  @{
  */
 /**
@@ -14,15 +14,11 @@
 
 /**
  * @brief shell processing rtos task
- * @param none - no parameters used
- * @return none
  */
 void task_process_shell(void *args __attribute((unused)));
 
 /**
  * @brief send content of {@link #shell_output_buffer} to uart
- * @param none
- * @return none
  * will send to uart {@link #shell_output_buffer} and clean
  * {@link #shell_input_buffer} and {@link #shell_output_buffer}
  */

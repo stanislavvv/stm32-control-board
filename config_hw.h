@@ -23,18 +23,25 @@
  */
 #define LED_PIN_NUM         13
 
-/* rotary encoder with button */
+/**
+ * rotary encoder with button pins
+ * @{
+ */
 #define ENCODER_BUTTON_PORT GPIOA
 #define ENCODER_BUTTON_PIN  GPIO15
 #define ENCODER_QUAD_PORT   GPIOB
 #define ENCODER_QUAD_PIN1   GPIO3
 #define ENCODER_QUAD_PIN2   GPIO4
+/**
+ * @}
+ */
 
 /**
  * uart port
  */
 #define UART USART1
 #define UART_RCC RCC_USART1
+#define UART_SPEED 921600 // max speed on some usb-uart converters
 
 /**
  * shell will be echo input chars

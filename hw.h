@@ -1,4 +1,4 @@
-/** @addtogroup hardware
+/** @weakgroup hardware
  *  @{
  */
 /**
@@ -12,6 +12,7 @@
 
 #ifndef UNITTEST
 // NORMAL WORK
+
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
@@ -38,7 +39,6 @@
 
 /**
  * @brief receive char from uart
- * @param none
  * @return received char
  */
 #define recv_char() (char)(0xff & usart_recv_blocking(UART))
@@ -51,7 +51,7 @@ static inline char recv_char(void)
 
 /**
  * @brief send char to uart
- * @param char c - char for sending to uart
+ * @param c - char for sending to uart
  * @return none
  */
 static inline void send_char(char c)
@@ -61,7 +61,7 @@ static inline void send_char(char c)
 
 /**
  * @brief send null-terminated string to uart
- * @param char s[] - string for sending to uart
+ * @param s[] - string for sending to uart
  * @return none
  */
 void send_string(const char s[]);
@@ -69,7 +69,6 @@ void send_string(const char s[]);
 
 /**
  * @brief return true if uart has received char in register
- * @param none
  * @return bool char received state
  */
 #define char_is_recv() (USART_SR(UART) & USART_SR_RXNE) != 0
@@ -110,7 +109,6 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
 
 /**
  * @brief return true if uart has received char in register
- * @param none
  * @return bool char received state
  */
 void init_gpio(void);

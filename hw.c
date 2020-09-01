@@ -1,4 +1,4 @@
-/** @addtogroup hardware
+/** @weakgroup hardware
  *  @{
  */
 /**
@@ -23,7 +23,7 @@
 
 /**
  * @brief send null-terminated string to uart
- * @param char s[] - string for sending to uart
+ * @param s[] - string for sending to uart
  * @return none
  */
 void send_string(const char s[])
@@ -90,8 +90,6 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
 
 /**
  * @brief set gpio and other hardware modes
- * @param none
- * @return none
  */
 void init_gpio(void)
 {
@@ -111,7 +109,7 @@ void init_gpio(void)
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
         LED_PIN);
-    /* led is on after pin init - switch off */
+    /* led is on after default 0 on pin reset - switch off */
     LED_off();
 
     /* encoder button on PA15 */
@@ -140,8 +138,7 @@ void init_gpio(void)
         GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
 
     /* setup uart parameters */
-    /* usart_set_baudrate(UART, 115200); */
-    usart_set_baudrate(UART, 921600);
+    usart_set_baudrate(UART, UART_SPEED);
     usart_set_databits(UART, 8);
     usart_set_stopbits(UART, USART_STOPBITS_1);
     usart_set_parity(UART, USART_PARITY_NONE);
@@ -153,11 +150,13 @@ void init_gpio(void)
 
     /* LCD on SPI */
     /* DC pin */
+    gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN);
     gpio_set_mode(ST7789_DC_PORT,
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
         ST7789_DC_PIN);
     /* RST pin */
+    gpio_clear(ST7789_RST_PORT, ST7789_RST_PIN);
     gpio_set_mode(ST7789_RST_PORT,
         GPIO_MODE_OUTPUT_50_MHZ,
         GPIO_CNF_OUTPUT_PUSHPULL,
@@ -167,43 +166,33 @@ void init_gpio(void)
     gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
 
-//  /*
-//   * According the STM32 Datasheet for SPI peripheral we need to PULLDOWN
-//   * or PULLUP the SCK pin according the polarity used.
-//   */
-//  pull = (handle->Init.CLKPolarity == SPI_POLARITY_LOW) ? GPIO_PULLDOWN : GPIO_PULLUP;
-//  pin_PullConfig(get_GPIO_Port(STM_PORT(obj->pin_sclk)), STM_LL_GPIO_PIN(obj->pin_sclk), pull);
-//  pinmap_pinout(obj->pin_ssel, PinMap_SPI_SSEL);
+    //// 3.3V ST7789 display that has no CS pin.   It needs SPI mode#3.
+    // /* Set up SPI in Master mode with:
+    //* Clock baud rate: 1/64 of peripheral clock frequency
+    //* Clock polarity: Idle High
+    //* Clock phase: Data valid on 1nd clock pulse
+    //* Data frame format: 8-bit
+    //* Frame format: MSB First
+    //*/
+    //spi_init_master(ST7789_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_64, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE,
+                  //SPI_CR1_CPHA_CLK_TRANSITION_1, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
 
-    /* Reset SPI, SPI_CR1 register cleared, SPI is disabled */
-    spi_reset(ST7789_SPI);
-// 3.3V ST7789 display that has no CS pin.   It needs SPI mode#3.
-    /* Set up SPI in Master mode with:
-    * Clock baud rate: 1/64 of peripheral clock frequency
-    * Clock polarity: Idle High
-    * Clock phase: Data valid on 1nd clock pulse
-    * Data frame format: 8-bit
-    * Frame format: MSB First
-    */
-    spi_init_master(ST7789_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_64, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE,
-                  SPI_CR1_CPHA_CLK_TRANSITION_1, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+    // /*
+    //* Set NSS management to software.
+    //*
+    //* Note:
+    //* Setting nss high is very important, even if we are controlling the GPIO
+    //* ourselves this bit needs to be at least set to 1, otherwise the spi
+    //* peripheral will not send any data out.
+    //*/
+    //spi_enable_software_slave_management(ST7789_SPI);
+    //spi_set_nss_high(ST7789_SPI);
 
-    /*
-    * Set NSS management to software.
-    *
-    * Note:
-    * Setting nss high is very important, even if we are controlling the GPIO
-    * ourselves this bit needs to be at least set to 1, otherwise the spi
-    * peripheral will not send any data out.
-    */
-    spi_enable_software_slave_management(ST7789_SPI);
-    spi_set_nss_high(ST7789_SPI);
+    // /* bidirectional spi - use only MOSI for data transfer */
+    //spi_set_bidirectional_mode(ST7789_SPI);
 
-    /* bidirectional spi - use only MOSI for data transfer */
-    spi_set_bidirectional_mode(ST7789_SPI);
-
-    /* Enable ST7789_SPI periph. */
-    spi_enable(ST7789_SPI);
+    // /* Enable ST7789_SPI periph. */
+    //spi_enable(ST7789_SPI);
 
     /* init by register access */
     //uint32_t reg32 = SPI_CR1(ST7789_SPI);
@@ -224,6 +213,60 @@ void init_gpio(void)
 
     //SPI_CR1(ST7789_SPI) = reg32;
     //SPI_CR2(ST7789_SPI) &= (uint32_t)(~SPI_CR2_SSOE);     /* allow slave select to be an input */
+
+
+    /*
+     * SPI Registers:
+     * CR1:
+     *
+     * BIDIMODE = 1 (bidirectional MOSI on master)
+     * BIDIOE = 1 (transmit-only)
+     * CRCEN = 0
+     * CRCNEXT = 0
+     *
+     * DFF = 0 (8-bit))
+     * RXONLY = 0
+     * SSM = 1
+     * SSI = 0
+     *
+     * LSBFIRST = 0 (MSB first)
+     * SPE = 1 (SPI enable) ---
+     * BR[2:0] = 101 (fpclk/64)
+     * MSTR = 1 (spi master)
+     * CPOL = 1 (clock polarity 1 when idle)
+     * CPHA = 1 (second clock transition is the first data capture)
+     *
+     * CR2:
+     *
+     * TXEIE = 0 (tx empty buf int disabled)
+     * RXNEIE = 0 (rx non-empty buf int disabled)
+     * ERRIE = 0 (error int disable)
+     * [4:3] - reserved
+     * SSOE = 0 (SS output disabled)
+     * TXDMA = 0 (tx dma disabled)
+     * RXDMA = 0 (rx dma disabled)
+     *
+     * I2SCFGR:
+     *
+     * all zero - i2s off
+     */
+    spi_reset(ST7789_SPI);
+    uint32_t reg_cr1 = 0;
+    uint32_t reg_cr2 = 0;
+    uint32_t reg_i2scfgr = 0;
+    reg_cr1 = (
+            SPI_CR1_BIDIMODE |
+            SPI_CR1_BIDIOE |
+            SPI_CR1_SSM |
+            SPI_CR1_BAUDRATE_FPCLK_DIV_64 |
+            SPI_CR1_MSTR |
+            SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE |
+            SPI_CR1_CPHA_CLK_TRANSITION_1
+          );
+    SPI_I2SCFGR(ST7789_SPI) = reg_i2scfgr;
+    SPI_CR2(ST7789_SPI) = reg_cr2;
+    SPI_CR1(ST7789_SPI) = reg_cr1;
+    spi_enable(ST7789_SPI);
 }
 
 /** @}*/

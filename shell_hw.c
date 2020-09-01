@@ -1,4 +1,4 @@
-/** @addtogroup shell
+/** @weakgroup shell
  *  @{
  */
 /**
@@ -30,8 +30,7 @@ boolean lcd_inited = FALSE;
 
 /**
  * @brief switch on led on PC13
- * @param none - any may be given, none used
- * @return none
+ * @param argv, argc - any may be given, none used
  */
 void shell_led_on(char* argv[], uint16_t argc)
 {
@@ -42,8 +41,7 @@ void shell_led_on(char* argv[], uint16_t argc)
 
 /**
  * @brief switch off led on PC13
- * @param none - any may be given, none used
- * @return none
+ * @param argv, argc - any may be given, none used
  */
 void shell_led_off(char* argv[], uint16_t argc)
 {
@@ -54,8 +52,7 @@ void shell_led_off(char* argv[], uint16_t argc)
 
 /**
  * @brief say to shell buffer state of led on PC13
- * @param none - any may be given, none used
- * @return none
+ * @param argv, argc - any may be given, none used
  */
 void shell_led_state(char* argv[], uint16_t argc)
 {
@@ -73,8 +70,11 @@ void shell_led_state(char* argv[], uint16_t argc)
 
 /**
  * @brief control led on PC13 and say to shell buffer its state
- * @param string (on|1|off|0) - on/off led, may be omitted
- * @return none
+ * @param argv, argc - single parameter string
+ *
+ * parameter will processed with content: (on|off|1|0)
+ * - on or 1 -- led will be on
+ * - off or 0 -- led will be off
  */
 void shell_led(char* argv[], uint16_t argc)
 {
@@ -97,8 +97,7 @@ void shell_led(char* argv[], uint16_t argc)
 
 /**
  * @brief start lcd test
- * @param none - any may be given, none used
- * @return none
+ * @param argv, argc - any may be given, none used
  */
 void shell_lcd_test(char* argv[], uint16_t argc)
 {

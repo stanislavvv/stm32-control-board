@@ -1,4 +1,4 @@
-/** @addtogroup shell
+/** @weakgroup shell
  *  @{
  */
 /**
@@ -13,8 +13,6 @@
 
 /**
  * @brief init shell structures
- * @param none
- * @return none
  */
 void shell_init(void)
 {

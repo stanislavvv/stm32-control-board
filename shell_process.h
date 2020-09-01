@@ -1,4 +1,4 @@
-/** @addtogroup shell
+/** @weakgroup shell
  *  @{
  */
 /**
@@ -53,10 +53,8 @@ extern uint16_t shell_out_lastchar;
 
 /**
  * @brief shell cli processing
- * @param outbuffer  output buffer zero-terminated string
- * @param command_line  command from user input, zero-terminated string
  * see in {@link #shell_input_buffer} and run corresponding commands
- * from {@link #cmds[]}
+ * from {@link #cmds} with parameters
  */
 void shell_process(void);
 
@@ -70,14 +68,11 @@ boolean shell_in_buffer_add(char c);
 /**
  * @brief add string to output buffer
  * @param s[] string which content will be added to {@link #shell_output_buffer}
- * @return none
  */
 void shell_out_buffer_add(char s[]);
 
 /**
  * @brief clean shell output buffer
- * @param none
- * @return none
  *
  * clean {@link #shell_output_buffer} for later use
  */

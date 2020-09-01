@@ -1,4 +1,4 @@
-/** @addtogroup hardware
+/** @weakgroup hardware
  *  @{
  */
 /**
@@ -93,7 +93,7 @@ void ST7789_SetRotation(uint8_t m)
 
 /**
  * @brief Set address of DisplayWindow
- * @param xi&yi -> coordinates of window
+ * @param x0,y0,x1,y1 -> coordinates of window
  * @return none
  */
 static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -126,8 +126,6 @@ static void ST7789_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
 
 /**
  * @brief Initialize ST7789 controller
- * @param none
- * @return none
  */
 void ST7789_Init(void)
 {
@@ -279,8 +277,8 @@ void ST7789_DrawPixel_4px(uint16_t x, uint16_t y, uint16_t color)
 
 /**
  * @brief Draw a line with single color
- * @param x1&y1 -> coordinate of the start point
- * @param x2&y2 -> coordinate of the end point
+ * @param x0,y0 -> coordinate of the start point
+ * @param x1,y1 -> coordinate of the end point
  * @param color -> color of the line to Draw
  * @return none
  */
@@ -352,7 +350,7 @@ void ST7789_DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 
 /**
  * @brief Draw a Rectangle with single color
- * @param xi&yi -> 2 coordinates of 2 top points.
+ * @param x1,y1,x2,y2 -> 2 coordinates of 2 top points.
  * @param color -> color of the Rectangle line
  * @return none
  */
@@ -573,7 +571,7 @@ void ST7789_DrawFilledRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, 
 
 /**
  * @brief Draw a Triangle with single color
- * @param  xi&yi -> 3 coordinates of 3 top points.
+ * @param x1,y1,x2,y2,x3,y3 -> 3 coordinates of 3 top points.
  * @param color ->color of the lines
  * @return  none
  */
@@ -590,7 +588,7 @@ void ST7789_DrawTriangle(uint16_t x1, uint16_t y1, uint16_t x2,
 
 /**
  * @brief Draw a filled Triangle with single color
- * @param  xi&yi -> 3 coordinates of 3 top points.
+ * @param x1,y1,x2,y2,x3,y3 -> 3 coordinates of 3 top points.
  * @param color ->color of the triangle
  * @return  none
  */
@@ -730,8 +728,6 @@ void ST7789_TearEffect(uint8_t tear)
 
 /**
  * @brief A Simple test function for ST7789
- * @param  none
- * @return  none
  */
 void ST7789_Test(void)
 {

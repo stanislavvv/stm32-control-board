@@ -1,4 +1,4 @@
-/** @addtogroup hardware
+/** @weakgroup hardware
  *  @{
  */
 

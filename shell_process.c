@@ -1,4 +1,4 @@
-/** @addtogroup shell
+/** @weakgroup shell
  *  @{
  */
 /**
@@ -97,8 +97,7 @@ void shell_out_buffer_add(char s[])
 
 /**
  * @brief send 'Hello World!!!' string as shell output
- * @param none
- * @return none
+ * @param argv, argc -- any strings or none
  */
 void shell_hello_cmd(char* argv[], uint16_t argc)
 {
@@ -109,8 +108,7 @@ void shell_hello_cmd(char* argv[], uint16_t argc)
 
 /**
  * @brief argumets test command
- * @param any strings or none
- * @return none
+ * @param argv, argc -- any strings or none
  *
  * send arguments count and its contents
  */
@@ -135,8 +133,6 @@ void args_cmd( char* argv[], uint16_t argc )
 
 /**
  * @brief clean shell output buffer
- * @param none
- * @return none
  *
  * clean {@link #shell_output_buffer} for later use
  */
@@ -167,10 +163,8 @@ void shell_get_cmd(char command_s[])
 
 /**
  * @brief shell cli processing
- * @param outbuffer  output buffer zero-terminated string
- * @param command_line  command from user input, zero-terminated string
  * see in {@link #shell_input_buffer} and run corresponding commands
- * from {@link #cmds[]}
+ * from {@link #cmds} with parameters
  */
 void shell_process(void)
 {

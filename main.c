@@ -1,3 +1,6 @@
+/** @weakgroup utils
+ *  @{
+ */
 /**
  * @file main.c
  * @brief main procedure of control board experiments
@@ -19,6 +22,7 @@
 
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
 /**
+ * @addtogroup rtos
  * stuff for freertos - catch stack overflow error and hang
  */
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
@@ -48,4 +52,6 @@ int main(void)
     return 0;
 }
 
-// End
+/**
+ * @}
+ */
