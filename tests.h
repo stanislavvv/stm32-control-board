@@ -14,6 +14,60 @@
 #include <stdio.h>
 #include <string.h>
 #include "shell_process.h"
+#include "strings_local.h"
+
+/** test itoa_s16 */
+void test_itoa_s16(void)
+{
+    uint16_t n = -12345;
+    char a[10];
+    itoa_s16(n, a);
+    assert(!strcmp("-12345", a));
+}
+
+/** test itoa_u16 */
+void test_itoa_u16(void)
+{
+    uint16_t n = 12345;
+    char a[10];
+    itoa_u16(n, a);
+    assert(!strcmp("12345", a));
+}
+
+/** test reverse */
+void test_reverse(void)
+{
+    char a[] = "ABCDEF";
+    reverse(a);
+    assert(!strcmp("FEDCBA", a));
+}
+
+/** test compare_strings */
+void test_compare_strings(void)
+{
+    const char a1[] = "ABCDE";
+    const char a2[] = "ABCDE";
+    const char a3[] = "ABCDEF";
+    assert(compare_strings(a1, a2));
+    assert(!compare_strings(a1, a3));
+}
+
+/** test strncmp_local */
+void test_strncmp_local(void)
+{
+    const char a1[] = "ABCDE";
+    const char a2[] = "ABCDEF";
+    // strncmp_local return TRUE on compare
+    assert(strncmp(a1, a2, 4) == !strncmp_local(a1, a2, 4));
+    assert(!(strncmp(a1, a2, 6) == !strncmp_local(a1, a2, 6)));
+}
+
+/** test strlen_local */
+void test_strlen_local(void)
+{
+    const char a[] = "ABCDE\0";
+    assert(strlen(a) == strlen_local(a));
+}
 
 /** test shell command arguments processing */
 void test_shell_process_args(void)
@@ -91,6 +145,13 @@ typedef struct // test name + test function
  */
 static test_def_t test_list[] =
 {
+//    {"",               test_},
+    {"itoa_s16",              test_itoa_s16},
+    {"itoa_u16",              test_itoa_u16},
+    {"reverse",               test_reverse},
+    {"compare_strings",       test_compare_strings},
+    {"strnsmp_local",         test_strncmp_local},
+    {"strlen_local",          test_strlen_local},
     {"shell_in_buffer_add",   test_shell_in_buffer_add},
     {"shell_out_buffer_add",  test_shell_out_buffer_add},
     {"shell_cleanup_output",  test_shell_cleanup_output},

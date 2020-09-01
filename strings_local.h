@@ -21,7 +21,7 @@
 static inline uint16_t strlen_local(const char *str)
 {
     uint16_t j = 0;
-    while (str[j] != '\0')
+    while (str[j] != 0)
     {
         ++j;
     }
