@@ -16,6 +16,17 @@
 #include "shell_process.h"
 #include "strings_local.h"
 
+/** test itohex_u32 */
+void test_itohex_u32(void)
+{
+    uint32_t n = 508000172;
+    char a[10];
+    char b[10];
+    itohex_u32(n, a);
+    sprintf(b, "%x", n);
+    assert(!strcmp(a, b));
+}
+
 /** test itoa_s16 */
 void test_itoa_s16(void)
 {
@@ -146,6 +157,7 @@ typedef struct // test name + test function
 static test_def_t test_list[] =
 {
 //    {"",               test_},
+    {"itohex_u32",            test_itohex_u32},
     {"itoa_s16",              test_itoa_s16},
     {"itoa_u16",              test_itoa_u16},
     {"reverse",               test_reverse},
