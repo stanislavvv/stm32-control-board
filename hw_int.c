@@ -11,6 +11,11 @@
  */
 
 #include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/timer.h>
+#include <libopencm3/stm32/gpio.h>
+#include "FreeRTOS.h"
+#include "rtos/queue.h"
+#include "bool.h"
 #include "hw.h"
 
 /*void wwdg_isr(void)
@@ -163,11 +168,6 @@ void tim3_isr(void)
         send_string("tim3_isr int\r\n");
         while (1) { };
 }
-void tim4_isr(void)
-{
-        send_string("tim4_isr int\r\n");
-        while (1) { };
-}
 void i2c1_ev_isr(void)
 {
         send_string("i2c1_ev_isr int\r\n");
@@ -248,8 +248,28 @@ void exti15_10_isr(void)
 //void otg_fs_isr(void)
 void hard_fault_handler(void)
 {
-        send_string("hard_fault_handler int\r\n");
-        while (1) { };
+    send_string("--- hard_fault_handler int ---\r\n");
+    while (1) { };
+}
+
+uint8_t tim4_isr_flag = 0;
+uint8_t tim4_data = 0;
+void tim4_isr(void)
+{
+    if (tim4_isr_flag != 0)
+    {
+        if (tim4_data == 0)
+        {
+            LED_off();
+        }
+        else
+        {
+            LED_on();
+        }
+        tim4_isr_flag = 1;
+    }
+    // clear interrupt flag
+    TIM_SR(TIM4) &= ~TIM_SR_UIF;
 }
 
 /** @}*/

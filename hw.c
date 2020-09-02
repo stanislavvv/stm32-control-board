@@ -9,10 +9,12 @@
  *
  */
 
+#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/spi.h>
+#include <libopencm3/stm32/timer.h>
 #include <errno.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -180,6 +182,29 @@ void init_gpio(void)
     send_string("uart initalized\r\n");
 #endif
 
+    rcc_periph_clock_enable(RCC_TIM4);
+    nvic_enable_irq(NVIC_TIM4_IRQ);
+    nvic_set_priority(NVIC_TIM4_IRQ, 1);
+
+    /* Set timer start value. */
+    TIM_CNT(TIM4) = 1;
+
+    /* Set timer prescaler. 72MHz/1440 => 50000 counts per second. */
+    TIM_PSC(TIM4) = 1440;
+
+    /* End timer value. If this is reached an interrupt is generated. */
+    TIM_ARR(TIM4) = 10000;
+
+    /* Update interrupt enable. */
+    TIM_DIER(TIM4) |= TIM_DIER_UIE;
+
+    /* Start timer. */
+    TIM_CR1(TIM4) |= TIM_CR1_CEN;
+
+#if BOOT_VERBOSE==1
+    send_string("timer blink enabled\r\n");
+#endif
+
     /* LCD on SPI */
     /* DC pin */
     gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN);
@@ -202,6 +227,7 @@ void init_gpio(void)
     send_string("spi gpio initalized\r\n");
 #endif
 
+#if 0 // suspend hw spi progress -- try softspi
 
     /*
      * SPI Registers:
@@ -269,6 +295,8 @@ void init_gpio(void)
     send_named_bin("CR1 actual", SPI_CR1(ST7789_SPI), 4);
     send_string("hw init end\r\n");
 #endif
+#endif // 0
+
 }
 
 /** @}*/

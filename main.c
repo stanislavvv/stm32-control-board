@@ -19,7 +19,6 @@
 
 #include "shell.h"
 
-
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
 /**
  * @addtogroup rtos
