@@ -75,6 +75,7 @@ static shell_cmd_def_t cmds[] =
     {"led_state", shell_led_state},
     {"led",       shell_led},
     {"lcdtest",   shell_lcd_test},
+    {"spi",       shell_spi_command},
 #endif
     {NULL, NULL}
 };

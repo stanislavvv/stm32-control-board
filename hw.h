@@ -66,6 +66,13 @@ static inline void send_char(char c)
  */
 void send_string(const char s[]);
 
+/**
+ * @brief send named number in human-readable binary
+ * @param name - name (max char[10])
+ * @param data - sending number up to uint32_t
+ * @param nibbles - size of data in nibbles, 1..8
+ */
+void send_named_bin(char name[], uint32_t data, uint8_t nibbles);
 
 /**
  * @brief return true if uart has received char in register

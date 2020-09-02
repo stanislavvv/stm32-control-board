@@ -16,6 +16,28 @@
 #include "shell_process.h"
 #include "strings_local.h"
 
+/** test i2bin */
+void test_i2bin(void)
+{
+    uint32_t n = 0x13d800ac;
+    char a[40];
+    char b[] = "0001 0011 1101 1000 0000 0000 1010 1100";
+    i2bin(n, a, 8);
+    assert(!strcmp(a, b));
+
+}
+
+/** test i2bin */
+void test_itobin_u32(void)
+{
+    uint32_t n = 0x13d800ac;
+    char a[40];
+    char b[] = "10011110110000000000010101100";
+    itobin_u32(n, a);
+    assert(!strcmp(a, b));
+
+}
+
 /** test itohex_u32 */
 void test_itohex_u32(void)
 {
@@ -149,7 +171,21 @@ typedef struct // test name + test function
 {
     const char* test_str; /** name of test, usually testing function name */
     test_handler_t test_proc; /** test procedure */
+    const uint16_t test_group_id;
 } test_def_t;
+
+typedef struct // group id + group name
+{
+    uint16_t group_id;
+    const char* group_name;
+} test_groups_t;
+
+static test_groups_t group_list[] =
+{
+    {1, "string_local.h"},
+    {2, "shell functions"},
+    {0, NULL}
+};
 
 /**
  * list of running tests
@@ -157,20 +193,22 @@ typedef struct // test name + test function
 static test_def_t test_list[] =
 {
 //    {"",               test_},
-    {"itohex_u32",            test_itohex_u32},
-    {"itoa_s16",              test_itoa_s16},
-    {"itoa_u16",              test_itoa_u16},
-    {"reverse",               test_reverse},
-    {"compare_strings",       test_compare_strings},
-    {"strnsmp_local",         test_strncmp_local},
-    {"strlen_local",          test_strlen_local},
-    {"shell_in_buffer_add",   test_shell_in_buffer_add},
-    {"shell_out_buffer_add",  test_shell_out_buffer_add},
-    {"shell_cleanup_output",  test_shell_cleanup_output},
-    {"shell_process_hello",   test_shell_process_hello},
-    {"shell_process_args",    test_shell_process_args},
-    {"shell_process_unknown", test_shell_process_unknown},
-    {NULL, NULL}
+    {"i2bin",                 test_i2bin, 1},
+    {"itobin_u32",            test_itobin_u32, 1},
+    {"itohex_u32",            test_itohex_u32, 1},
+    {"itoa_s16",              test_itoa_s16, 1},
+    {"itoa_u16",              test_itoa_u16, 1},
+    {"reverse",               test_reverse, 1},
+    {"compare_strings",       test_compare_strings, 1},
+    {"strnsmp_local",         test_strncmp_local, 1},
+    {"strlen_local",          test_strlen_local, 1},
+    {"shell_in_buffer_add",   test_shell_in_buffer_add, 2},
+    {"shell_out_buffer_add",  test_shell_out_buffer_add, 2},
+    {"shell_cleanup_output",  test_shell_cleanup_output, 2},
+    {"shell_process_hello",   test_shell_process_hello, 2},
+    {"shell_process_args",    test_shell_process_args, 2},
+    {"shell_process_unknown", test_shell_process_unknown, 2},
+    {NULL, NULL, 0}
 };
 
 /** @}*/

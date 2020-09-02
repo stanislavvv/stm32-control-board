@@ -21,6 +21,9 @@
 
 #include "st7789.h"
 
+// spi debug command
+#include <libopencm3/stm32/spi.h>
+
 /**
  * lcd initialization flag
  */
@@ -113,6 +116,38 @@ void shell_lcd_test(char* argv[], uint16_t argc)
     ST7789_Test();
     send_string("lcd end\r\n");
 }
+
+/**
+ * @brief show spi registers and may test spi transfer
+ * @param argv, argc 'test' will be test spi transfer
+ */
+void shell_spi_command(char* argv[], uint16_t argc)
+{
+    send_string("spi regs:\r\n");
+    uint32_t cr1 = SPI_CR1(ST7789_SPI);
+    uint32_t cr2 = SPI_CR2(ST7789_SPI);
+    uint32_t sr = SPI_SR(ST7789_SPI);
+    uint32_t dr = SPI_DR(ST7789_SPI);
+    uint32_t i2scfgr = SPI_I2SCFGR(ST7789_SPI);
+    send_named_bin("CR1", cr1, 4);
+    send_named_bin("CR2", cr2, 4);
+    send_named_bin(" SR", sr, 4);
+    send_named_bin(" DR", dr, 4);
+    send_named_bin("i2s", i2scfgr, 4);
+    /* ToDo - send test sequence on parameter 'test'
+    if (argc > 0)
+    {
+        if (compare_strings(argv[0], "test")) {
+            send_string("sending test sequence... ");
+            for (uint16_t i = 0; )
+            {
+            }
+        }
+        send_string("end\r\n");
+    }
+    */
+}
+
 #endif
 
 /** @}*/

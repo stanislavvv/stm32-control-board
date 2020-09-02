@@ -199,12 +199,11 @@ void spi2_isr(void)
         send_string("spi2_isr int\r\n");
         while (1) { };
 }
-/*void usart1_isr(void)
+void usart1_isr(void)
 {
         send_string("usart1_isr int\r\n");
         while (1) { };
-}*/
-/*
+}
 void usart2_isr(void)
 {
         send_string("usart2_isr int\r\n");

@@ -51,6 +51,13 @@ void shell_led(char* argv[], uint16_t argc);
  * @param argv, argc - any may be given, none used
  */
 void shell_lcd_test(char* argv[], uint16_t argc);
+
+/**
+ * @brief show spi registers and may test spi transfer
+ * @param argv, argc 'test' will be test spi transfer
+ */
+void shell_spi_command(char* argv[], uint16_t argc);
+
 #endif
 
 #endif

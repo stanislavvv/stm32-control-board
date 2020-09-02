@@ -37,6 +37,33 @@ void send_string(const char s[])
 }
 
 /**
+ * @brief send named number in human-readable binary
+ * @param name - name (max char[10])
+ * @param data - sending number up to uint32_t
+ * @param nibbles - size of data in nibbles, 1..8
+ */
+void send_named_bin(char name[], uint32_t data, uint8_t nibbles)
+{
+    char sendbuffer[50];
+    uint8_t c = 0;
+    uint8_t n = (uint8_t)strlen_local(name);
+    if (n > 10) { n = 10; };
+    for (uint8_t i = 0; i < n; i++)
+    {
+        sendbuffer[c] = name[i];
+        c++;
+    }
+    sendbuffer[c] = ':'; c++;
+    sendbuffer[c] = ' '; c++;
+    i2bin(data, &sendbuffer[c], nibbles);
+    c = (uint8_t)strlen_local(sendbuffer);
+    sendbuffer[c] = '\r'; c++;
+    sendbuffer[c] = '\n'; c++;
+    sendbuffer[c] = 0; c++;
+    send_string(sendbuffer);
+}
+
+/**
  * @brief send buffer to spi with timeout
  * @param spi  spi port, ex. SPI1 in libopencm3
  * @param buffer  buffer of bytes for sending
@@ -100,6 +127,7 @@ void init_gpio(void)
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
+    rcc_periph_clock_enable(RCC_AFIO);
     rcc_periph_clock_enable(UART_RCC);
     rcc_periph_clock_enable(ST7789_RCC);
 
@@ -148,6 +176,10 @@ void init_gpio(void)
     /* enable uart */
     usart_enable(UART);
 
+#if BOOT_VERBOSE==1
+    send_string("uart initalized\r\n");
+#endif
+
     /* LCD on SPI */
     /* DC pin */
     gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN);
@@ -166,33 +198,10 @@ void init_gpio(void)
     gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
 
-    //// 3.3V ST7789 display that has no CS pin.   It needs SPI mode#3.
-    // /* Set up SPI in Master mode with:
-    //* Clock baud rate: 1/64 of peripheral clock frequency
-    //* Clock polarity: Idle High
-    //* Clock phase: Data valid on 1nd clock pulse
-    //* Data frame format: 8-bit
-    //* Frame format: MSB First
-    //*/
-    //spi_init_master(ST7789_SPI, SPI_CR1_BAUDRATE_FPCLK_DIV_64, SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE,
-                  //SPI_CR1_CPHA_CLK_TRANSITION_1, SPI_CR1_DFF_8BIT, SPI_CR1_MSBFIRST);
+#if BOOT_VERBOSE==1
+    send_string("spi gpio initalized\r\n");
+#endif
 
-    // /*
-    //* Set NSS management to software.
-    //*
-    //* Note:
-    //* Setting nss high is very important, even if we are controlling the GPIO
-    //* ourselves this bit needs to be at least set to 1, otherwise the spi
-    //* peripheral will not send any data out.
-    //*/
-    //spi_enable_software_slave_management(ST7789_SPI);
-    //spi_set_nss_high(ST7789_SPI);
-
-    // /* bidirectional spi - use only MOSI for data transfer */
-    //spi_set_bidirectional_mode(ST7789_SPI);
-
-    // /* Enable ST7789_SPI periph. */
-    //spi_enable(ST7789_SPI);
 
     /*
      * SPI Registers:
@@ -206,10 +215,10 @@ void init_gpio(void)
      * DFF = 0 (8-bit))
      * RXONLY = 0
      * SSM = 1
-     * SSI = 0
+     * SSI = 1 (as SSM)
      *
      * LSBFIRST = 0 (MSB first)
-     * SPE = 1 (SPI enable) ---
+     * SPE = 0 (SPI enable) -- switch to 1 at the end of init
      * BR[2:0] = 101 (fpclk/64)
      * MSTR = 1 (spi master)
      * CPOL = 1 (clock polarity 1 when idle)
@@ -230,22 +239,36 @@ void init_gpio(void)
      * all zero - i2s off
      */
     spi_reset(ST7789_SPI);
-    uint32_t reg_cr1 = 0;
+    uint32_t reg_cr1;
     uint32_t reg_cr2 = 0;
     uint32_t reg_i2scfgr = 0;
     reg_cr1 = (
             SPI_CR1_BIDIMODE |
             SPI_CR1_BIDIOE |
             SPI_CR1_SSM |
+            SPI_CR1_SSI |
             SPI_CR1_BAUDRATE_FPCLK_DIV_64 |
             SPI_CR1_MSTR |
             SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE |
-            SPI_CR1_CPHA_CLK_TRANSITION_1
+            SPI_CR1_CPHA_CLK_TRANSITION_2
           );
     SPI_I2SCFGR(ST7789_SPI) = reg_i2scfgr;
     SPI_CR2(ST7789_SPI) = reg_cr2;
     SPI_CR1(ST7789_SPI) = reg_cr1;
+
+#if BOOT_VERBOSE==1
+    send_string("spi initalization:\r\n");
+    send_named_bin("CR1 config", reg_cr1, 4);
+    send_named_bin("CR1 actial", SPI_CR1(ST7789_SPI), 4);
+#endif
+
     spi_enable(ST7789_SPI);
+
+#if BOOT_VERBOSE==1
+    send_string("spi enable:\r\n");
+    send_named_bin("CR1 actual", SPI_CR1(ST7789_SPI), 4);
+    send_string("hw init end\r\n");
+#endif
 }
 
 /** @}*/

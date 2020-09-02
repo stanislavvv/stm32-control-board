@@ -134,7 +134,7 @@ static inline void itoa_s16(int16_t n, char s[])
 }
 
 /**
- * @brief convert uint16_t n to hex string in s
+ * @brief convert uint32_t n to hex string in s
  * @param n number to convert
  * @param s[] result will be here
  * @return none
@@ -152,5 +152,53 @@ static inline void itohex_u32(uint32_t n, char s[])
     reverse(s);
 }
 
+/**
+ * @brief convert uint32_t n to bin string in s
+ * @param n number to convert
+ * @param s[] result will be here
+ * @return none
+ *
+ * ineffective, but it works
+ */
+static inline void itobin_u32(uint32_t n, char s[])
+{
+    uint32_t i = 0;
+    char ch[] = "01";
+    do
+    {
+        /* generate digits in reverse order */
+        s[i++] = ch[n % 2];  /* get next digit */
+    } while ((n /= 2) > 0);  /* delete it */
+    s[i] = '\0';
+    reverse(s);
+}
+
+/**
+ * @brief up to uint32_t to binary with spaces between nibbles
+ * @param n - number to convert
+ * @param s - destination string
+ * @param nibbles - nibbles to convert
+ */
+static inline void i2bin(uint32_t n, char s[], uint8_t nibbles)
+{
+    uint8_t i, j, c, bit, nb;
+    c = 0;
+    for (i = 0; i < nibbles; i++)
+    {
+        nb = (uint8_t)(n & 0x0f); // get least nibble
+        n = n >> 4;
+        for (j = 0; j < 4; j++)
+        {
+            bit = nb & 1;
+            nb = nb >> 1;
+            s[c] = (char)('0' + bit);
+            c++;
+        }
+        s[c] = ' ';
+        c++;
+    }
+    s[c-1] = 0;
+    reverse(s);
+}
 
 /** @}*/

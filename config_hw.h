@@ -49,6 +49,11 @@
 #define SHELL_ECHO 1
 
 /**
+ * initalization messages to uart
+ */
+#define BOOT_VERBOSE 1
+
+/**
  * display ports definition
  * RST        - PA2
  * DC         - PA3
@@ -59,11 +64,23 @@
 #define ST7789_RST_PIN  GPIO2
 #define ST7789_DC_PORT  GPIOA
 #define ST7789_DC_PIN   GPIO3
-/* CS/SS not used in my display - stay undef */
-//#define ST7789_CS_PORT
-//#define ST7789_CS_PIN
+
+// SPI1
+/*
 #define ST7789_RCC      RCC_SPI1
 #define ST7789_SPI      SPI1
 #define ST7789_SPI_PORT GPIOA
 #define ST7789_SCK      GPIO5
 #define ST7789_SDA      GPIO7
+*/
+
+// SPI2
+#define ST7789_RCC      RCC_SPI2
+#define ST7789_SPI      SPI2
+#define ST7789_SPI_PORT GPIOB
+#define ST7789_SCK      GPIO13
+#define ST7789_SDA      GPIO14
+
+/* CS/SS not used in my display - stay undef */
+//#define ST7789_CS_PORT
+//#define ST7789_CS_PIN
