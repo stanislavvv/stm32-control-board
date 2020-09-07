@@ -21,9 +21,8 @@
 
 #include "st7789.h"
 
-// spi debug command
+// for spi debug command
 #include <libopencm3/stm32/spi.h>
-#include "spi.h"
 
 /**
  * lcd initialization flag
@@ -105,14 +104,16 @@ void shell_led(char* argv[], uint16_t argc)
  */
 void shell_lcd_test(char* argv[], uint16_t argc)
 {
-    if (!lcd_inited)
-    {
-        ST7789_Init();
-        lcd_inited = TRUE;
-        send_string("lcd inited...\r\n");
-    }
     (void)(argv);
     (void)(argc);
+    send_string("lcdtest begin\r\n");
+    if (!lcd_inited)
+    {
+        send_string("lcd init... ");
+        ST7789_Init();
+        lcd_inited = TRUE;
+        send_string("done\r\n");
+    }
     send_string("lcd testing...\r\n");
     ST7789_Test();
     send_string("lcd end\r\n");
@@ -140,34 +141,34 @@ void shell_spi_command(char* argv[], uint16_t argc)
         if (compare_strings(argv[0], "test"))
         {
             send_string("sending test sequence 0... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0);
+                spi_send(ST7789_SPI, 0);
             }
             send_string("0xff... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0xff);
+                spi_send(ST7789_SPI, 0xff);
             }
             send_string("0x55... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0x55);
+                spi_send(ST7789_SPI, 0x55);
             }
             send_string("0xAA... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0xAA);
+                spi_send(ST7789_SPI, 0xAA);
             }
             send_string("0x0F... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0x0F);
+                spi_send(ST7789_SPI, 0x0F);
             }
             send_string("0xF0... ");
-            for (uint16_t i = 0; i<=10000; i++)
+            for (uint16_t i = 0; i<=65534; i++)
             {
-                softspi_send(&spimain, 0xF0);
+                spi_send(ST7789_SPI, 0xF0);
             }
         }
     }

@@ -46,7 +46,6 @@ void shell_get_cmd(char command_s[]);
 void shell_get_args(uint16_t cmdlen);
 void shell_hello_cmd(char* argv[], uint16_t argc);
 void args_cmd(char* argv[], uint16_t argc);
-void shell_cmds(char* argv[], uint16_t argc);
 
 /**
  * shell command handler type
@@ -73,12 +72,12 @@ static shell_cmd_def_t cmds[] =
 #ifndef UNITTEST
 // not include hardware functions in unit test
 
-/* switch off because conflicting with softspi
+/* functionality covered by 'led' command
     {"led_on",    shell_led_on},
     {"led_off",   shell_led_off},
     {"led_state", shell_led_state},
-    {"led",       shell_led},
 */
+    {"led",       shell_led},
     {"lcdtest",   shell_lcd_test},
     {"spi",       shell_spi_command},
 #endif

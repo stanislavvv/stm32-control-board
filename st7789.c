@@ -13,7 +13,6 @@
 #include "st7789.h"
 #include "config_hw.h"
 #include "hw.h"
-#include "spi.h"
 
 /**
  * @brief Write command to ST7789 controller
@@ -24,8 +23,7 @@ static void ST7789_WriteCommand(uint8_t cmd)
 {
     ST7789_Select();
     ST7789_DC_Clr();
-    //spi_send(ST7789_SPI_PORT, cmd);
-    softspi_send(&spimain, cmd);
+    spi_send(ST7789_SPI_PORT, cmd);
     ST7789_UnSelect();
 }
 
@@ -61,8 +59,7 @@ static void ST7789_WriteSmallData(uint8_t data)
 {
     ST7789_Select();
     ST7789_DC_Set();
-    //spi_send(ST7789_SPI_PORT, data);
-    softspi_send(&spimain, data);
+    spi_send(ST7789_SPI_PORT, data);
     ST7789_UnSelect();
 }
 
@@ -736,7 +733,7 @@ void ST7789_Test(void)
 //    for (uint8_t i = 0; i <= 10; i++)
 //    {
     ST7789_Fill_Color(WHITE);
-    send_string("filled white\r\n");
+    send_string("speed test\r\n");
     delay_ms(1000);
     ST7789_WriteString(10, 20, "Speed Test", Font_11x18, RED, WHITE);
     delay_ms(1000);
@@ -754,12 +751,14 @@ void ST7789_Test(void)
     ST7789_Fill_Color(WHITE);
     delay_ms(500);
 
+    send_string("font test\r\n");
     ST7789_WriteString(10, 10, "Font test.", Font_16x26, GBLUE, WHITE);
     ST7789_WriteString(10, 50, "Hello Steve!", Font_7x10, RED, WHITE);
     ST7789_WriteString(10, 75, "Hello Steve!", Font_11x18, YELLOW, WHITE);
     ST7789_WriteString(10, 100, "Hello Steve!", Font_16x26, MAGENTA, WHITE);
     delay_ms(1000);
 
+    send_string("geometry... ");
     ST7789_Fill_Color(RED);
     ST7789_WriteString(10, 10, "Rect./Line.", Font_11x18, YELLOW, RED);
     ST7789_DrawRectangle(30, 30, 100, 100, WHITE);
@@ -790,6 +789,7 @@ void ST7789_Test(void)
     ST7789_WriteString(10, 10, "Filled Tri", Font_11x18, YELLOW, RED);
     ST7789_DrawFilledTriangle(30, 30, 30, 70, 60, 40, WHITE);
     delay_ms(1000);
+    send_string("end\r\n");
 
     //      If FLASH cannot storage anymore datas, please delete codes below.
     ST7789_Fill_Color(WHITE);

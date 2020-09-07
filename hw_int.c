@@ -17,7 +17,6 @@
 #include "rtos/queue.h"
 #include "bool.h"
 #include "hw.h"
-#include "spi.h"
 
 /*void wwdg_isr(void)
 {
@@ -253,6 +252,8 @@ void hard_fault_handler(void)
     while (1) { };
 }
 
+/*
+#include "spi.h"
 uint8_t tim4_isr_flag = 0;
 uint8_t tim4_data = 0;
 void tim4_isr(void)
@@ -265,5 +266,6 @@ void tim4_isr(void)
     // clear interrupt flag
     TIM_SR(TIM4) &= ~TIM_SR_UIF;
 }
+*/
 
 /** @}*/

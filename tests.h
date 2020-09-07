@@ -31,7 +31,7 @@ void test_reverse_bits(void)
 void test_shell_cmds(void)
 {
     shell_cleanup_output();
-    shell_cmds();
+    shell_cmds("", 0);
     char a[] = "\r\n-- commands --\r\nhello\r\n";
     assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
 }

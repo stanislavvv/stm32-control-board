@@ -13,29 +13,13 @@
 #define ST7789_H_
 
 #include "fonts.h"
-//#include "main.h"
 #include "config_hw.h"
-
-/* choose a Hardware SPI port to use. */
-/* HAL not used - does not define any data for it */
-//#define ST7789_SPI_PORT hspi1
-//extern SPI_HandleTypeDef ST7789_SPI_PORT;
 
 /**
  * if you predefined pin names in CubeMX,
  * you could find them in main.h
  * and use them below
  */
-
-/* Define the pins tp connect */
-/* defined in config_hw.h
-#define ST7789_RST_PORT ST7789_RST_GPIO_Port
-#define ST7789_RST_PIN ST7789_RST_Pin
-#define ST7789_DC_PORT ST7789_DC_GPIO_Port
-#define ST7789_DC_PIN ST7789_DC_Pin
-#define ST7789_CS_PORT ST7789_CS_GPIO_Port
-#define ST7789_CS_PIN ST7789_CS_Pin
-*/
 
 /* may be defined in config_hw.h */
 /* **** Use if need backlight control *****

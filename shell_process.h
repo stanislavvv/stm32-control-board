@@ -78,6 +78,11 @@ void shell_out_buffer_add(const char s[]);
  */
 void shell_cleanup_output(void);
 
+/**
+ * @brief send list of available commands
+ * @param argv, argc -- any strings or none
+ */
+void shell_cmds(char* argv[], uint16_t argc);
 #endif
 
 /** @}*/

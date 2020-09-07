@@ -22,7 +22,6 @@
 #include "task.h"
 #include "strings_local.h"
 #include "hw.h"
-#include "spi.h"
 
 /**
  * @brief send null-terminated string to uart
@@ -89,34 +88,29 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
     }
 
     /* transmit to spi now */
-//    spi_set_bidirectional_transmit_only_mode(spi);
+    spi_set_bidirectional_transmit_only_mode(spi);
 
     while (initial_count > 0)
     {
-        //if (SPI_SR(spi) & SPI_SR_TXE)
-        //{
-            //SPI_DR(spi) = (*buffer);
-            //buffer += sizeof(uint8_t);
-            //initial_count--;
-        //}
-        //else
-        //{
-            // /* timeout management */
-            //if (
-                 //((xTaskGetTickCount() - tickstart) >= timeout) &&
-                 //(timeout != portMAX_DELAY) &&
-                 //(timeout != (TickType_t)0)
-               //)
-            //{
-////    send_string("spi_send_buffer_2wire_8bit end ETIME");
-                //return ETIME;
-            //}
-        //}
-        softspi_send(&spimain, *buffer);
-        buffer += sizeof(uint8_t);
-        initial_count--;
+        if (SPI_SR(spi) & SPI_SR_TXE)
+        {
+            SPI_DR(spi) = (*buffer);
+            buffer += sizeof(uint8_t);
+            initial_count--;
+        }
+        else
+        {
+             /* timeout management */
+            if (
+                 ((xTaskGetTickCount() - tickstart) >= timeout) &&
+                 (timeout != portMAX_DELAY) &&
+                 (timeout != (TickType_t)0)
+               )
+            {
+                return ETIME;
+            }
+        }
     }
-//    send_string("spi_send_buffer_2wire_8bit end success");
     return 0;
 }
 
@@ -186,73 +180,14 @@ void init_gpio(void)
     send_string("uart initalized\r\n");
 #endif
 
-    // debug indicator pin
-//    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO11);
-
-    softspi_init(&spimain,
-                 FALSE, // 8bit
-                 TRUE,  // tx mode
-                 FALSE, // 8 bit
-                 1,     // 1 in idle clock
-                 1,     // capture data on falling edge
-                 ST7789_SPI_PORT, // sck
-                 ST7789_SCK,
-                 ST7789_SPI_PORT, // mosi
-                 ST7789_SDA,
-                 0, 255, // no miso
-                 0, 255  //no ss
-                 );
-
-#if BOOT_VERBOSE==1
-    send_string("softspi initalized\r\n");
-#endif
-
-    rcc_periph_clock_enable(RCC_TIM4);
-    nvic_enable_irq(NVIC_TIM4_IRQ);
-    nvic_set_priority(NVIC_TIM4_IRQ, 1);
-
-    /* Set timer start value. */
-    TIM_CNT(TIM4) = 1;
-
-    /* Set timer prescaler. 72MHz/720 => 100000 counts per second. */
-    TIM_PSC(TIM4) = 720;
-
-    /* End timer value. If this is reached an interrupt is generated. */
-    TIM_ARR(TIM4) = 20;
-
-    /* Update interrupt enable. */
-    TIM_DIER(TIM4) |= TIM_DIER_UIE;
-
-    /* Start timer. */
-    TIM_CR1(TIM4) |= TIM_CR1_CEN;
-
-#if BOOT_VERBOSE==1
-    send_string("timer for softspi enabled\r\n");
-#endif
-
-     /* LCD on SPI */
-     /* DC pin */
-    gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN);
-    gpio_set_mode(ST7789_DC_PORT,
-        GPIO_MODE_OUTPUT_50_MHZ,
-        GPIO_CNF_OUTPUT_PUSHPULL,
-        ST7789_DC_PIN);
-     /* RST pin */
-    gpio_clear(ST7789_RST_PORT, ST7789_RST_PIN);
-    gpio_set_mode(ST7789_RST_PORT,
-        GPIO_MODE_OUTPUT_50_MHZ,
-        GPIO_CNF_OUTPUT_PUSHPULL,
-        ST7789_RST_PIN);
-
-    // /* SCK, MOSI(SDA) */
-    //gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
-            //GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
+    /* SCK, MOSI(SDA) */
+    gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
 
 #if BOOT_VERBOSE==1
     send_string("spi gpio initalized\r\n");
 #endif
 
-#if 0 // suspend hw spi progress -- try softspi
 
     /*
      * SPI Registers:
@@ -289,7 +224,7 @@ void init_gpio(void)
      *
      * all zero - i2s off
      */
-//    spi_reset(ST7789_SPI);
+    spi_reset(ST7789_SPI);
     uint32_t reg_cr1;
     uint32_t reg_cr2 = 0;
     uint32_t reg_i2scfgr = 0;
@@ -298,14 +233,14 @@ void init_gpio(void)
             SPI_CR1_BIDIOE |
             SPI_CR1_SSM |
             SPI_CR1_SSI |
-            SPI_CR1_BAUDRATE_FPCLK_DIV_64 |
+            SPI_CR1_BAUDRATE_FPCLK_DIV_256 |
             SPI_CR1_MSTR |
             SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE |
             SPI_CR1_CPHA_CLK_TRANSITION_2
           );
-//    SPI_I2SCFGR(ST7789_SPI) = reg_i2scfgr;
-//    SPI_CR2(ST7789_SPI) = reg_cr2;
-//    SPI_CR1(ST7789_SPI) = reg_cr1;
+    SPI_I2SCFGR(ST7789_SPI) = reg_i2scfgr;
+    SPI_CR2(ST7789_SPI) = reg_cr2;
+    SPI_CR1(ST7789_SPI) = reg_cr1;
 
 #if BOOT_VERBOSE==1
     send_string("spi initalization:\r\n");
@@ -313,14 +248,14 @@ void init_gpio(void)
     send_named_bin("CR1 actial", SPI_CR1(ST7789_SPI), 4);
 #endif
 
-//    spi_enable(ST7789_SPI);
+    spi_enable(ST7789_SPI);
 
 #if BOOT_VERBOSE==1
     send_string("spi enable:\r\n");
     send_named_bin("CR1 actual", SPI_CR1(ST7789_SPI), 4);
     send_string("hw init end\r\n");
 #endif
-#endif // 0
+//#endif // 0
 
 }
 
