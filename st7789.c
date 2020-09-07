@@ -13,7 +13,7 @@
 #include "st7789.h"
 #include "config_hw.h"
 #include "hw.h"
-
+#include "spi.h"
 
 /**
  * @brief Write command to ST7789 controller
@@ -24,7 +24,8 @@ static void ST7789_WriteCommand(uint8_t cmd)
 {
     ST7789_Select();
     ST7789_DC_Clr();
-    spi_send(ST7789_SPI_PORT, cmd);
+    //spi_send(ST7789_SPI_PORT, cmd);
+    softspi_send(&spimain, cmd);
     ST7789_UnSelect();
 }
 
@@ -60,7 +61,8 @@ static void ST7789_WriteSmallData(uint8_t data)
 {
     ST7789_Select();
     ST7789_DC_Set();
-    spi_send(ST7789_SPI_PORT, data);
+    //spi_send(ST7789_SPI_PORT, data);
+    softspi_send(&spimain, data);
     ST7789_UnSelect();
 }
 

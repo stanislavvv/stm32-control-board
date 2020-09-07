@@ -69,7 +69,7 @@ boolean shell_in_buffer_add(char c);
  * @brief add string to output buffer
  * @param s[] string which content will be added to {@link #shell_output_buffer}
  */
-void shell_out_buffer_add(char s[]);
+void shell_out_buffer_add(const char s[]);
 
 /**
  * @brief clean shell output buffer

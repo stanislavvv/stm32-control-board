@@ -23,6 +23,7 @@
 
 // spi debug command
 #include <libopencm3/stm32/spi.h>
+#include "spi.h"
 
 /**
  * lcd initialization flag
@@ -134,18 +135,43 @@ void shell_spi_command(char* argv[], uint16_t argc)
     send_named_bin(" SR", sr, 4);
     send_named_bin(" DR", dr, 4);
     send_named_bin("i2s", i2scfgr, 4);
-    /* ToDo - send test sequence on parameter 'test'
     if (argc > 0)
     {
-        if (compare_strings(argv[0], "test")) {
-            send_string("sending test sequence... ");
-            for (uint16_t i = 0; )
+        if (compare_strings(argv[0], "test"))
+        {
+            send_string("sending test sequence 0... ");
+            for (uint16_t i = 0; i<=10000; i++)
             {
+                softspi_send(&spimain, 0);
+            }
+            send_string("0xff... ");
+            for (uint16_t i = 0; i<=10000; i++)
+            {
+                softspi_send(&spimain, 0xff);
+            }
+            send_string("0x55... ");
+            for (uint16_t i = 0; i<=10000; i++)
+            {
+                softspi_send(&spimain, 0x55);
+            }
+            send_string("0xAA... ");
+            for (uint16_t i = 0; i<=10000; i++)
+            {
+                softspi_send(&spimain, 0xAA);
+            }
+            send_string("0x0F... ");
+            for (uint16_t i = 0; i<=10000; i++)
+            {
+                softspi_send(&spimain, 0x0F);
+            }
+            send_string("0xF0... ");
+            for (uint16_t i = 0; i<=10000; i++)
+            {
+                softspi_send(&spimain, 0xF0);
             }
         }
-        send_string("end\r\n");
     }
-    */
+    send_string("end\r\n");
 }
 
 #endif

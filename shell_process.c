@@ -45,7 +45,8 @@ uint16_t shell_out_lastchar = 0;
 void shell_get_cmd(char command_s[]);
 void shell_get_args(uint16_t cmdlen);
 void shell_hello_cmd(char* argv[], uint16_t argc);
-void args_cmd( char* argv[], uint16_t argc );
+void args_cmd(char* argv[], uint16_t argc);
+void shell_cmds(char* argv[], uint16_t argc);
 
 /**
  * shell command handler type
@@ -67,13 +68,17 @@ typedef struct // command + function
 static shell_cmd_def_t cmds[] =
 {
     {"hello",     shell_hello_cmd},
+    {"ls",        shell_cmds},
     {"args",      args_cmd},
 #ifndef UNITTEST
 // not include hardware functions in unit test
+
+/* switch off because conflicting with softspi
     {"led_on",    shell_led_on},
     {"led_off",   shell_led_off},
     {"led_state", shell_led_state},
     {"led",       shell_led},
+*/
     {"lcdtest",   shell_lcd_test},
     {"spi",       shell_spi_command},
 #endif
@@ -85,7 +90,7 @@ static shell_cmd_def_t cmds[] =
  * @param s[] string which content will be added to {@link #shell_output_buffer}
  * @return none
  */
-void shell_out_buffer_add(char s[])
+void shell_out_buffer_add(const char s[])
 {
     uint16_t i = 0;
     while (shell_out_lastchar < SHELL_MAX_OUT_LENGTH && s[i] != 0)
@@ -105,6 +110,24 @@ void shell_hello_cmd(char* argv[], uint16_t argc)
     (void)(argv);
     (void)(argc);
     shell_out_buffer_add("Hello world!!!\r\n");
+}
+
+/**
+ * @brief send list of available commands
+ * @param argv, argc -- any strings or none
+ */
+void shell_cmds(char* argv[], uint16_t argc)
+{
+    (void)(argv);
+    (void)(argc);
+    uint16_t i = 0;
+    shell_out_buffer_add("\r\n-- commands --\r\n");
+    while (cmds[i].cmd != NULL)
+    {
+        shell_out_buffer_add(cmds[i].cmd_str);
+        shell_out_buffer_add("\r\n");
+        i++;
+    }
 }
 
 /**

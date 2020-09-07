@@ -15,6 +15,26 @@
 #include <string.h>
 #include "shell_process.h"
 #include "strings_local.h"
+#include "utils.h"
+
+/** test reverse_bits */
+void test_reverse_bits(void)
+{
+    uint16_t a = 0xd8;
+    uint16_t b = reverse_bits(a, 8);
+    uint16_t c = reverse_bits(a, 16);
+    assert(b == 0x1b);
+    assert(c == 0x1b00);
+}
+
+/** test shell_cmds */
+void test_shell_cmds(void)
+{
+    shell_cleanup_output();
+    shell_cmds();
+    char a[] = "\r\n-- commands --\r\nhello\r\n";
+    assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
+}
 
 /** test i2bin */
 void test_i2bin(void)
@@ -184,6 +204,7 @@ static test_groups_t group_list[] =
 {
     {1, "string_local.h"},
     {2, "shell functions"},
+    {3, "utils"},
     {0, NULL}
 };
 
@@ -193,6 +214,7 @@ static test_groups_t group_list[] =
 static test_def_t test_list[] =
 {
 //    {"",               test_},
+    {"reverse_bits",          test_reverse_bits, 3},
     {"i2bin",                 test_i2bin, 1},
     {"itobin_u32",            test_itobin_u32, 1},
     {"itohex_u32",            test_itohex_u32, 1},
@@ -207,6 +229,7 @@ static test_def_t test_list[] =
     {"shell_cleanup_output",  test_shell_cleanup_output, 2},
     {"shell_process_hello",   test_shell_process_hello, 2},
     {"shell_process_args",    test_shell_process_args, 2},
+    {"shell_cmds",            test_shell_cmds, 2},
     {"shell_process_unknown", test_shell_process_unknown, 2},
     {NULL, NULL, 0}
 };

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         }
         g++;
     }
-    printf("********************************\n");
+    printf("\n********************************\n");
     printf("*       All tests passed!      *\n");
     printf("********************************\n\n");
 }

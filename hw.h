@@ -42,12 +42,30 @@
  * @return received char
  */
 #define recv_char() (char)(0xff & usart_recv_blocking(UART))
-/*
-static inline char recv_char(void)
+
+/**
+ * @brief fakeable gpio_set_mode
+ */
+static inline void config_gpio(uint32_t gpioport, uint8_t mode, uint8_t cnf, uint16_t gpios)
 {
-    return (char) (0xff & usart_recv_blocking(UART));
+        gpio_set_mode(gpioport, mode, cnf, gpios);
 }
-*/
+
+/**
+ * @brief config gpio to output
+ */
+static inline void config_gpio_output(uint32_t gpioport, uint16_t gpios)
+{
+        gpio_set_mode(gpioport, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, gpios);
+}
+
+/**
+ * @brief config gpio to input
+ */
+static inline void config_gpio_input(uint32_t gpioport, uint16_t gpios)
+{
+        gpio_set_mode(gpioport, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_INPUT_FLOAT, gpios);
+}
 
 /**
  * @brief send char to uart
