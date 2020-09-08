@@ -58,6 +58,12 @@ void shell_lcd_test(char* argv[], uint16_t argc);
  */
 void shell_spi_command(char* argv[], uint16_t argc);
 
+/**
+ * @brief show rtos heap usage
+ * @param argv, argc - any may be given, none used
+ */
+void shell_rtos_heap_cmd(char* argv[], uint16_t argc);
+
 #endif
 
 #endif

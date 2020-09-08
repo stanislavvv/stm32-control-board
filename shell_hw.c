@@ -3,13 +3,12 @@
  */
 /**
  * @file shell_hw.c
- * @brief hardware-related shell commands and functions
+ * @brief lowlevel-related shell commands and functions
  *
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
  */
 
-/* shell hardware-related functions */
 #include <stdint.h>
 #include "strings_local.h"
 #include "shell_process.h"
@@ -19,6 +18,7 @@
 
 #ifndef UNITTEST
 
+#include "FreeRTOS.h"
 #include "st7789.h"
 
 // for spi debug command
@@ -174,6 +174,36 @@ void shell_spi_command(char* argv[], uint16_t argc)
     }
     send_string("end\r\n");
 }
+
+/**
+ * @brief show rtos heap usage
+ * @param argv, argc - any may be given, none used
+ */
+void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
+{
+    (void)(argv);
+    (void)(argc);
+    HeapStats_t stats;
+    char s[20] = "\0";
+    shell_out_buffer_add("rtos heap stats:");
+    vPortGetHeapStats(&stats);
+
+    itoa_u16((uint16_t)stats.xAvailableHeapSpaceInBytes, s);
+    shell_out_buffer_add("Avail: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+
+    itoa_u16((uint16_t)stats.xSizeOfLargestFreeBlockInBytes, s);
+    shell_out_buffer_add("Largest free block bytes: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+
+    itoa_u16((uint16_t)stats.xMinimumEverFreeBytesRemaining, s);
+    shell_out_buffer_add("Min free bytes: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+}
+
 
 #endif
 

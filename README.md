@@ -1,17 +1,42 @@
 # Control Board     {#mainpage}
 
-This was a copy of [stm32-base](https://github.com/stanislavvv/stm32-base).
-
 Someday i will create control board for transceiver with LCD+encoder+...
+
+## Compile prerequisites:
+
+On Debian (and may be on Ubuntu):
+
+```
+apt-get update
+apt-get install make gcc-arm-none-eabi libnewlib-dev doxygen cppcheck vera++ stlink-tools
+```
+
+## Compilation and related:
+
+  * `make clean` - clean up sources from compile-time artifacts
+  * `make` - simply make `main.elf` binary
+  * `make test` - run tests on some functions (not all)
+  * `make check` - run `cppcheck` and `vera++` on `*.c` and `*.h` with some configs
+  * `make bin` - make `main.bin` firmware
+  * `make main.o` - make `main.o` object file from `main.c` sources, if you need it separately. You may make `*.o` from any `*.c`.
+  * `make flash` - run `st-flash` to program microcontroller via st-link
+
+config for `cppcheck` - `mk/cppcheck.includes`
+config for `vera++` - `mk/vera++.excl`
+
+## Ready:
+
+### 1. Base hardware interfaces:
+
+  * serial interface (shell) -- some commands may be added on demand
 
 ## ToDo:
 
 ### 1. Base hardware interfaces:
 
-  * display (ST7789 at now) -- WiP
+  * display (ST7789 at now) -- SPI works, display not
   * buttons (one pin, one button or multiplexing?)
   * encoder with button (interrupt or timer?)
-  * serial interface (shell) -- **done**, some commands may be added later
   * testing adc + pwm with basic filtering
 
 ### 2. Beginning radio:
