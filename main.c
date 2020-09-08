@@ -1,6 +1,12 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-/*
- * Control board experiments
+/** @weakgroup utils
+ *  @{
+ */
+/**
+ * @file main.c
+ * @brief main procedure of control board experiments
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
  */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -13,9 +19,9 @@
 
 #include "shell.h"
 
-
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
 /**
+ * @addtogroup rtos
  * stuff for freertos - catch stack overflow error and hang
  */
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
@@ -38,11 +44,13 @@ int main(void)
 
     init_gpio();
 
-    xTaskCreate(task_process_shell, "shell", 300, NULL, 1, NULL);
+    xTaskCreate(task_process_shell, "shell", 500, NULL, 1, NULL);
     vTaskStartScheduler();
 
     for (;;) { };
     return 0;
 }
 
-// End
+/**
+ * @}
+ */

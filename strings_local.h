@@ -1,5 +1,14 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
-/* string functions */
+/** @weakgroup utils
+ *  @{
+ */
+/**
+ * @file strings_local.h
+ * @brief local functions for working with strings
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
+
 
 #include <stdint.h>
 #include "bool.h"
@@ -12,7 +21,7 @@
 static inline uint16_t strlen_local(const char *str)
 {
     uint16_t j = 0;
-    while (str[j] != '\0')
+    while (str[j] != 0)
     {
         ++j;
     }
@@ -51,11 +60,9 @@ static inline boolean compare_strings(const char *first, const char *second)
    {
       if (*first == '\0' || *second == '\0')
          { break; }
-
       first++;
       second++;
    }
-
    if (*first == '\0' && *second == '\0')
       { return TRUE; }
    else
@@ -69,9 +76,8 @@ static inline boolean compare_strings(const char *first, const char *second)
   */
 static inline void reverse(char s[])
 {
-     int i, j;
-
-     for (i = 0, j = strlen_local(s)-1; i<j; i++, j--)
+     uint16_t i, j;
+     for (i = 0, j = (uint16_t)(strlen_local(s)-1); i<j; i++, j--)
      {
          char c = s[i];
          s[i] = s[j];
@@ -87,13 +93,12 @@ static inline void reverse(char s[])
  */
 static inline void itoa_u16(uint16_t n, char s[])
 {
-    uint16_t i;
-
-    i = 0;
+    uint16_t i = 0;
     do
-    {       /* generate digits in reverse order */
-        s[i++] = (char)(n % 10 + '0');   /* get next digit */
-    } while ((n /= 10) > 0);     /* delete it */
+    {
+        /* generate digits in reverse order */
+        s[i++] = (char)(n % 10 + '0');  /* get next digit */
+    } while ((n /= 10) > 0);  /* delete it */
     s[i] = '\0';
     reverse(s);
 }
@@ -108,15 +113,18 @@ static inline void itoa_s16(int16_t n, char s[])
 {
     int16_t i, sign;
 
-    if ((sign = n) < 0)  /* record sign */
+    /* record sign and check n negativeness */
+    if ((sign = n) < 0)
     {
-        n = (int16_t)(-n);          /* make n positive */
+        /* n must be positive for processing */
+        n = (int16_t)(-n);
     }
     i = 0;
     do
-    {       /* generate digits in reverse order */
-        s[i++] = (char)(n % 10 + '0');   /* get next digit */
-    } while ((n /= 10) > 0);     /* delete it */
+    {
+        /* generate digits in reverse order */
+        s[i++] = (char)(n % 10 + '0');  /* get next digit */
+    } while ((n /= 10) > 0);  /* delete it */
     if (sign < 0)
     {
         s[i++] = '-';
@@ -124,3 +132,73 @@ static inline void itoa_s16(int16_t n, char s[])
     s[i] = '\0';
     reverse(s);
 }
+
+/**
+ * @brief convert uint32_t n to hex string in s
+ * @param n number to convert
+ * @param s[] result will be here
+ * @return none
+ */
+static inline void itohex_u32(uint32_t n, char s[])
+{
+    uint32_t i = 0;
+    char ch[] = "0123456789abcdef";
+    do
+    {
+        /* generate digits in reverse order */
+        s[i++] = ch[n % 16];  /* get next digit */
+    } while ((n /= 16) > 0);  /* delete it */
+    s[i] = '\0';
+    reverse(s);
+}
+
+/**
+ * @brief convert uint32_t n to bin string in s
+ * @param n number to convert
+ * @param s[] result will be here
+ * @return none
+ *
+ * ineffective, but it works
+ */
+static inline void itobin_u32(uint32_t n, char s[])
+{
+    uint32_t i = 0;
+    char ch[] = "01";
+    do
+    {
+        /* generate digits in reverse order */
+        s[i++] = ch[n % 2];  /* get next digit */
+    } while ((n /= 2) > 0);  /* delete it */
+    s[i] = '\0';
+    reverse(s);
+}
+
+/**
+ * @brief up to uint32_t to binary with spaces between nibbles
+ * @param n - number to convert
+ * @param s - destination string
+ * @param nibbles - nibbles to convert
+ */
+static inline void i2bin(uint32_t n, char s[], uint8_t nibbles)
+{
+    uint8_t i, j, c, bit, nb;
+    c = 0;
+    for (i = 0; i < nibbles; i++)
+    {
+        nb = (uint8_t)(n & 0x0f); // get least nibble
+        n = n >> 4;
+        for (j = 0; j < 4; j++)
+        {
+            bit = nb & 1;
+            nb = nb >> 1;
+            s[c] = (char)('0' + bit);
+            c++;
+        }
+        s[c] = ' ';
+        c++;
+    }
+    s[c-1] = 0;
+    reverse(s);
+}
+
+/** @}*/

@@ -1,4 +1,13 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/** @weakgroup shell
+ *  @{
+ */
+/**
+ * @file shell_process.h
+ * @brief shell processing functions and shell commands
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 
 #ifndef SHELL_PROCESS_H_
@@ -44,10 +53,8 @@ extern uint16_t shell_out_lastchar;
 
 /**
  * @brief shell cli processing
- * @param outbuffer  output buffer zero-terminated string
- * @param command_line  command from user input, zero-terminated string
  * see in {@link #shell_input_buffer} and run corresponding commands
- * from {@link #cmds[]}
+ * from {@link #cmds} with parameters
  */
 void shell_process(void);
 
@@ -61,17 +68,21 @@ boolean shell_in_buffer_add(char c);
 /**
  * @brief add string to output buffer
  * @param s[] string which content will be added to {@link #shell_output_buffer}
- * @return none
  */
-void shell_out_buffer_add(char s[]);
+void shell_out_buffer_add(const char s[]);
 
 /**
  * @brief clean shell output buffer
- * @param none
- * @return none
  *
  * clean {@link #shell_output_buffer} for later use
  */
 void shell_cleanup_output(void);
 
+/**
+ * @brief send list of available commands
+ * @param argv, argc -- any strings or none
+ */
+void shell_cmds(char* argv[], uint16_t argc);
 #endif
+
+/** @}*/

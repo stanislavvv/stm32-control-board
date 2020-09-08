@@ -1,13 +1,22 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/** @weakgroup shell
+ *  @{
+ */
+/**
+ * @file shell_init.c
+ * @brief shell init procedure
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 #include "shell_init.h"
 
 /**
- * @brief init serial shell structures
- * @param none
- * @return none
+ * @brief init shell structures
  */
 void shell_init(void)
 {
     /* dummy realisation */
 }
+
+/** @}*/

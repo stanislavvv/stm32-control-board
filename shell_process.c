@@ -1,4 +1,13 @@
-/* copyright https://github.com/stanislavvv/stm32-control-board */
+/** @weakgroup shell
+ *  @{
+ */
+/**
+ * @file shell_process.c
+ * @brief shell processing functions and shell commands
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ */
 
 #include <stdint.h>
 #include <stdio.h>
@@ -36,7 +45,7 @@ uint16_t shell_out_lastchar = 0;
 void shell_get_cmd(char command_s[]);
 void shell_get_args(uint16_t cmdlen);
 void shell_hello_cmd(char* argv[], uint16_t argc);
-void args_cmd( char* argv[], uint16_t argc );
+void args_cmd(char* argv[], uint16_t argc);
 
 /**
  * shell command handler type
@@ -57,14 +66,21 @@ typedef struct // command + function
  */
 static shell_cmd_def_t cmds[] =
 {
-    {"hello", shell_hello_cmd},
-    {"args", args_cmd},
+    {"hello",     shell_hello_cmd},
+    {"ls",        shell_cmds},
+    {"args",      args_cmd},
 #ifndef UNITTEST
 // not include hardware functions in unit test
-    {"led_on", shell_led_on},
-    {"led_off", shell_led_off},
+
+/* functionality covered by 'led' command
+    {"led_on",    shell_led_on},
+    {"led_off",   shell_led_off},
     {"led_state", shell_led_state},
-    {"led", shell_led},
+*/
+    {"led",       shell_led},
+    {"lcdtest",   shell_lcd_test},
+    {"spi",       shell_spi_command},
+    {"free",      shell_rtos_heap_cmd},
 #endif
     {NULL, NULL}
 };
@@ -74,7 +90,7 @@ static shell_cmd_def_t cmds[] =
  * @param s[] string which content will be added to {@link #shell_output_buffer}
  * @return none
  */
-void shell_out_buffer_add(char s[])
+void shell_out_buffer_add(const char s[])
 {
     uint16_t i = 0;
     while (shell_out_lastchar < SHELL_MAX_OUT_LENGTH && s[i] != 0)
@@ -87,8 +103,7 @@ void shell_out_buffer_add(char s[])
 
 /**
  * @brief send 'Hello World!!!' string as shell output
- * @param none
- * @return none
+ * @param argv, argc -- any strings or none
  */
 void shell_hello_cmd(char* argv[], uint16_t argc)
 {
@@ -98,9 +113,26 @@ void shell_hello_cmd(char* argv[], uint16_t argc)
 }
 
 /**
+ * @brief send list of available commands
+ * @param argv, argc -- any strings or none
+ */
+void shell_cmds(char* argv[], uint16_t argc)
+{
+    (void)(argv);
+    (void)(argc);
+    uint16_t i = 0;
+    shell_out_buffer_add("\r\n-- commands --\r\n");
+    while (cmds[i].cmd != NULL)
+    {
+        shell_out_buffer_add(cmds[i].cmd_str);
+        shell_out_buffer_add("\r\n");
+        i++;
+    }
+}
+
+/**
  * @brief argumets test command
- * @param any strings or none
- * @return none
+ * @param argv, argc -- any strings or none
  *
  * send arguments count and its contents
  */
@@ -112,7 +144,8 @@ void args_cmd( char* argv[], uint16_t argc )
     itoa_u16(argc, num);
     shell_out_buffer_add(num);
     shell_out_buffer_add("\r\n");
-    for(i = 0; i< argc; ++i) {
+    for (i = 0; i< argc; ++i)
+    {
         shell_out_buffer_add("argument ");
         itoa_u16(i, num);
         shell_out_buffer_add(num);
@@ -124,8 +157,6 @@ void args_cmd( char* argv[], uint16_t argc )
 
 /**
  * @brief clean shell output buffer
- * @param none
- * @return none
  *
  * clean {@link #shell_output_buffer} for later use
  */
@@ -156,10 +187,8 @@ void shell_get_cmd(char command_s[])
 
 /**
  * @brief shell cli processing
- * @param outbuffer  output buffer zero-terminated string
- * @param command_line  command from user input, zero-terminated string
  * see in {@link #shell_input_buffer} and run corresponding commands
- * from {@link #cmds[]}
+ * from {@link #cmds} with parameters
  */
 void shell_process(void)
 {
@@ -182,19 +211,24 @@ void shell_process(void)
             known_cmd = TRUE;
             uint16_t cmdpos = strlen_local(cmd);
             /*Ok that is our function! Let's parse args*/
-            do {
+            do
+            {
                 c = shell_input_buffer[cmdpos++];
-                if((c == '\0')) {
+                if ((c == '\0'))
+                {
                     break;
                 }
-                if((c == ' ')) {
+                if ((c == ' '))
+                {
                     cmd_argv[cmd_argc++] = shell_input_buffer+cmdpos;
                 }
-            } while(c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
+            } while (c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
 
             /*arguments must be separate by zero to be parsable like strings*/
-            for(uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++) {
-                if(shell_input_buffer[ch] == ' ') {
+            for (uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++)
+            {
+                if (shell_input_buffer[ch] == ' ')
+                {
                     shell_input_buffer[ch] = '\0';
                 }
             }
@@ -229,3 +263,5 @@ boolean shell_in_buffer_add(char c)
         return TRUE;
     }
 }
+
+/** @}*/
