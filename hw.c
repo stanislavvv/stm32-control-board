@@ -88,7 +88,7 @@ uint16_t spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
     }
 
     /* transmit to spi now */
-    spi_set_bidirectional_transmit_only_mode(spi);
+    //does not need it spi_set_bidirectional_transmit_only_mode(spi);
 
     while (initial_count > 0)
     {
@@ -129,7 +129,7 @@ void init_gpio(void)
     rcc_periph_clock_enable(RCC_GPIOC);
     rcc_periph_clock_enable(RCC_AFIO);
     rcc_periph_clock_enable(UART_RCC);
-    rcc_periph_clock_enable(ST7789_RCC);
+    rcc_periph_clock_enable(LCD_RCC);
 
     /* LED on PC13 */
     gpio_set_mode(
@@ -181,8 +181,8 @@ void init_gpio(void)
 #endif
 
     /* SCK, MOSI(SDA) */
-    gpio_set_mode(ST7789_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
-            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, ST7789_SCK | ST7789_SDA);
+    gpio_set_mode(LCD_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, LCD_SCK | LCD_SDA);
 
 #if BOOT_VERBOSE==1
     send_string("spi gpio initalized\r\n");
@@ -224,7 +224,7 @@ void init_gpio(void)
      *
      * all zero - i2s off
      */
-    spi_reset(ST7789_SPI);
+    spi_reset(LCD_SPI);
     uint32_t reg_cr1;
     uint32_t reg_cr2 = 0;
     uint32_t reg_i2scfgr = 0;
@@ -238,24 +238,23 @@ void init_gpio(void)
             SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE |
             SPI_CR1_CPHA_CLK_TRANSITION_2
           );
-    SPI_I2SCFGR(ST7789_SPI) = reg_i2scfgr;
-    SPI_CR2(ST7789_SPI) = reg_cr2;
-    SPI_CR1(ST7789_SPI) = reg_cr1;
+    SPI_I2SCFGR(LCD_SPI) = reg_i2scfgr;
+    SPI_CR2(LCD_SPI) = reg_cr2;
+    SPI_CR1(LCD_SPI) = reg_cr1;
 
 #if BOOT_VERBOSE==1
     send_string("spi initalization:\r\n");
     send_named_bin("CR1 config", reg_cr1, 4);
-    send_named_bin("CR1 actial", SPI_CR1(ST7789_SPI), 4);
+    send_named_bin("CR1 actial", SPI_CR1(LCD_SPI), 4);
 #endif
 
-    spi_enable(ST7789_SPI);
+    spi_enable(LCD_SPI);
 
 #if BOOT_VERBOSE==1
     send_string("spi enable:\r\n");
-    send_named_bin("CR1 actual", SPI_CR1(ST7789_SPI), 4);
+    send_named_bin("CR1 actual", SPI_CR1(LCD_SPI), 4);
     send_string("hw init end\r\n");
 #endif
-//#endif // 0
 
 }
 

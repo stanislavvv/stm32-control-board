@@ -126,11 +126,11 @@ void shell_lcd_test(char* argv[], uint16_t argc)
 void shell_spi_command(char* argv[], uint16_t argc)
 {
     send_string("spi regs:\r\n");
-    uint32_t cr1 = SPI_CR1(ST7789_SPI);
-    uint32_t cr2 = SPI_CR2(ST7789_SPI);
-    uint32_t sr = SPI_SR(ST7789_SPI);
-    uint32_t dr = SPI_DR(ST7789_SPI);
-    uint32_t i2scfgr = SPI_I2SCFGR(ST7789_SPI);
+    uint32_t cr1 = SPI_CR1(LCD_SPI);
+    uint32_t cr2 = SPI_CR2(LCD_SPI);
+    uint32_t sr = SPI_SR(LCD_SPI);
+    uint32_t dr = SPI_DR(LCD_SPI);
+    uint32_t i2scfgr = SPI_I2SCFGR(LCD_SPI);
     send_named_bin("CR1", cr1, 4);
     send_named_bin("CR2", cr2, 4);
     send_named_bin(" SR", sr, 4);
@@ -143,32 +143,32 @@ void shell_spi_command(char* argv[], uint16_t argc)
             send_string("sending test sequence 0... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0);
+                spi_send(LCD_SPI, 0);
             }
             send_string("0xff... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0xff);
+                spi_send(LCD_SPI, 0xff);
             }
             send_string("0x55... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0x55);
+                spi_send(LCD_SPI, 0x55);
             }
             send_string("0xAA... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0xAA);
+                spi_send(LCD_SPI, 0xAA);
             }
             send_string("0x0F... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0x0F);
+                spi_send(LCD_SPI, 0x0F);
             }
             send_string("0xF0... ");
             for (uint16_t i = 0; i<=65534; i++)
             {
-                spi_send(ST7789_SPI, 0xF0);
+                spi_send(LCD_SPI, 0xF0);
             }
         }
     }

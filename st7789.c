@@ -23,7 +23,7 @@ static void ST7789_WriteCommand(uint8_t cmd)
 {
     ST7789_Select();
     ST7789_DC_Clr();
-    spi_send(ST7789_SPI_PORT, cmd);
+    spi_send(LCD_SPI, cmd);
     ST7789_UnSelect();
 }
 
@@ -43,7 +43,7 @@ static void ST7789_WriteData(uint8_t *buff, size_t buff_size)
     while (buff_size > 0)
     {
         uint16_t chunk_size = buff_size > 65535 ? 65535 : (uint16_t)buff_size;
-        spi_send_buffer_2wire_8bit(ST7789_SPI_PORT, buff, chunk_size, portMAX_DELAY);
+        spi_send_buffer_2wire_8bit(LCD_SPI, buff, chunk_size, portMAX_DELAY);
         buff += chunk_size;
         buff_size -= chunk_size;
     }
@@ -59,7 +59,7 @@ static void ST7789_WriteSmallData(uint8_t data)
 {
     ST7789_Select();
     ST7789_DC_Set();
-    spi_send(ST7789_SPI_PORT, data);
+    spi_send(LCD_SPI, data);
     ST7789_UnSelect();
 }
 

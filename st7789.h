@@ -183,16 +183,16 @@
 #define ST7789_COLOR_MODE_18bit 0x66    //  RGB666 (18bit)
 
 /* Basic operations */
-#define ST7789_RST_Clr() gpio_clear(ST7789_RST_PORT, ST7789_RST_PIN)
-#define ST7789_RST_Set() gpio_set(ST7789_RST_PORT, ST7789_RST_PIN)
+#define ST7789_RST_Clr() gpio_clear(LCD_RST_PORT, LCD_RST_PIN)
+#define ST7789_RST_Set() gpio_set(LCD_RST_PORT, LCD_RST_PIN)
 
-#define ST7789_DC_Clr() gpio_clear(ST7789_DC_PORT, ST7789_DC_PIN)
-#define ST7789_DC_Set() gpio_set(ST7789_DC_PORT, ST7789_DC_PIN)
+#define ST7789_DC_Clr() gpio_clear(LCD_DC_PORT, LCD_DC_PIN)
+#define ST7789_DC_Set() gpio_set(LCD_DC_PORT, LCD_DC_PIN)
 
-#ifdef ST7789_CS_PORT
+#ifdef LCD_CS_PORT
 /* display have CS pin*/
-#define ST7789_Select() gpio_clear(ST7789_CS_PORT, ST7789_CS_PIN)
-#define ST7789_UnSelect() gpio_set(ST7789_CS_PORT, ST7789_CS_PIN)
+#define ST7789_Select() gpio_clear(LCD_CS_PORT, LCD_CS_PIN)
+#define ST7789_UnSelect() gpio_set(LCD_CS_PORT, LCD_CS_PIN)
 #else
 /* no CS pin */
 #define ST7789_Select()
