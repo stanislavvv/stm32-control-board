@@ -53,12 +53,15 @@
  */
 #define BOOT_VERBOSE 1
 
+#define LCD_TYPE 7789 // st7789
+//#define LCD_TYPE 8544 // nokia lcd
+
 /**
  * display ports definition
  * RST        - PA2
  * DC         - PA3
- * SCK        - PA5 (SPI1 port)
- * SDA (MOSI) - PA7 (SPI1 port)
+ * SCK        - PA5 (SPI1), PB13 (SPI2)
+ * SDA (MOSI) - PA7 (SPI1), PB14 (SPI2)
  */
 #define LCD_RST_PORT GPIOA
 #define LCD_RST_PIN  GPIO2
@@ -84,5 +87,5 @@
 */
 
 /* CS/SS not used in my display - stay undef */
-//#define LCD_CS_PORT
-//#define LCD_CS_PIN
+#define LCD_CS_PORT  GPIOA
+#define LCD_CS_PIN   GPIO4

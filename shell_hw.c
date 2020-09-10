@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+#include "config_hw.h"
 #include "strings_local.h"
 #include "shell_process.h"
 #include "shell_hw.h"
@@ -19,7 +20,14 @@
 #ifndef UNITTEST
 
 #include "FreeRTOS.h"
-#include "st7789.h"
+#include "hw_lcd.h"
+
+// ToDo: remove this includes
+#if LCD_TYPE==7789  // lcd st7789
+    #include "st7789.h"
+#elif LCD_TYPE==8544  // lcd nokia
+    #include "pcd8544.h"
+#endif
 
 // for spi debug command
 #include <libopencm3/stm32/spi.h>
@@ -110,12 +118,12 @@ void shell_lcd_test(char* argv[], uint16_t argc)
     if (!lcd_inited)
     {
         send_string("lcd init... ");
-        ST7789_Init();
+        LCD_INIT();
         lcd_inited = TRUE;
         send_string("done\r\n");
     }
     send_string("lcd testing...\r\n");
-    ST7789_Test();
+    LCD_TEST();
     send_string("lcd end\r\n");
 }
 

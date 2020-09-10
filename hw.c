@@ -184,6 +184,12 @@ void init_gpio(void)
     gpio_set_mode(LCD_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, LCD_SCK | LCD_SDA);
 
+#ifdef LCD_CS_PORT
+    /* CS/SS controlled by software */
+    gpio_set_mode(LCD_CS_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_PUSHPULL, LCD_CS_PIN);
+#endif
+
 #if BOOT_VERBOSE==1
     send_string("spi gpio initalized\r\n");
 #endif
