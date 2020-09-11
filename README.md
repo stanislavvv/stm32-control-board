@@ -26,14 +26,15 @@ apt-get install make gcc-arm-none-eabi libnewlib-dev doxygen cppcheck vera++ stl
 
 ## Ready:
 
-Nothing. Make from near zero.
+### 1. Base hardware interfaces:
+
+  * serial interface (shell) -- some commands may be added on demand
 
 ## ToDo:
 
 ### 1. Base hardware interfaces:
 
-  * serial interface (shell) -- some commands may be added on demand
-  * display (ST7789 at now) -- SPI works, display not
+  * display (ST7789 or PCD8544)
   * buttons (one pin, one button or multiplexing?)
   * encoder with button (interrupt or timer?)
   * testing adc + pwm with basic filtering

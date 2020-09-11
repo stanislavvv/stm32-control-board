@@ -27,17 +27,6 @@ void test_reverse_bits(void)
     assert(c == 0x1b00);
 }
 
-/*
-/// test shell_cmds
-void test_shell_cmds(void)
-{
-    shell_cleanup_output();
-    shell_cmds(NULL, 0);
-    char a[] = "\r\n-- commands --\r\nhello\r\n";
-    assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
-}
-*/
-
 /// test i2bin
 void test_i2bin(void)
 {
@@ -124,9 +113,17 @@ void test_strlen_local(void)
     assert(strlen(a) == strlen_local(a));
 }
 
-/*
+/// test shell_cmds
+void test_shell_ls_cmd(void)
+{
+    shell_cleanup_output();
+    shell_ls_cmd(NULL, 0);
+    char a[] = "\r\n-- commands --\r\nls\r\n";
+    assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
+}
+
 /// test shell command arguments processing
-void test_shell_process_args(void)
+void test_shell_args_cmd(void)
 {
     // prepare data
     strcpy(shell_input_buffer, "args aaa bbb");
@@ -136,24 +133,24 @@ void test_shell_process_args(void)
            shell_output_buffer));
 }
 
-/// test shell reaction to unknown command
-void test_shell_process_unknown(void)
-{
-    // prepare data
-    strcpy(shell_input_buffer, "aaa bbb");
-    shell_process();
-    // test
-    assert(!strcmp("UNKNOWN: aaa\r\n", shell_output_buffer));
-}
-
 /// test hello shell command
-void test_shell_process_hello(void)
+void test_shell_hello_cmd(void)
 {
     // prepare data
     strcpy(shell_input_buffer, "hello");
     shell_process();
     // test
     assert(!strcmp("Hello world!!!\r\n", shell_output_buffer));
+}
+
+/// test shell reaction to unknown command
+void test_shell_unknown_cmd(void)
+{
+    // prepare data
+    strcpy(shell_input_buffer, "aaa bbb");
+    shell_process();
+    // test
+    assert(!strcmp("UNKNOWN: aaa\r\n", shell_output_buffer));
 }
 
 /// test shell_out_buffer_add
@@ -165,14 +162,6 @@ void test_shell_out_buffer_add(void)
     assert(!strcmp(shell_output_buffer, "B"));
 }
 
-/// test shell_cleanup_output
-void test_shell_cleanup_output(void)
-{
-    char c[] = "ABCDEF";
-    strncpy(shell_output_buffer, c, strlen(c));
-    assert(!(strlen(shell_output_buffer)==0));
-}
-
 /// test shell_in_buffer_add
 void test_shell_in_buffer_add(void)
 {
@@ -181,7 +170,15 @@ void test_shell_in_buffer_add(void)
     shell_in_buffer_add(c);
     assert(!strcmp(shell_input_buffer, "A"));
 }
-*/
+
+/// test shell_cleanup_output
+void test_shell_cleanup_output(void)
+{
+    char c[] = "ABCDEF";
+    strncpy(shell_output_buffer, c, strlen(c));
+    shell_cleanup_output();
+    assert(strlen(shell_output_buffer)==0);
+}
 
 /// test procedure pointer type
 typedef void (*test_handler_t)(void);
@@ -225,13 +222,13 @@ static test_def_t test_list[] =
     {"compare_strings",       test_compare_strings, 1},
     {"strnsmp_local",         test_strncmp_local, 1},
     {"strlen_local",          test_strlen_local, 1},
-/*    {"shell_in_buffer_add",   test_shell_in_buffer_add, 2},
+    {"shell_in_buffer_add",   test_shell_in_buffer_add, 2},
     {"shell_out_buffer_add",  test_shell_out_buffer_add, 2},
     {"shell_cleanup_output",  test_shell_cleanup_output, 2},
-    {"shell_process_hello",   test_shell_process_hello, 2},
-    {"shell_process_args",    test_shell_process_args, 2},
-    {"shell_cmds",            test_shell_cmds, 2}, */
-//    {"shell_process_unknown", test_shell_process_unknown, 2},
+    {"shell_unknown_cmd",     test_shell_unknown_cmd, 2},
+    {"shell_hello_cmd",       test_shell_hello_cmd, 2},
+    {"shell_args_cmd",        test_shell_args_cmd, 2},
+    {"shell_ls_cmd",          test_shell_ls_cmd, 2},
     {NULL, NULL, 0}
 };
 
