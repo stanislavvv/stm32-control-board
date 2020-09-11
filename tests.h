@@ -117,7 +117,8 @@ void test_strlen_local(void)
 void test_shell_ls_cmd(void)
 {
     shell_cleanup_output();
-    shell_ls_cmd(NULL, 0);
+    strcpy(shell_input_buffer, "ls");
+    shell_process();
     char a[] = "\r\n-- commands --\r\nls\r\n";
     assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
 }

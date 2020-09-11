@@ -10,15 +10,17 @@
  * command list see in {@link #cmds[]}
  */
 
-#include "stddef.h"
 #include <stdint.h>
-#include "FreeRTOS.h"
-#include "task.h"
 #include "strings_local.h"
 #include "shell.h"
 
 #ifndef UNITTEST
+    #include "FreeRTOS.h"
+    #include "task.h"
     #include "hw.h"
+#else
+//    #include "stddefs.h"
+    #include <stddef.h>
 #endif
 
 /// shell input buffer, received from uart
@@ -119,7 +121,7 @@ static shell_cmd_def_t cmds[] =
     {NULL, NULL}
 };
 
-// internal command, that need cmds[]
+// shell command, that need cmds[]
 /**
  * @brief send list of available commands
  * @param argv, argc -- any strings or none
@@ -248,6 +250,9 @@ void shell_process(void)
     }
 }
 
+#ifndef UNITTEST
+// hardware and rtos related functions
+
 /**
  * @brief send content of {@link #shell_output_buffer} to uart
  * will send to uart {@link #shell_output_buffer} and clean
@@ -300,5 +305,6 @@ void shell_task(void *args __attribute((unused)))
         }
     }
 }
+#endif // ifndef UNITTEST
 
 ///@}
