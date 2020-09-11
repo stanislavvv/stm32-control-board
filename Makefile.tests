@@ -2,7 +2,8 @@ TGT_CFLAGS	+= -I.
 TGT_CXXFLAGS	+= -I.
 
 BINARY		= tests
-SRCFILES	= shell_hw.c shell_process.c tests.c
+#SRCFILES	= shell_hw.c shell_process.c tests.c
+SRCFILES	= shell.c tests.c
 
 SRC_EXT = c
 

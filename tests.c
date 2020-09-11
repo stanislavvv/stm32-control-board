@@ -15,6 +15,11 @@
 #include <string.h>
 #include "tests.h"
 
+/**
+ * @brief main test procedure
+ *
+ * run test over test groups
+ */
 int main(int argc, char *argv[])
 {
     printf("\n********************************\n");

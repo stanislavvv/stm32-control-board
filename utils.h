@@ -30,3 +30,5 @@ static inline uint16_t reverse_bits(uint16_t num, uint8_t bits)
 
     return reverse_num;
 }
+
+/** @}*/

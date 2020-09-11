@@ -13,27 +13,26 @@ apt-get install make gcc-arm-none-eabi libnewlib-dev doxygen cppcheck vera++ stl
 
 ## Compilation and related:
 
-  * `make clean` - clean up sources from compile-time artifacts
-  * `make` - simply make `main.elf` binary
-  * `make test` - run tests on some functions (not all)
-  * `make check` - run `cppcheck` and `vera++` on `*.c` and `*.h` with some configs
-  * `make bin` - make `main.bin` firmware
-  * `make main.o` - make `main.o` object file from `main.c` sources, if you need it separately. You may make `*.o` from any `*.c`.
-  * `make flash` - run `st-flash` to program microcontroller via st-link
+  * `make clean` -- clean up sources from compile-time artifacts
+  * `make` -- simply make `main.elf` binary
+  * `make test` -- run tests on some functions (not all)
+  * `make check` -- run `cppcheck` and `vera++` on `*.c` and `*.h` with some configs
+  * `make bin` -- make `main.bin` firmware
+  * `make main.o` -- make `main.o` object file from `main.c` sources, if you need it separately. You may make `*.o` from any `*.c`.
+  * `make flash` -- run `st-flash` to program microcontroller via st-link
 
-config for `cppcheck` - `mk/cppcheck.includes`
-config for `vera++` - `mk/vera++.excl`
+  * `mk/cppcheck.includes` -- config for `cppcheck` in `make check`
+  * `mk/vera++.excl` -- config for `vera++` in `make check`
 
 ## Ready:
 
-### 1. Base hardware interfaces:
-
-  * serial interface (shell) -- some commands may be added on demand
+Nothing. Make from near zero.
 
 ## ToDo:
 
 ### 1. Base hardware interfaces:
 
+  * serial interface (shell) -- some commands may be added on demand
   * display (ST7789 at now) -- SPI works, display not
   * buttons (one pin, one button or multiplexing?)
   * encoder with button (interrupt or timer?)
