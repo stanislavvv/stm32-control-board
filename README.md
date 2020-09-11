@@ -34,7 +34,7 @@ apt-get install make gcc-arm-none-eabi libnewlib-dev doxygen cppcheck vera++ stl
 
 ### 1. Base hardware interfaces:
 
-  * display (ST7789 or PCD8544)
+  * display (ST7789 or PCD8544) on SPI
   * buttons (one pin, one button or multiplexing?)
   * encoder with button (interrupt or timer?)
   * testing adc + pwm with basic filtering

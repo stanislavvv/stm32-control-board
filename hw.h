@@ -14,6 +14,7 @@
 
 #include <libopencm3/stm32/gpio.h>
 #include "config.h"
+#include "bool.h"
 
 /// switch led on
 #define LED_on() gpio_clear(LED_PORT, LED_PIN)
@@ -54,9 +55,45 @@ static inline void send_char(char c)
 void send_string(const char s[]);
 
 /**
+ * @brief send named number in human-readable binary
+ * @param name - name (max char[10])
+ * @param data - sending number up to uint32_t
+ * @param nibbles - size of data in nibbles, 1..8
+ *
+ * useful for debug via uart
+ */
+void send_named_bin(char name[], uint32_t data, uint8_t nibbles);
+
+/**
+ * @brief return true if spi can tx new data
+ * @param spi for example SPI1
+ * @return TRUE if ready for tx
+ */
+boolean spi_tx_ready(uint32_t spi);
+
+/**
+ * @brief send buffer to spi with timeout
+ * @param spi  spi port, ex. SPI1 in libopencm3
+ * @param buffer  buffer of **bytes** for sending
+ * @param length  length of buffer
+ * @param timeout  timeout in ticks, portMAX_DELAY and 0 - switch off
+ * @return errno - TRUE ok, FALSE - error (bad parameters or timeout)
+ *
+ * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
+ */
+boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
+                            uint16_t length, TickType_t timeout);
+
+/**
  * @brief set gpio and other hardware modes
  */
 void init_hw(void);
+
+/**
+ * @brief show spi registers and may test spi transfer
+ * @param argv, argc 'test' will be test spi transfer
+ */
+void shell_spi_cmd(char* argv[], uint16_t argc);
 
 
 #endif // ifdef HW_H_

@@ -74,6 +74,7 @@ static inline void shell_get_cmd(char command_s[])
 }
 
 #ifdef UNITTEST
+
 /**
  * @brief arguments test command
  * @param argv, argc -- any strings or none
@@ -100,6 +101,36 @@ void args_cmd( char* argv[], uint16_t argc )
         shell_out_buffer_add("\r\n");
     }
 }
+#else // run on hardware
+
+/**
+ * @brief show rtos heap usage
+ * @param argv, argc - any may be given, none used
+ */
+static inline void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
+{
+    (void)(argv);
+    (void)(argc);
+    HeapStats_t stats;
+    char s[20] = "\0";
+    shell_out_buffer_add("rtos heap stats:");
+    vPortGetHeapStats(&stats);
+
+    itoa_u16((uint16_t)stats.xAvailableHeapSpaceInBytes, s);
+    shell_out_buffer_add("Avail bytes total: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+
+    itoa_u16((uint16_t)stats.xSizeOfLargestFreeBlockInBytes, s);
+    shell_out_buffer_add("Largest free block in bytes: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+
+    itoa_u16((uint16_t)stats.xMinimumEverFreeBytesRemaining, s);
+    shell_out_buffer_add("Min free bytes total: ");
+    shell_out_buffer_add(s);
+    shell_out_buffer_add("\r\n");
+}
 #endif
 
 // forward definition
@@ -113,7 +144,8 @@ static shell_cmd_def_t cmds[] =
     {"ls",        shell_ls_cmd},
 #ifndef UNITTEST
 // hardware and rtos related commands
-//    {"free",      shell_rtos_heap_cmd},
+    {"free",      shell_rtos_heap_cmd},
+    {"spi",       shell_spi_cmd},
 #else
     {"args",      args_cmd},
 #endif
