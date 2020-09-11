@@ -60,6 +60,16 @@
 #define LCD_TYPE 7789 // st7789
 //#define LCD_TYPE 8544 // nokia lcd
 
+#if LCD_TYPE==7789
+    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE
+    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_2
+#endif
+
+#if LCD_TYPE==8544
+    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE
+    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_1
+#endif
+
 #define LCD_RST_PORT GPIOA ///< LCD RST port
 #define LCD_RST_PIN  GPIO2 ///< LCD RST pin
 #define LCD_DC_PORT  GPIOA ///< LCD DC port

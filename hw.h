@@ -13,6 +13,9 @@
 #define HW_H_
 
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
+#include "FreeRTOS.h"
+#include "task.h"
 #include "config.h"
 #include "bool.h"
 
@@ -95,6 +98,15 @@ void init_hw(void);
  */
 void shell_spi_cmd(char* argv[], uint16_t argc);
 
+/**
+ * @brief delay to given time in ms
+ * @param ms  time in milliseconds up to 65535
+ * @return none
+ */
+static inline void delay_ms(uint16_t ms)
+{
+    vTaskDelay(pdMS_TO_TICKS(ms));
+}
 
 #endif // ifdef HW_H_
 /// @}

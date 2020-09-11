@@ -255,8 +255,8 @@ static inline void init_spi(void)
             SPI_CR1_SSI |
             SPI_CR1_BAUDRATE_FPCLK_DIV_256 |
             SPI_CR1_MSTR |
-            SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE |
-            SPI_CR1_CPHA_CLK_TRANSITION_2
+            LCD_CLK_POL |
+            LCD_CLK_PHA
           );
     SPI_I2SCFGR(LCD_SPI) = reg_i2scfgr;
     SPI_CR2(LCD_SPI) = reg_cr2;

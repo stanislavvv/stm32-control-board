@@ -18,6 +18,7 @@
     #include "FreeRTOS.h"
     #include "task.h"
     #include "hw.h"
+    #include "lcd.h"
 #else
 //    #include "stddefs.h"
     #include <stddef.h>
@@ -146,6 +147,7 @@ static shell_cmd_def_t cmds[] =
 // hardware and rtos related commands
     {"free",      shell_rtos_heap_cmd},
     {"spi",       shell_spi_cmd},
+    {"lcd",       shell_lcd_cmd},
 #else
     {"args",      args_cmd},
 #endif
