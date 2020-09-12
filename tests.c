@@ -8,6 +8,7 @@
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
  * run tests from test_list with some output
+ *
  * all test functions see in tests.h
  */
 

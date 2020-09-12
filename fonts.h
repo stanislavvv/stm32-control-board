@@ -31,7 +31,7 @@ extern FontDef Font_16x26;
  * These pics are for test purpose only.
  *******************************************/
 
-/* 128x128 pixel RGB565 image */
+/** 128x128 pixel RGB565 image */
 extern const uint16_t saber[][128];
 
 /* 240x240 pixel RGB565 image

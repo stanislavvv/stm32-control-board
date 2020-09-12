@@ -2,7 +2,7 @@
  *  @{
  */
 /**
- * @file hw_lcd.h
+ * @file
  * @brief lowlevel-related shell commands and functions
  *
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
@@ -40,7 +40,7 @@
     #define LCD_HEIGHT PCD8544_MAX_NUM_ROWS*8 ///< height of LCD in pixels
     #define LCD_WIDTH  PCD8544_MAX_NUM_COLS  ///< width of LCD in pixels
     #define LCD_INIT() PCD8544_init() ///< LCD init procedure
-    #define LCD_TEST() PCD8544_test() ///< LCD demo procedure
+//    #define LCD_TEST() PCD8544_test() ///< LCD demo procedure
 
     /**
      * @brief set pixel procedure
@@ -51,12 +51,34 @@
     {
         if (color != 0)
         {
-            PCD8544_px_on(x, y);
+            PCD8544_px_on(y, x);
         }
         else
         {
-            PCD8544_px_off(x, y);
+            PCD8544_px_off(y, x);
         }
+    }
+
+    static void LCD_TEST(void)
+    {
+        PCD8544_test();
+        for (uint16_t x=0; x<LCD_WIDTH; x++)
+        {
+            for (uint16_t y=0; y<LCD_HEIGHT; y++)
+            {
+                set_pixel(x, y, 1);
+                PCD8544_update();
+            }
+        }
+        for (uint16_t x=0; x<LCD_WIDTH; x++)
+        {
+            for (uint16_t y=0; y<LCD_HEIGHT; y++)
+            {
+                set_pixel(x, y, 0);
+                PCD8544_update();
+            }
+        }
+        PCD8544_test();
     }
 
 #endif

@@ -57,17 +57,17 @@
  * - 7789 for ST7789 (16/18bit color)
  * - 8544 for PCD8544 (nokia screen)
  */
-#define LCD_TYPE 7789 // st7789
-//#define LCD_TYPE 8544 // nokia lcd
+//#define LCD_TYPE 7789 // st7789
+#define LCD_TYPE 8544 // nokia lcd
 
 #if LCD_TYPE==7789
-    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE
-    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_2
+    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE ///< LCD SPI clock polarity
+    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_2   ///< LCD SPI clock phase
 #endif
 
 #if LCD_TYPE==8544
-    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE
-    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_1
+    #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE ///< LCD SPI clock polarity
+    #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_1   ///< LCD SPI clock phase
 #endif
 
 #define LCD_RST_PORT GPIOA ///< LCD RST port

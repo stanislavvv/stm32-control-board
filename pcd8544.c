@@ -1,8 +1,8 @@
-/** @weakgroup hardware
+/** @weakgroup graphics
  *  @{
  */
 /**
- * @file pcd8544.c
+ * @file
  * @brief nokia lcd screen driver
  *
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
@@ -125,6 +125,15 @@ static uint8_t PCD8544_cache[PCD8544_CACHE_SIZE_MEM];
 /// lcd screen cache index
 uint16_t PCD8544_cache_i = 0;
 
+#ifdef LCD_CS_PORT
+    // active low
+    #define LCD_SELECT() gpio_clear(LCD_CS_PORT, LCD_CS_PIN)
+    #define LCD_UNSELECT() gpio_set(LCD_CS_PORT, LCD_CS_PIN)
+#else
+    #define LCD_SELECT()
+    #define LCD_UNSELECT()
+#endif
+
 /**
  * @brief lcd PCD8544 init
  */
@@ -136,23 +145,28 @@ void PCD8544_init(void)
     // extended instruction set
     PCD8544_send_cmd(0x21);
 
-    // temperature set - temperature coefficient of IC
-    PCD8544_send_cmd(0x06);
-
     // bias 1:48 - optimum bias value
     PCD8544_send_cmd(0x13);
+
+    // temperature set - temperature coefficient of IC
+    //PCD8544_send_cmd(0x06);
 
     // for mux 1:48 optimum operation voltage is Ulcd = 6,06.Uth
     // Ulcd = 3,06 + (Ucp6 to Ucp0).0,06
     // 6 < Ulcd < 8,05
     // command for operation voltage = 0x1 Ucp6 Ucp5 Ucp4 Ucp3 Ucp2 Ucp1 Ucp0
     // Ulcd = 0x11000010 = 7,02 V
-
     PCD8544_send_cmd(0xC2);
+
     // normal instruction set
     // horizontal adressing mode
-
     PCD8544_send_cmd(0x20);
+
+    // all display segments on
+    PCD8544_send_cmd(0x09);
+
+    // display blank
+    PCD8544_send_cmd(0x08);
 
     // normal mode
     PCD8544_send_cmd(0x0C);
@@ -164,18 +178,15 @@ void PCD8544_init(void)
  */
 void PCD8544_send_cmd(char data)
 {
-#ifdef LCD_CS_PORT
-    gpio_clear(LCD_CS_PORT, LCD_CS_PIN); // lcd select
-#endif
+    LCD_SELECT();
 
     gpio_clear(LCD_DC_PORT, LCD_DC_PIN); // command mode
 
     spi_send(LCD_SPI, data); // send to lcd
-    while (!(SPI_SR(LCD_SPI) & SPI_SR_TXE)) { }; // wait for send success
+    while (!spi_tx_ready(LCD_SPI)) { }; // wait for send success
+//    shiftOut_lcd(0, data);
 
-#ifdef LCD_CS_PORT
-    gpio_set(LCD_CS_PORT, LCD_CS_PIN); // lcd unselect
-#endif
+    LCD_UNSELECT();
 }
 
 /**
@@ -184,18 +195,15 @@ void PCD8544_send_cmd(char data)
  */
 void PCD8544_send_data(char data)
 {
-#ifdef LCD_CS_PORT
-    gpio_clear(LCD_CS_PORT, LCD_CS_PIN); // lcd select
-#endif
+    LCD_SELECT();
 
     gpio_set(LCD_DC_PORT, LCD_DC_PIN); // data mode
 
     spi_send(LCD_SPI, data); // send to lcd
-    while (!(SPI_SR(LCD_SPI) & SPI_SR_TXE)) { }; // wait for send success
+    while (!spi_tx_ready(LCD_SPI)) { }; // wait for send success
+//    shiftOut_lcd(0, data);
 
-#ifdef LCD_CS_PORT
-    gpio_set(LCD_CS_PORT, LCD_CS_PIN); // lcd unselect
-#endif
+    LCD_UNSELECT();
 }
 
 /**
@@ -203,10 +211,14 @@ void PCD8544_send_data(char data)
  */
 void PCD8544_reset(void)
 {
-    delay_ms(1); // delay at least 1 ms
+    LCD_SELECT();
+
+//    delay_ms(1); // delay at least 1 ms
     gpio_clear(LCD_RST_PORT, LCD_RST_PIN); // reset
-    delay_ms(1);
+    delay_ms(100);
     gpio_set(LCD_RST_PORT, LCD_RST_PIN);
+
+    LCD_UNSELECT();
 }
 
 /**

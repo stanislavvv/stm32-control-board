@@ -103,7 +103,7 @@ boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
     {
         if (spi_tx_ready(spi))
         {
-            spi_write(spi,(*buffer));
+            spi_write(spi, (*buffer));
             buffer += sizeof(uint8_t);
             initial_count--;
         }
@@ -199,6 +199,15 @@ static inline void init_uart(void)
 
 static inline void init_spi(void)
 {
+    /* RST */
+    gpio_set_mode(LCD_RST_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_PUSHPULL, LCD_RST_PIN);
+    gpio_set(LCD_RST_PORT, LCD_RST_PIN); // RST inactive
+
+    /* DC */
+    gpio_set_mode(LCD_DC_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_PUSHPULL, LCD_DC_PIN);
+
     /* SCK, MOSI(SDA) */
     gpio_set_mode(LCD_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, LCD_SCK | LCD_SDA);
@@ -207,6 +216,7 @@ static inline void init_spi(void)
     /* CS/SS controlled by software */
     gpio_set_mode(LCD_CS_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_PUSHPULL, LCD_CS_PIN);
+    gpio_set(LCD_CS_PORT, LCD_CS_PIN); // CS inactive
 #endif
 
     /*
@@ -227,8 +237,8 @@ static inline void init_spi(void)
      * SPE = 0 (SPI enable) -- switch to 1 at the end of init
      * BR[2:0] = 101 (fpclk/64)
      * MSTR = 1 (spi master)
-     * CPOL = 1 (clock polarity 1 when idle)
-     * CPHA = 1 (second clock transition is the first data capture)
+     * CPOL = 0/1 (clock polarity 1 when idle)
+     * CPHA = 0/1 (second clock transition is the first data capture)
      *
      * CR2:
      *
@@ -264,8 +274,6 @@ static inline void init_spi(void)
 
 
     spi_enable(LCD_SPI);
-
-
 }
 
 /**

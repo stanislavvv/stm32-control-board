@@ -1,8 +1,8 @@
-/** @weakgroup hardware
+/** @weakgroup graphics
  *  @{
  */
 /**
- * @file pcd8544.h
+ * @file
  * @brief nokia lcd screen driver definitions
  *
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>

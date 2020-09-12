@@ -1,8 +1,8 @@
-/** @weakgroup hardware
+/** @weakgroup graphics
  *  @{
  */
 /**
- * @file st7789.h
+ * @file
  * @brief Driver for ST7789 LCD adapted from hal to libopencm3
  *
  * Copyright https://github.com/Floyd-Fish/ST7789-STM32

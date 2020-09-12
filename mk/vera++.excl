@@ -2,8 +2,7 @@
 set ruleExclusions(T012) {
     tests.h
     pcd8544.c
-    shell_process.c
-    shell_hw.c
+    shell.c
     spi.c
     st7789.h
 }
@@ -17,4 +16,10 @@ set ruleExclusions(T009) {
 }
 set ruleExclusions(T011) {
     fonts.c
+}
+
+# rule want space at the end of line
+set ruleExclusions(T003) {
+    tests.h
+    shell.c
 }

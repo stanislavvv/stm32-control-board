@@ -7,7 +7,7 @@
  *
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
- * command list see in {@link #cmds[]}
+ * command list see in #cmds[]
  */
 
 #include <stdint.h>
@@ -20,7 +20,6 @@
     #include "hw.h"
     #include "lcd.h"
 #else
-//    #include "stddefs.h"
     #include <stddef.h>
 #endif
 

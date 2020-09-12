@@ -15,17 +15,6 @@
 #include <string.h>
 #include "shell.h"
 #include "strings_local.h"
-#include "utils.h"
-
-/// test reverse_bits
-void test_reverse_bits(void)
-{
-    uint16_t a = 0xd8;
-    uint16_t b = reverse_bits(a, 8);
-    uint16_t c = reverse_bits(a, 16);
-    assert(b == 0x1b);
-    assert(c == 0x1b00);
-}
 
 /// test i2bin
 void test_i2bin(void)
@@ -213,7 +202,6 @@ static test_def_t test_list[] =
 {
 // template line
 //    {"",               test_},
-    {"reverse_bits",          test_reverse_bits, 3},
     {"i2bin",                 test_i2bin, 1},
     {"itobin_u32",            test_itobin_u32, 1},
     {"itohex_u32",            test_itohex_u32, 1},
