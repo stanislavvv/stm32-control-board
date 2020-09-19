@@ -18,6 +18,7 @@
     #include "FreeRTOS.h"
     #include "task.h"
     #include "hw.h"
+    #include "hw/spi.h"
     #include "lcd.h"
 #else
     #include <stddef.h>
@@ -249,7 +250,6 @@ void shell_process(void)
         {
             known_cmd = TRUE;
             uint16_t cmdpos = strlen_local(cmd);
-            /*Ok that is our function! Let's parse args*/
             do
             {
                 c = shell_input_buffer[cmdpos++];
@@ -263,7 +263,7 @@ void shell_process(void)
                 }
             } while (c != '\0' && (cmd_argc < SHELL_MAX_ARGS));
 
-            /*arguments must be separate by zero to be parsable like strings*/
+            /* arguments must be separate by zero to be parsable like strings */
             for (uint16_t ch = 0; ch < SHELL_MAX_CLI_LENGTH; ch++)
             {
                 if (shell_input_buffer[ch] == ' ')
@@ -320,6 +320,7 @@ void shell_task(void *args __attribute((unused)))
 #if SHELL_ECHO==1
             send_char(c);
 #endif
+//ToDo: refactor this if
             if (c != 0xa && c != 0xd && shell_in_buffer_add(c))
             {
                 taskYIELD();

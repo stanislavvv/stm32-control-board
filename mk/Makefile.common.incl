@@ -14,7 +14,8 @@ endif
 
 # correct target - working make
 ifdef DOMAKE
-TOCHECK := $(wildcard ./*.c ./*.h ./*.cpp ./*.cxx)
+TOCHECK := $(wildcard *.c *.h *.cpp *.cxx)
+TOCHECK += $(wildcard hw/*.c hw/*.h hw/*.cpp hw/*.cxx)
 PREFIX		?= arm-none-eabi
 
 OPENCM3_DIR 	:= $(abspath $(TOP_DIR))/libopencm3
@@ -61,7 +62,7 @@ TGT_LDFLAGS	+= $(ARCH_FLAGS)
 TGT_LDFLAGS	+= -Wl,-Map=$(*).map
 TGT_LDFLAGS	+= -Wl,--gc-sections
 
-LDLIBS		+= -specs=nosys.specs
+LDLIBS		+= -specs=nosys.specs -specs=nano.specs
 LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
 
 .SUFFIXES:	.elf .bin .hex .srec .list .map .images

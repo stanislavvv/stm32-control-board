@@ -12,13 +12,13 @@
  */
 
 #include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/spi.h>
 #include "bool.h"
 #include "config.h"
 #include "hw.h"
+#include "hw/spi.h"
 #include "pcd8544.h"
 
-/// font 5x8, ascii-only
+/// font 5x8, ascii-only, one byte - one vertical line
 const char PCD8544_font5x8[][FONT_WIDTH] =
 {
     { 0x00, 0x00, 0x00, 0x00, 0x00 }, // 20 space
@@ -126,9 +126,14 @@ static uint8_t PCD8544_cache[PCD8544_CACHE_SIZE_MEM];
 uint16_t PCD8544_cache_i = 0;
 
 #ifdef LCD_CS_PORT
+    /**
+     * @brief lcd selection
+     * @{
+     */
     // active low
     #define LCD_SELECT() gpio_clear(LCD_CS_PORT, LCD_CS_PIN)
     #define LCD_UNSELECT() gpio_set(LCD_CS_PORT, LCD_CS_PIN)
+    ///@}
 #else
     #define LCD_SELECT()
     #define LCD_UNSELECT()
@@ -144,12 +149,12 @@ void PCD8544_init(void)
 
     // extended instruction set
     PCD8544_send_cmd(0x21);
-
+/*
     // bias 1:48 - optimum bias value
     PCD8544_send_cmd(0x13);
 
     // temperature set - temperature coefficient of IC
-    //PCD8544_send_cmd(0x06);
+    PCD8544_send_cmd(0x06);
 
     // for mux 1:48 optimum operation voltage is Ulcd = 6,06.Uth
     // Ulcd = 3,06 + (Ucp6 to Ucp0).0,06
@@ -170,6 +175,16 @@ void PCD8544_init(void)
 
     // normal mode
     PCD8544_send_cmd(0x0C);
+    delay_ms(100);
+
+    // cursor into begin position
+    PCD8544_send_cmd(0x80);
+    PCD8544_send_cmd(0x40);
+*/
+    PCD8544_send_cmd(0x90);
+    PCD8544_send_cmd(0x20);
+    PCD8544_send_cmd(0x0C);
+    delay_ms(100);
 }
 
 /**
@@ -178,15 +193,14 @@ void PCD8544_init(void)
  */
 void PCD8544_send_cmd(char data)
 {
+    LED_on(); // debug
     LCD_SELECT();
-
     gpio_clear(LCD_DC_PORT, LCD_DC_PIN); // command mode
 
-    spi_send(LCD_SPI, data); // send to lcd
-    while (!spi_tx_ready(LCD_SPI)) { }; // wait for send success
-//    shiftOut_lcd(0, data);
-
+    SPI_SEND(LCD_SPI, data); // send to lcd
+    while (!SPI_TX_READY(LCD_SPI)) { }; // wait for send success
     LCD_UNSELECT();
+    LED_off(); // debug
 }
 
 /**
@@ -199,9 +213,8 @@ void PCD8544_send_data(char data)
 
     gpio_set(LCD_DC_PORT, LCD_DC_PIN); // data mode
 
-    spi_send(LCD_SPI, data); // send to lcd
-    while (!spi_tx_ready(LCD_SPI)) { }; // wait for send success
-//    shiftOut_lcd(0, data);
+    SPI_SEND(LCD_SPI, data); // send to lcd
+    while (!SPI_TX_READY(LCD_SPI)) { }; // wait for send success
 
     LCD_UNSELECT();
 }
@@ -213,10 +226,10 @@ void PCD8544_reset(void)
 {
     LCD_SELECT();
 
-//    delay_ms(1); // delay at least 1 ms
     gpio_clear(LCD_RST_PORT, LCD_RST_PIN); // reset
     delay_ms(100);
     gpio_set(LCD_RST_PORT, LCD_RST_PIN);
+    delay_ms(100);
 
     LCD_UNSELECT();
 }
@@ -394,6 +407,16 @@ char PCD8544_px_off(uint16_t x, uint16_t y)
 void PCD8544_test(void)
 {
     PCD8544_init();
+    // hardware test
+    for (uint16_t ii = 0; ii < 10000; ii++)
+    {
+        PCD8544_send_cmd(0x80);
+        PCD8544_send_cmd(0x40);
+        for (uint8_t i = 0; i < 255; i++)
+        {
+            PCD8544_send_data(i);
+        }
+    }
     PCD8544_clear();
     PCD8544_print("Hello world!");
     PCD8544_update();

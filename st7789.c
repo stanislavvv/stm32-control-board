@@ -9,10 +9,10 @@
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  */
 
-#include <libopencm3/stm32/spi.h>
 #include "st7789.h"
 #include "config.h"
 #include "hw.h"
+#include "hw/spi.h"
 
 /**
  * @brief Write command to ST7789 controller
@@ -23,7 +23,7 @@ static void ST7789_WriteCommand(uint8_t cmd)
 {
     ST7789_Select();
     ST7789_DC_Clr();
-    spi_send(LCD_SPI, cmd);
+    SPI_SEND(LCD_SPI, cmd);
     ST7789_UnSelect();
 }
 
@@ -59,7 +59,7 @@ static void ST7789_WriteSmallData(uint8_t data)
 {
     ST7789_Select();
     ST7789_DC_Set();
-    spi_send(LCD_SPI, data);
+    SPI_SEND(LCD_SPI, data);
     ST7789_UnSelect();
 }
 

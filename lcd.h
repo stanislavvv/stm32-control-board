@@ -40,7 +40,6 @@
     #define LCD_HEIGHT PCD8544_MAX_NUM_ROWS*8 ///< height of LCD in pixels
     #define LCD_WIDTH  PCD8544_MAX_NUM_COLS  ///< width of LCD in pixels
     #define LCD_INIT() PCD8544_init() ///< LCD init procedure
-//    #define LCD_TEST() PCD8544_test() ///< LCD demo procedure
 
     /**
      * @brief set pixel procedure
@@ -61,7 +60,10 @@
 
     static void LCD_TEST(void)
     {
-        PCD8544_test();
+        DBG("init...");
+        PCD8544_init();
+//        PCD8544_test();
+/*        DBG("per-pixel fill... ");
         for (uint16_t x=0; x<LCD_WIDTH; x++)
         {
             for (uint16_t y=0; y<LCD_HEIGHT; y++)
@@ -70,6 +72,7 @@
                 PCD8544_update();
             }
         }
+        DBG("per-pixel clear... ");
         for (uint16_t x=0; x<LCD_WIDTH; x++)
         {
             for (uint16_t y=0; y<LCD_HEIGHT; y++)
@@ -78,7 +81,7 @@
                 PCD8544_update();
             }
         }
-        PCD8544_test();
+        PCD8544_test();*/
     }
 
 #endif

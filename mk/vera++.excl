@@ -23,3 +23,13 @@ set ruleExclusions(T003) {
     tests.h
     shell.c
 }
+
+# FreeRTOS sources exclusion
+set ruleExclusions(L001) {
+    rtos/tasks.c
+}
+
+set ruleExclusions(L002) {
+    rtos/tasks.c
+}
+

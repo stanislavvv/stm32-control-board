@@ -28,6 +28,13 @@
 /// get led state
 #define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
 
+#if DEBUG_PRINT==1
+    /// debug print
+    #define DBG(s) send_string(s)
+#else
+    #define DBG(s)
+#endif // DEBUG
+
 /**
  * @brief return true if uart has received char in register
  * @return bool char received state
@@ -68,44 +75,27 @@ void send_string(const char s[]);
 void send_named_bin(char name[], uint32_t data, uint8_t nibbles);
 
 /**
- * @brief return true if spi can tx new data
- * @param spi for example SPI1
- * @return TRUE if ready for tx
- */
-boolean spi_tx_ready(uint32_t spi);
-
-/**
- * @brief send buffer to spi with timeout
- * @param spi  spi port, ex. SPI1 in libopencm3
- * @param buffer  buffer of **bytes** for sending
- * @param length  length of buffer
- * @param timeout  timeout in ticks, portMAX_DELAY and 0 - switch off
- * @return errno - TRUE ok, FALSE - error (bad parameters or timeout)
- *
- * Transmit buffer with given length to spi in two-wire 8-bit mode with timeout
- */
-boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
-                            uint16_t length, TickType_t timeout);
-
-/**
- * @brief set gpio and other hardware modes
+ * @brief init hardware related stuff
  */
 void init_hw(void);
 
 /**
- * @brief show spi registers and may test spi transfer
- * @param argv, argc 'test' will be test spi transfer
- */
-void shell_spi_cmd(char* argv[], uint16_t argc);
-
-/**
  * @brief delay to given time in ms
  * @param ms  time in milliseconds up to 65535
- * @return none
  */
 static inline void delay_ms(uint16_t ms)
 {
     vTaskDelay(pdMS_TO_TICKS(ms));
+}
+
+/**
+ * @brief delay for critical section
+ * @param x3 delay value
+ */
+static inline void delay_x3(uint16_t x3)
+{
+    for (uint16_t i = 0; i < x3; i++)    /* Wait a bit. */
+        { __asm__("nop"); }
 }
 
 #endif // ifdef HW_H_

@@ -15,10 +15,10 @@
 #include "shell.h"
 
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
-/**
- * @addtogroup rtos
- * stuff for freertos - catch stack overflow error and hang
- */
+    /**
+     * @addtogroup rtos
+     * stuff for freertos - catch stack overflow error and hang
+     */
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
 
     void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
