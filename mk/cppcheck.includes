@@ -1,5 +1,6 @@
 ./
 ./hw
+./lcd
 ./rtos
 ./libopencm3/include
 /usr/include/newlib

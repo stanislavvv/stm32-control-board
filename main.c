@@ -18,6 +18,9 @@
     /**
      * @addtogroup rtos
      * stuff for freertos - catch stack overflow error and hang
+     *
+     * @addtogroup rtos
+     * @{
      */
     extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
 
@@ -28,6 +31,7 @@
         ( void ) pcTaskName;
         for (;;) { };
     }
+    ///@}
 #endif
 
 /**

@@ -9,6 +9,11 @@
  *
  */
 
+/**
+ * @defgroup rtos Rtos-related
+ * FreeRTOS-related functions
+ */
+
 #ifndef SHELL_H_
 
 #include <stdint.h>
@@ -73,8 +78,12 @@ void shell_send_result(void);
 
 /**
  * @brief shell processing rtos task
+ *
+ * @addtogroup rtos
+ * @{
  */
 void shell_task(void *args __attribute((unused)));
+///@}
 
 #endif // ifdef SHELL_H_
 ///@}

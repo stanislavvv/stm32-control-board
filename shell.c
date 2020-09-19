@@ -19,7 +19,7 @@
     #include "task.h"
     #include "hw.h"
     #include "hw/spi.h"
-    #include "lcd.h"
+    #include "lcd/lcd.h"
 #else
     #include <stddef.h>
 #endif
@@ -107,6 +107,8 @@ void args_cmd( char* argv[], uint16_t argc )
 /**
  * @brief show rtos heap usage
  * @param argv, argc - any may be given, none used
+ *
+ * @ingroup rtos
  */
 static inline void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
 {
@@ -305,9 +307,9 @@ void shell_send_result(void)
 }
 
 /**
- * @addtogroup rtos
  * @brief shell processing rtos task
- * @param args - no parameters used
+ *
+ * @ingroup rtos
  */
 void shell_task(void *args __attribute((unused)))
 {

@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 
-typedef struct //vera++ blamed for single space
+typedef struct
 {
     const uint8_t width;
     uint8_t height;

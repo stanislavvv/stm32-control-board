@@ -16,6 +16,7 @@ endif
 ifdef DOMAKE
 TOCHECK := $(wildcard *.c *.h *.cpp *.cxx)
 TOCHECK += $(wildcard hw/*.c hw/*.h hw/*.cpp hw/*.cxx)
+TOCHECK += $(wildcard lcd/*.c lcd/*.h lcd/*.cpp lcd/*.cxx)
 PREFIX		?= arm-none-eabi
 
 OPENCM3_DIR 	:= $(abspath $(TOP_DIR))/libopencm3

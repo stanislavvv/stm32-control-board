@@ -18,7 +18,8 @@
 #include "hw.h"
 
 #if HW_SPI==0 // soft "spi"
-/**
+
+/* * <- space fix docs generation bug
  * @brief shift out byte to port with clock
  * @param bitOrder - 1 - LSB first, 0 - MSB first
  * @param val - data to shift
@@ -56,18 +57,18 @@ void shiftOut_lcd(uint8_t bitOrder, uint8_t val)
             }
             val <<= 1;
         }
-        delay_x3(10);
+        delay_nop(10);
         gpio_set(LCD_SPI_PORT, LCD_SCK);
-        delay_x3(20);
+        delay_nop(20);
         gpio_clear(LCD_SPI_PORT, LCD_SCK);
-        delay_x3(10);
+        delay_nop(10);
     }
     taskEXIT_CRITICAL();
 }
 
 #endif
 
-/**
+/* *
  * @brief send buffer to spi with timeout
  * @param spi  spi port, ex. SPI1 in libopencm3
  * @param buffer  buffer of bytes for sending

@@ -8,11 +8,23 @@
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  *
  */
+/**
+ * @defgroup spi SPI
+ * SPI-related functions and definitions
+ */
+/**
+ * @ingroup spi
+ * @{
+ */
+
+#ifndef HW_SPI_H_
+#define HW_SPI_H_
 
 #include <libopencm3/stm32/spi.h>
 #include "hw.h"
 
 #if HW_SPI==1
+
     /**
      * @brief write to spi macro or function
      * @param spi - for example SPI1
@@ -34,6 +46,7 @@
     static inline uint16_t SPI_TX_READY(uint32_t spi) { return (SPI_SR(spi) & SPI_SR_TXE); }
 
 #else // HW_SPI==0
+
     /**
      * @brief shift out byte to port with clock
      * @param bitOrder - 1 - LSB first, 0 - MSB first
@@ -76,5 +89,6 @@ void shell_spi_cmd(char* argv[], uint16_t argc);
  */
 void init_spi(void);
 
-
+#endif
+///@}
 ///@}
