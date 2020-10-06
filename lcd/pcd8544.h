@@ -15,6 +15,9 @@
 
 #include "bool.h"
 
+/// delay between bytes - parameter for delay_nop()
+#define PCD8544_BYTE_DELAY 50
+
 /// number of byte rows on screen
 #define PCD8544_MAX_NUM_ROWS 6
 

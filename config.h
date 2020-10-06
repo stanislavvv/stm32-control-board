@@ -70,12 +70,16 @@
 #if LCD_TYPE==8544
     #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE ///< LCD SPI clock polarity
     #define LCD_CLK_PHA SPI_CR1_CPHA_CLK_TRANSITION_1   ///< LCD SPI clock phase
+    #define LCD_CS_PORT  GPIOA  ///< LCD CS(SS) port
+    #define LCD_CS_PIN   GPIO6  ///< LCD CS(SS) pin
 #endif
 
+#define LCD_BYTEORDER SPI_CR1_MSBFIRST
+
 #define LCD_RST_PORT GPIOA ///< LCD RST port
-#define LCD_RST_PIN  GPIO2 ///< LCD RST pin
+#define LCD_RST_PIN  GPIO3 ///< LCD RST pin
 #define LCD_DC_PORT  GPIOA ///< LCD DC port
-#define LCD_DC_PIN   GPIO3 ///< LCD DC pin
+#define LCD_DC_PIN   GPIO4 ///< LCD DC pin
 
 // SPI1
 #define LCD_RCC      RCC_SPI1 ///< LCD SPI clock
@@ -94,7 +98,4 @@
 #define LCD_SDA      GPIO14   ///< LCD SPI SDA(MOSI) pin
 */
 
-/* comment them, if CS/SS not used */
-#define LCD_CS_PORT  GPIOA  ///< LCD CS(SS) port
-#define LCD_CS_PIN   GPIO4  ///< LCD CS(SS) pin
 ///@}

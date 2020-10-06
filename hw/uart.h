@@ -9,7 +9,7 @@
  *
  */
 /**
- * @defgroup serial Serial communicatios
+ * @defgroup serial Serial communications
  * Serial port-related functions
  */
 /**
@@ -40,10 +40,7 @@
  * @param c - char for sending to uart
  * @return none
  */
-static inline void send_char(char c)
-{
-    usart_send_blocking(UART, (uint16_t)(c));
-}
+#define send_char(c) usart_send_blocking(UART, (uint16_t)(c))
 
 /**
  * @brief send null-terminated string to uart
@@ -53,7 +50,7 @@ static inline void send_char(char c)
 void send_string(const char s[]);
 
 /**
- * @brief send named number in human-readable binary
+ * @brief send named number in human-readable binary format
  * @param name - name (max char[10])
  * @param data - sending number up to uint32_t
  * @param nibbles - size of data in nibbles, 1..8

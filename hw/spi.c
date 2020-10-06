@@ -17,6 +17,10 @@
 #include "hw/spi.h"
 #include "hw.h"
 
+// for debug purposes
+uint16_t lcd_clk_pol = LCD_CLK_POL;
+uint16_t lcd_clk_pha = LCD_CLK_PHA;
+
 #if HW_SPI==0 // soft "spi"
 
 /* * <- space fix docs generation bug
@@ -24,7 +28,7 @@
  * @param bitOrder - 1 - LSB first, 0 - MSB first
  * @param val - data to shift
  *
- * adapted from wiring shiftOut
+ * adapted from wiring shiftOut, softspi realization for 8-bit tx
  */
 void shiftOut_lcd(uint8_t bitOrder, uint8_t val)
 {
@@ -33,7 +37,7 @@ void shiftOut_lcd(uint8_t bitOrder, uint8_t val)
     taskENTER_CRITICAL();
     for (i = 0; i < 8; i++)
     {
-        if (bitOrder == 1)
+        if (bitOrder != 0)
         {
             if (val & 1)
             {
@@ -111,6 +115,7 @@ boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
             }
         }
     }
+    while (SPI_BUSY(spi)) { };
     return TRUE;
 }
 
@@ -123,7 +128,7 @@ void init_spi(void)
 {
     /* SCK, MOSI(SDA) */
 #if HW_SPI==1
-    rcc_periph_clock_enable(LCD_RCC);
+    rcc_periph_clock_enable(LCD_RCC); // enable LCD SPI clock
     gpio_set_mode(LCD_SPI_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, LCD_SCK | LCD_SDA);
 
@@ -143,7 +148,7 @@ void init_spi(void)
      *
      * LSBFIRST = 0 (MSB first)
      * SPE = 0 (SPI enable) -- switch to 1 at the end of init
-     * BR[2:0] = 101 (fpclk/64)
+     * BR[2:0] = 101 (fpclk/64), 111 (fpclc/256)
      * MSTR = 1 (spi master)
      * CPOL = 0/1 (clock polarity 1 when idle)
      * CPHA = 0/1 (second clock transition is the first data capture)
@@ -169,12 +174,15 @@ void init_spi(void)
     reg_cr1 = (
             SPI_CR1_BIDIMODE |
             SPI_CR1_BIDIOE |
+            LCD_BYTEORDER |
             SPI_CR1_SSM |
             SPI_CR1_SSI |
             SPI_CR1_BAUDRATE_FPCLK_DIV_256 |
             SPI_CR1_MSTR |
-            LCD_CLK_POL |
-            LCD_CLK_PHA
+//            LCD_CLK_POL |
+//            LCD_CLK_PHA
+            lcd_clk_pol |
+            lcd_clk_pha
           );
     SPI_I2SCFGR(LCD_SPI) = reg_i2scfgr;
     SPI_CR2(LCD_SPI) = reg_cr2;
@@ -193,7 +201,7 @@ void init_spi(void)
             GPIO_CNF_OUTPUT_PUSHPULL, LCD_RST_PIN);
     gpio_set(LCD_RST_PORT, LCD_RST_PIN); // RST inactive
 
-    /* DC */
+    /* DC == Data/Command */
     gpio_set_mode(LCD_DC_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_PUSHPULL, LCD_DC_PIN);
 
@@ -202,7 +210,30 @@ void init_spi(void)
     gpio_set_mode(LCD_CS_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_PUSHPULL, LCD_CS_PIN);
     gpio_set(LCD_CS_PORT, LCD_CS_PIN); // CS inactive
+    gpio_set(LCD_CS_PORT, LCD_CS_PIN); // RST inactive
 #endif
+}
+
+/**
+ * @brief dump five spi regs
+ *
+ * Dump content of five spi regs from LCD_SPI to serial console.
+ *
+ * Side effects - as from read SPI_SR (clear OVR bit)
+ */
+void spi_dump_regs(void)
+{
+    send_string("spi regs:\r\n");
+    uint32_t cr1 = SPI_CR1(LCD_SPI);
+    uint32_t cr2 = SPI_CR2(LCD_SPI);
+    uint32_t sr = SPI_SR(LCD_SPI);
+    uint32_t dr = SPI_DR(LCD_SPI);
+    uint32_t i2scfgr = SPI_I2SCFGR(LCD_SPI);
+    send_named_bin("CR1", cr1, 4);
+    send_named_bin("CR2", cr2, 4);
+    send_named_bin(" SR", sr, 4);
+    send_named_bin(" DR", dr, 4);
+    send_named_bin("i2s", i2scfgr, 4);
 }
 
 ///@}

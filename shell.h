@@ -10,8 +10,8 @@
  */
 
 /**
- * @defgroup rtos Rtos-related
- * FreeRTOS-related functions
+ * @defgroup hwrtos_shell rtos or hardware
+ * FreeRTOS or hardware-related functions
  */
 
 #ifndef SHELL_H_
@@ -79,7 +79,7 @@ void shell_send_result(void);
 /**
  * @brief shell processing rtos task
  *
- * @addtogroup rtos
+ * @addtogroup hwrtos_shell
  * @{
  */
 void shell_task(void *args __attribute((unused)));

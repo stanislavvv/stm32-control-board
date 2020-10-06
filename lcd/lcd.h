@@ -12,6 +12,9 @@
 #ifndef HW_LCD_H_
 #define HW_LCD_H_
 
+// for defines
+#include <libopencm3/stm32/spi.h>
+
 #include "config.h"
 #include "hw.h"
 
@@ -31,6 +34,7 @@
      */
     #define set_pixel(x, y, color) ST7789_DrawPixel(x, y, color)
 
+    #define LCD_SELECT_CLK() DBG("not implemented for this display\r\n")
 
 #elif LCD_TYPE==8544  // lcd nokia
 
@@ -60,28 +64,65 @@
 
     static void LCD_TEST(void)
     {
-        DBG("init...");
+        DBG("init... ");
         PCD8544_init();
-//        PCD8544_test();
-/*        DBG("per-pixel fill... ");
+        DBG("testing... ");
+        PCD8544_test();
+        DBG("per-line fill... ");
         for (uint16_t x=0; x<LCD_WIDTH; x++)
         {
             for (uint16_t y=0; y<LCD_HEIGHT; y++)
             {
                 set_pixel(x, y, 1);
-                PCD8544_update();
             }
+            PCD8544_update();
         }
-        DBG("per-pixel clear... ");
+        delay_ms(2000);
+        DBG("per-line clear... ");
         for (uint16_t x=0; x<LCD_WIDTH; x++)
         {
             for (uint16_t y=0; y<LCD_HEIGHT; y++)
             {
                 set_pixel(x, y, 0);
-                PCD8544_update();
             }
+            PCD8544_update();
         }
-        PCD8544_test();*/
+        PCD8544_test();
+    }
+
+    static void LCD_SELECT_CLK(void)
+    {
+        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE;
+        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_1;
+        DBG("pol 0, pha 1\r\n");
+        init_spi();
+        PCD8544_init();
+        PCD8544_print("pol 0, pha 1");
+        delay_ms(5000);
+
+        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE;
+        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_2;
+        DBG("pol 0, pha 2\r\n");
+        init_spi();
+        PCD8544_init();
+        PCD8544_print("pol 0, pha 2");
+        delay_ms(5000);
+
+        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE;
+        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_1;
+        DBG("pol 1, pha 1\r\n");
+        init_spi();
+        PCD8544_init();
+        PCD8544_print("pol 1, pha 1");
+        delay_ms(5000);
+
+        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE;
+        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_2;
+        DBG("pol 1, pha 2\r\n");
+        init_spi();
+        PCD8544_init();
+        PCD8544_print("pol 1, pha 2");
+        delay_ms(5000);
     }
 
 #endif
@@ -180,10 +221,25 @@ static inline void shell_lcd_cmd(char* argv[], uint16_t argc)
 {
     (void)(argv);
     (void)(argc);
-    send_string("lcd test... ");
+    DBG("lcd test...\r\n");
     LCD_TEST();
-    send_string("end\r\n");
+    DBG("end\r\n");
 }
+
+/**
+ * @brief lcd check clk polarity and phase shell command
+ * @param argv, argc 'test' will be test spi transfer
+ */
+/*
+static inline void shell_lcdclk_cmd(char* argv[], uint16_t argc)
+{
+    (void)(argv);
+    (void)(argc);
+    DBG("lcd check clk...\r\n");
+    LCD_SELECT_CLK();
+    DBG("end\r\n");
+}
+*/
 
 #endif // ifndef HW_LCD_H_
 

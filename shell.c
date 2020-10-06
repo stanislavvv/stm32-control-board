@@ -108,7 +108,7 @@ void args_cmd( char* argv[], uint16_t argc )
  * @brief show rtos heap usage
  * @param argv, argc - any may be given, none used
  *
- * @ingroup rtos
+ * @ingroup hwrtos_shell
  */
 static inline void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
 {
@@ -138,6 +138,7 @@ static inline void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
 
 // forward definition
 void shell_ls_cmd(char* argv[], uint16_t argc);
+void shell_spi_cmd(char* argv[], uint16_t argc);
 
 // end of internal commands
 
@@ -150,6 +151,7 @@ static shell_cmd_def_t cmds[] =
     {"free",      shell_rtos_heap_cmd},
     {"spi",       shell_spi_cmd},
     {"lcd",       shell_lcd_cmd},
+//    {"lcdclk",    shell_lcdclk_cmd},
 #else
     {"args",      args_cmd},
 #endif
@@ -289,6 +291,66 @@ void shell_process(void)
 // hardware and rtos related functions
 
 /**
+ * @brief show spi registers and may test spi transfer
+ * @param argv, argc 'test' will be test spi transfer
+ */
+void shell_spi_cmd(char* argv[], uint16_t argc)
+{
+    if (argc > 0)
+    {
+        if (compare_strings(argv[0], "test"))
+        {
+            /*
+            we send string directly to uart
+            for indication of current value
+            */
+            send_string("sending test sequence 0...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0);
+            }
+            spi_dump_regs();
+            send_string("0xff...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0xff);
+            }
+            spi_dump_regs();
+            send_string("0x55...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0x55);
+            }
+            spi_dump_regs();
+            send_string("0xAA...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0xAA);
+            }
+            spi_dump_regs();
+            send_string("0x0F...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0x0F);
+            }
+            spi_dump_regs();
+            send_string("0xF0...\r\n");
+            for (uint16_t i = 0; i<=65534; i++)
+            {
+                SPI_SEND(LCD_SPI, 0xF0);
+            }
+            spi_dump_regs();
+        }
+    }
+    else
+    {
+        spi_dump_regs();
+    }
+    shell_out_buffer_add("end\r\n");
+}
+
+
+/**
  * @brief send content of {@link #shell_output_buffer} to uart
  * will send to uart {@link #shell_output_buffer} and clean
  * {@link #shell_input_buffer} and {@link #shell_output_buffer}
@@ -309,7 +371,7 @@ void shell_send_result(void)
 /**
  * @brief shell processing rtos task
  *
- * @ingroup rtos
+ * @ingroup hwrtos_shell
  */
 void shell_task(void *args __attribute((unused)))
 {

@@ -21,9 +21,11 @@
  */
 static void ST7789_WriteCommand(uint8_t cmd)
 {
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_Select();
     ST7789_DC_Clr();
     SPI_SEND(LCD_SPI, cmd);
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_UnSelect();
 }
 
@@ -35,6 +37,7 @@ static void ST7789_WriteCommand(uint8_t cmd)
  */
 static void ST7789_WriteData(uint8_t *buff, size_t buff_size)
 {
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_Select();
     ST7789_DC_Set();
 
@@ -48,6 +51,7 @@ static void ST7789_WriteData(uint8_t *buff, size_t buff_size)
         buff_size -= chunk_size;
     }
 
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_UnSelect();
 }
 /**
@@ -57,9 +61,11 @@ static void ST7789_WriteData(uint8_t *buff, size_t buff_size)
  */
 static void ST7789_WriteSmallData(uint8_t data)
 {
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_Select();
     ST7789_DC_Set();
     SPI_SEND(LCD_SPI, data);
+    while (SPI_BUSY(LCD_SPI)) { };
     ST7789_UnSelect();
 }
 
@@ -132,18 +138,26 @@ void ST7789_Init(void)
     ST7789_RST_Clr();
     delay_ms(25);
     ST7789_RST_Set();
-    delay_ms(50);
+    delay_ms(200);
+
+    ST7789_WriteCommand(ST7789_SLPOUT);
+    delay_ms(10);
 
     ST7789_WriteCommand(ST7789_COLMOD);     //      Set color mode
     ST7789_WriteSmallData(ST7789_COLOR_MODE_16bit);
+    delay_ms(10);
+
+/*
     ST7789_WriteCommand(0xB2);                  //      Porch control
     {
         uint8_t data[] = {0x0C, 0x0C, 0x00, 0x33, 0x33};
         ST7789_WriteData(data, sizeof(data));
     }
+*/
     ST7789_SetRotation(ST7789_ROTATION);    //      MADCTL (Display Rotation)
 
     /* Internal LCD Voltage generator settings */
+/* unknown commands
     ST7789_WriteCommand(0XB7);              //      Gate Control
     ST7789_WriteSmallData(0x35);            //      Default value
     ST7789_WriteCommand(0xBB);              //      VCOM setting
@@ -161,8 +175,10 @@ void ST7789_Init(void)
     ST7789_WriteCommand (0xD0);             //      Power control
     ST7789_WriteSmallData (0xA4);               //      Default value
     ST7789_WriteSmallData (0xA1);               //      Default value
+*/
     /**************** Division line ****************/
 
+/*
     ST7789_WriteCommand(0xE0);
     {
         uint8_t data[] = {0xD0, 0x04, 0x0D, 0x11, 0x13, 0x2B, 0x3F,
@@ -178,15 +194,18 @@ void ST7789_Init(void)
                          };
         ST7789_WriteData(data, sizeof(data));
     }
+*/
     ST7789_WriteCommand (ST7789_INVON);     //      Inversion ON
-    ST7789_WriteCommand (ST7789_SLPOUT);    //      Out of sleep mode
+    delay_ms(10);
+//    ST7789_WriteCommand (ST7789_SLPOUT);    //      Out of sleep mode
     ST7789_WriteCommand (ST7789_NORON);         //      Normal Display on
+    delay_ms(10);
     ST7789_WriteCommand (ST7789_DISPON);    //      Main screen turned on
+    delay_ms(10);
 
-    delay_ms(50);
-    send_string("filling black... ");
+    DBG("filling black... ");
     ST7789_Fill_Color(BLACK);                   //      Fill with Black.
-    send_string("end\r\n");
+    DBG("end\r\n");
 }
 
 /**
@@ -733,7 +752,7 @@ void ST7789_Test(void)
 //    for (uint8_t i = 0; i <= 10; i++)
 //    {
     ST7789_Fill_Color(WHITE);
-    send_string("speed test\r\n");
+    DBG("speed test\r\n");
     delay_ms(1000);
     ST7789_WriteString(10, 20, "Speed Test", Font_11x18, RED, WHITE);
     delay_ms(1000);
@@ -751,14 +770,14 @@ void ST7789_Test(void)
     ST7789_Fill_Color(WHITE);
     delay_ms(500);
 
-    send_string("font test\r\n");
+    DBG("font test\r\n");
     ST7789_WriteString(10, 10, "Font test.", Font_16x26, GBLUE, WHITE);
     ST7789_WriteString(10, 50, "Hello Steve!", Font_7x10, RED, WHITE);
     ST7789_WriteString(10, 75, "Hello Steve!", Font_11x18, YELLOW, WHITE);
     ST7789_WriteString(10, 100, "Hello Steve!", Font_16x26, MAGENTA, WHITE);
     delay_ms(1000);
 
-    send_string("geometry... ");
+    DBG("geometry... ");
     ST7789_Fill_Color(RED);
     ST7789_WriteString(10, 10, "Rect./Line.", Font_11x18, YELLOW, RED);
     ST7789_DrawRectangle(30, 30, 100, 100, WHITE);
@@ -789,7 +808,7 @@ void ST7789_Test(void)
     ST7789_WriteString(10, 10, "Filled Tri", Font_11x18, YELLOW, RED);
     ST7789_DrawFilledTriangle(30, 30, 30, 70, 60, 40, WHITE);
     delay_ms(1000);
-    send_string("end\r\n");
+    DBG("end\r\n");
 
     //      If FLASH cannot storage anymore datas, please delete codes below.
     ST7789_Fill_Color(WHITE);

@@ -45,6 +45,7 @@ TGT_CFLAGS	+= -Wlogical-op -Wconversion -Wsign-conversion -Wcast-align
 TGT_CFLAGS	+= -Wdouble-promotion -Wundef -Wunused-parameter -pedantic
 TGT_CFLAGS	+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 TGT_CFLAGS	+= -fno-common -ffunction-sections -fdata-sections -fstack-usage
+TGT_CFLAGS	+= -fstack-protector
 TGT_CFLAGS	+= -I$(OPENCM3_DIR)/include
 
 TGT_CXXFLAGS	+= $(OPT) $(CXXSTD)
