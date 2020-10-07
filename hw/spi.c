@@ -9,6 +9,7 @@
  *
  */
 
+#ifdef LCD_SPI
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/spi.h>
@@ -236,4 +237,5 @@ void spi_dump_regs(void)
     send_named_bin("i2s", i2scfgr, 4);
 }
 
+#endif // ifdef LCD_SPI
 ///@}

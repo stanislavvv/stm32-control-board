@@ -20,6 +20,7 @@
 #ifndef HW_SPI_H_
 #define HW_SPI_H_
 
+#ifdef LCD_SPI
 #include <libopencm3/stm32/spi.h>
 #include "hw.h"
 
@@ -104,5 +105,6 @@ void init_spi(void);
  */
 void spi_dump_regs(void);
 
+#endif // ifdef LCD_SPI
 ///@}
 ///@}

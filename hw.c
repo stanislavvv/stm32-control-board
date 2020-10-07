@@ -84,11 +84,13 @@ void init_hw(void)
     send_string("uart initalized\r\n");
 #endif
 
+#ifdef LCD_SPI
     init_spi();
 #if BOOT_VERBOSE==1
     send_string("spi enabled:\r\n");
     send_named_bin("CR1 actual", SPI_CR1(LCD_SPI), 4);
 #endif
+#endif // LCD_SPI
 
 #if BOOT_VERBOSE==1
     send_string("hw init end\r\n");

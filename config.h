@@ -60,7 +60,19 @@
  * - 8544 for PCD8544 (nokia screen)
  */
 //#define LCD_TYPE 7789 // st7789
-#define LCD_TYPE 8544 // nokia lcd
+//#define LCD_TYPE 8544 // nokia lcd
+#define LCD_TYPE 44780 // text lcd
+
+#if LCD_TYPE==44780
+    #define HD44780_PORT GPIOB
+    #define HD44780_E           GPIO10
+    #define HD44780_RS          GPIO11
+    #define HD44780_D4          GPIO12
+    #define HD44780_D5          GPIO13
+    #define HD44780_D6          GPIO14
+    #define HD44780_D7          GPIO15
+    #define HD44780_BACKLIGHT   GPIO1
+#endif
 
 #if LCD_TYPE==7789
     #define LCD_CLK_POL SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE ///< LCD SPI clock polarity
@@ -74,28 +86,30 @@
     #define LCD_CS_PIN   GPIO6  ///< LCD CS(SS) pin
 #endif
 
-#define LCD_BYTEORDER SPI_CR1_MSBFIRST
+#if ( (LCD_TYPE==7789) || (LCD_TYPE==8544) ) // graphic LCD
+    #define LCD_BYTEORDER SPI_CR1_MSBFIRST
 
-#define LCD_RST_PORT GPIOA ///< LCD RST port
-#define LCD_RST_PIN  GPIO3 ///< LCD RST pin
-#define LCD_DC_PORT  GPIOA ///< LCD DC port
-#define LCD_DC_PIN   GPIO4 ///< LCD DC pin
+    #define LCD_RST_PORT GPIOA ///< LCD RST port
+    #define LCD_RST_PIN  GPIO3 ///< LCD RST pin
+    #define LCD_DC_PORT  GPIOA ///< LCD DC port
+    #define LCD_DC_PIN   GPIO4 ///< LCD DC pin
 
-// SPI1
-#define LCD_RCC      RCC_SPI1 ///< LCD SPI clock
-#define LCD_SPI      SPI1     ///< LCD SPI device
-#define LCD_SPI_PORT GPIOA    ///< LCD SPI port
-#define LCD_SCK      GPIO5    ///< LCD SPI SCK pin
-#define LCD_SDA      GPIO7    ///< LCD SPI SDA(MOSI) pin
+    // SPI1
+    #define LCD_RCC      RCC_SPI1 ///< LCD SPI clock
+    #define LCD_SPI      SPI1     ///< LCD SPI device
+    #define LCD_SPI_PORT GPIOA    ///< LCD SPI port
+    #define LCD_SCK      GPIO5    ///< LCD SPI SCK pin
+    #define LCD_SDA      GPIO7    ///< LCD SPI SDA(MOSI) pin
 
 
-/*
-// SPI2
-#define LCD_RCC      RCC_SPI2 ///< LCD SPI clock
-#define LCD_SPI      SPI2     ///< LCD SPI device
-#define LCD_SPI_PORT GPIOB    ///< LCD SPI device
-#define LCD_SCK      GPIO13   ///< LCD SPI SCK pin
-#define LCD_SDA      GPIO14   ///< LCD SPI SDA(MOSI) pin
-*/
+    /*
+    // SPI2
+    #define LCD_RCC      RCC_SPI2 ///< LCD SPI clock
+    #define LCD_SPI      SPI2     ///< LCD SPI device
+    #define LCD_SPI_PORT GPIOB    ///< LCD SPI device
+    #define LCD_SCK      GPIO13   ///< LCD SPI SCK pin
+    #define LCD_SDA      GPIO14   ///< LCD SPI SDA(MOSI) pin
+    */
+#endif // graphic LCD
 
 ///@}

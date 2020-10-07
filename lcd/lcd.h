@@ -13,13 +13,13 @@
 #define HW_LCD_H_
 
 // for defines
-#include <libopencm3/stm32/spi.h>
 
 #include "config.h"
 #include "hw.h"
 
 #if LCD_TYPE==7789  // lcd st7789
 
+    #include <libopencm3/stm32/spi.h>
     #include "st7789.h"
 
     #define LCD_HEIGHT ST7789_HEIGHT ///< height of LCD in pixels
@@ -34,11 +34,10 @@
      */
     #define set_pixel(x, y, color) ST7789_DrawPixel(x, y, color)
 
-    #define LCD_SELECT_CLK() DBG("not implemented for this display\r\n")
-
 #elif LCD_TYPE==8544  // lcd nokia
 
-#include "pcd8544.h"
+    #include <libopencm3/stm32/spi.h>
+    #include "pcd8544.h"
 
     // 8 pix in row
     #define LCD_HEIGHT PCD8544_MAX_NUM_ROWS*8 ///< height of LCD in pixels
@@ -89,45 +88,23 @@
         }
         PCD8544_test();
     }
+#elif LCD_TYPE==44780 // textmode LCD
 
-    static void LCD_SELECT_CLK(void)
+    #include "hd44780.h"
+    static void LCD_INIT(void)
     {
-        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE;
-        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_1;
-        DBG("pol 0, pha 1\r\n");
-        init_spi();
-        PCD8544_init();
-        PCD8544_print("pol 0, pha 1");
-        delay_ms(5000);
-
-        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE;
-        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_2;
-        DBG("pol 0, pha 2\r\n");
-        init_spi();
-        PCD8544_init();
-        PCD8544_print("pol 0, pha 2");
-        delay_ms(5000);
-
-        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE;
-        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_1;
-        DBG("pol 1, pha 1\r\n");
-        init_spi();
-        PCD8544_init();
-        PCD8544_print("pol 1, pha 1");
-        delay_ms(5000);
-
-        lcd_clk_pol = SPI_CR1_CPOL_CLK_TO_1_WHEN_IDLE;
-        lcd_clk_pha = SPI_CR1_CPHA_CLK_TRANSITION_2;
-        DBG("pol 1, pha 2\r\n");
-        init_spi();
-        PCD8544_init();
-        PCD8544_print("pol 1, pha 2");
-        delay_ms(5000);
+        hd44780_init_gpio();
+        hd44780_init_4bit_mode();
+    }
+    static void LCD_TEST(void)
+    {
+        hd44780_write_string_4d("Hello world! Hello LCD!");
     }
 
-#endif
+#endif //LCD_TYPE==
 
-#ifdef LCD_TYPE
+#if ( (LCD_TYPE==7789) || (LCD_TYPE==8544) ) //LCD_TYPE is graphic
+
 /**
  * @brief draw line on lcd screen cache
  * @param x0,y0 - line begin coordinates
@@ -211,7 +188,7 @@ static inline void draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color
         draw_8px(xc, yc, x, y, color);
     }
 }
-#endif // ifdef LCD_TYPE
+#endif // LCD_TYPE is graphic
 
 /**
  * @brief lcd test shell command
@@ -222,24 +199,10 @@ static inline void shell_lcd_cmd(char* argv[], uint16_t argc)
     (void)(argv);
     (void)(argc);
     DBG("lcd test...\r\n");
+    LCD_INIT();
     LCD_TEST();
     DBG("end\r\n");
 }
-
-/**
- * @brief lcd check clk polarity and phase shell command
- * @param argv, argc 'test' will be test spi transfer
- */
-/*
-static inline void shell_lcdclk_cmd(char* argv[], uint16_t argc)
-{
-    (void)(argv);
-    (void)(argc);
-    DBG("lcd check clk...\r\n");
-    LCD_SELECT_CLK();
-    DBG("end\r\n");
-}
-*/
 
 #endif // ifndef HW_LCD_H_
 

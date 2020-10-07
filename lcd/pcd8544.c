@@ -11,6 +11,8 @@
  *
  */
 
+#ifdef LCD_SPI
+
 #include <libopencm3/stm32/gpio.h>
 #include "bool.h"
 #include "config.h"
@@ -456,4 +458,5 @@ void PCD8544_test(void)
     PCD8544_update();
 }
 
+#endif // ifdef LCD_SPI
 /** @}*/

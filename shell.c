@@ -46,7 +46,7 @@ typedef struct
     shell_cmd_handler_t cmd; ///< command function
 } shell_cmd_def_t;
 
-// internal commands
+// internal commands begin
 /**
  * @brief send 'Hello World!!!' string as shell output
  * @param argv, argc -- any strings or none
@@ -149,7 +149,9 @@ static shell_cmd_def_t cmds[] =
 #ifndef UNITTEST
 // hardware and rtos related commands
     {"free",      shell_rtos_heap_cmd},
+#ifdef LCD_SPI
     {"spi",       shell_spi_cmd},
+#endif
     {"lcd",       shell_lcd_cmd},
 //    {"lcdclk",    shell_lcdclk_cmd},
 #else
@@ -290,10 +292,12 @@ void shell_process(void)
 #ifndef UNITTEST
 // hardware and rtos related functions
 
+#ifdef LCD_SPI
 /**
  * @brief show spi registers and may test spi transfer
  * @param argv, argc 'test' will be test spi transfer
  */
+///@todo move this command to spi module
 void shell_spi_cmd(char* argv[], uint16_t argc)
 {
     if (argc > 0)
@@ -348,6 +352,7 @@ void shell_spi_cmd(char* argv[], uint16_t argc)
     }
     shell_out_buffer_add("end\r\n");
 }
+#endif
 
 
 /**
@@ -357,9 +362,6 @@ void shell_spi_cmd(char* argv[], uint16_t argc)
  */
 void shell_send_result(void)
 {
-#if SHELL_ECHO==1
-    send_string("\r\n"); // shift output down
-#endif
     send_string(shell_output_buffer);
     /* cleaning */
     shell_out_lastchar = 0;
@@ -384,7 +386,10 @@ void shell_task(void *args __attribute((unused)))
 #if SHELL_ECHO==1
             send_char(c);
 #endif
-//ToDo: refactor this if
+
+/** @todo potential uart buffer overrun here, need to refactor this condition
+ * to not call taskYIELD() before end of line
+ */
             if (c != 0xa && c != 0xd && shell_in_buffer_add(c))
             {
                 taskYIELD();
@@ -394,6 +399,9 @@ void shell_task(void *args __attribute((unused)))
                 // at end of line or buffer overflow - process string
                 // and send result.
                 shell_process();
+#if SHELL_ECHO==1
+                send_string("\r\n"); // shift output down
+#endif
                 shell_send_result();
             }
         }

@@ -9,6 +9,8 @@
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  */
 
+#ifdef LCD_SPI
+
 #include "st7789.h"
 #include "config.h"
 #include "hw.h"
@@ -817,5 +819,6 @@ void ST7789_Test(void)
 //    }
 }
 
+#endif // ifdef LCD_SPI
 
 /** @}*/

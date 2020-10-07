@@ -13,6 +13,8 @@
 #ifndef PCD8544_H_
 #define PCD8544_H_
 
+#ifdef LCD_SPI
+
 #include "bool.h"
 
 /// delay between bytes - parameter for delay_nop()
@@ -110,6 +112,8 @@ char PCD8544_px_off(uint16_t x, uint16_t y);
  * @brief PCD8544 lcd test
  */
 void PCD8544_test(void);
+
+#endif // ifdef LCD_SPI
 
 #endif
 

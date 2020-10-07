@@ -12,6 +12,8 @@
 #ifndef ST7789_H_
 #define ST7789_H_
 
+#ifdef LCD_SPI
+
 #include "fonts.h"
 #include "config.h"
 
@@ -252,6 +254,8 @@ void ST7789_Test(void);
 #ifndef ST7789_ROTATION
     #error You should at least choose a display rotation!
 #endif
+
+#endif // ifdef LCD_SPI
 
 #endif
 

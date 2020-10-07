@@ -51,11 +51,12 @@ static inline void delay_ms(uint16_t ms)
 }
 
 /**
- * @brief delay for critical section
+ * @brief delay for critical section (without rtos functions)
  * @param dly delay value
  */
 static inline void delay_nop(uint32_t dly)
 {
+    ///@todo calibrate this delay in us/ms
     for (uint32_t i = 0; i < dly; i++)    /* Wait a bit. */
         { __asm__("nop"); }
 }
