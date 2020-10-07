@@ -9,12 +9,12 @@
  * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
  */
 
-#ifdef LCD_SPI
-
 #include "st7789.h"
 #include "config.h"
 #include "hw.h"
 #include "hw/spi.h"
+
+#ifdef LCD_SPI
 
 /**
  * @brief Write command to ST7789 controller
@@ -818,6 +818,10 @@ void ST7789_Test(void)
     delay_ms(3000);
 //    }
 }
+
+#else
+// fix -Wpedantic
+void ST7789_Init(void) { }
 
 #endif // ifdef LCD_SPI
 

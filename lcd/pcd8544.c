@@ -11,14 +11,14 @@
  *
  */
 
-#ifdef LCD_SPI
-
 #include <libopencm3/stm32/gpio.h>
 #include "bool.h"
 #include "config.h"
 #include "hw.h"
 #include "hw/spi.h"
 #include "pcd8544.h"
+
+#ifdef LCD_SPI
 
 /// font 5x8, ascii-only, one byte - one vertical line
 const char PCD8544_font5x8[][FONT_WIDTH] =
@@ -458,5 +458,11 @@ void PCD8544_test(void)
     PCD8544_update();
 }
 
+#else
+// fix -Wpedantic
+void PCD8544_init(void) { }
+
 #endif // ifdef LCD_SPI
+
+
 /** @}*/

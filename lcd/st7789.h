@@ -12,10 +12,10 @@
 #ifndef ST7789_H_
 #define ST7789_H_
 
-#ifdef LCD_SPI
-
 #include "fonts.h"
 #include "config.h"
+
+#ifdef LCD_SPI
 
 /**
  * if you predefined pin names in CubeMX,
@@ -254,6 +254,10 @@ void ST7789_Test(void);
 #ifndef ST7789_ROTATION
     #error You should at least choose a display rotation!
 #endif
+
+#else
+// fix -Wpedantic
+void ST7789_Init(void);
 
 #endif // ifdef LCD_SPI
 

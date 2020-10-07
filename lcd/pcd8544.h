@@ -36,11 +36,6 @@
 extern const char PCD8544_font5x8[][FONT_WIDTH];
 
 /**
- * @brief lcd PCD8544 init
- */
-void PCD8544_init(void);
-
-/**
  * @brief send command char to lcd PCD8544
  * @param data - command data
  */
@@ -114,6 +109,11 @@ char PCD8544_px_off(uint16_t x, uint16_t y);
 void PCD8544_test(void);
 
 #endif // ifdef LCD_SPI
+
+/**
+ * @brief lcd PCD8544 init
+ */
+void PCD8544_init(void);
 
 #endif
 

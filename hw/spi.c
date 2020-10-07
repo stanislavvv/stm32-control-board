@@ -9,7 +9,6 @@
  *
  */
 
-#ifdef LCD_SPI
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/spi.h>
@@ -17,6 +16,8 @@
 #include "bool.h"
 #include "hw/spi.h"
 #include "hw.h"
+
+#ifdef LCD_SPI
 
 // for debug purposes
 uint16_t lcd_clk_pol = LCD_CLK_POL;
@@ -237,5 +238,11 @@ void spi_dump_regs(void)
     send_named_bin("i2s", i2scfgr, 4);
 }
 
+#else
+
+// dummy function for -Wpedantic
+void init_spi(void) { }
+
 #endif // ifdef LCD_SPI
+
 ///@}

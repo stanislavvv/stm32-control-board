@@ -87,14 +87,7 @@ extern uint16_t lcd_clk_pha;
 boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
                             uint16_t length, TickType_t timeout);
 
-/**
- * @brief init spi
- *
- * init spi with parameters from config.h
- */
-void init_spi(void);
-
-#endif
+#endif // ifdef LCD_SPI
 
 /**
  * @brief dump five spi regs
@@ -105,6 +98,12 @@ void init_spi(void);
  */
 void spi_dump_regs(void);
 
-#endif // ifdef LCD_SPI
+#endif
+/**
+ * @brief init spi
+ *
+ * init spi with parameters from config.h
+ */
+void init_spi(void);
 ///@}
 ///@}

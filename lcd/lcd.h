@@ -91,13 +91,16 @@
 #elif LCD_TYPE==44780 // textmode LCD
 
     #include "hd44780.h"
+
     static void LCD_INIT(void)
     {
         hd44780_init_gpio();
         hd44780_init_4bit_mode();
     }
+
     static void LCD_TEST(void)
     {
+        LCD_INIT();
         hd44780_write_string_4d("Hello world! Hello LCD!");
     }
 
@@ -199,7 +202,6 @@ static inline void shell_lcd_cmd(char* argv[], uint16_t argc)
     (void)(argv);
     (void)(argc);
     DBG("lcd test...\r\n");
-    LCD_INIT();
     LCD_TEST();
     DBG("end\r\n");
 }

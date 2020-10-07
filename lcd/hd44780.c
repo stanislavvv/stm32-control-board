@@ -121,7 +121,7 @@ static void hd44780_write_instruction_4d(uint8_t theInstruction)
     gpio_clear(HD44780_PORT, HD44780_RS);
     gpio_clear(HD44780_PORT, HD44780_E); /* Make sure E is initially low */
     hd44780_write_4(theInstruction); /* Write the upper 4-bits */
-    hd44780_write_4(theInstruction << 4); /* Write the lower 4-bits */
+    hd44780_write_4((uint8_t)(theInstruction << 4)); /* Write the lower 4-bits */
 }
 
 /** @brief Initialize the LCD module for a 4-bit data interface.
@@ -223,7 +223,7 @@ void hd44780_write_character_4d(char theCharacter)
     gpio_set(HD44780_PORT, HD44780_RS);
     gpio_clear(HD44780_PORT, HD44780_E); /* Make sure E is initially low */
     hd44780_write_4((uint8_t)theCharacter); /* Write the upper 4-bits */
-    hd44780_write_4((uint8_t)theCharacter << 4); /* Write the lower 4-bits */
+    hd44780_write_4((uint8_t)(theCharacter << 4)); /* Write the lower 4-bits */
 }
 
 /** @brief Display a string of characters on the LCD.
@@ -271,7 +271,7 @@ void hd44780_set_cursor(uint8_t col, uint8_t row)
 {
     uint8_t row_offsets[] = {0x00, 0x40, 0x14, 0x54};
 
-    hd44780_write_instruction_4d(LCD_SETCURSOR | (col + row_offsets[row]));
+    hd44780_write_instruction_4d((uint8_t)(LCD_SETCURSOR | (col + row_offsets[row])));
     delay_ms(2); /* 1.64 mS delay (min) */
 }
 
