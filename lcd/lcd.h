@@ -94,8 +94,7 @@
 
     static void LCD_INIT(void)
     {
-        hd44780_init_gpio();
-        hd44780_init_4bit_mode();
+        hd44780_init();
     }
 
     static void LCD_TEST(void)

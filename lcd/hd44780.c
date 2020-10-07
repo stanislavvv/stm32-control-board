@@ -29,6 +29,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 const char displayName[] = "HD44780 20x4";
 
+/**
+ * @brief init all lcd hardware
+ */
 void hd44780_init(void)
 {
     hd44780_init_gpio();
@@ -37,7 +40,9 @@ void hd44780_init(void)
     hd44780_home();
 }
 
-
+/**
+ * @brief setup lcd gpio fnctions
+ */
 void hd44780_init_gpio(void)
 {
     // Set digital output functions for LCD pins
@@ -50,15 +55,14 @@ void hd44780_init_gpio(void)
         HD44780_BACKLIGHT);
 }
 
-
-/** @brief Send a byte of data to the LCD module
- *  (private function).
- *  @note RS is configured for the desired LCD register output to
- *  begin at the new position. If the cursor is
- *  currently hidden, a call to set_cursor() must not show
- *  the cursor. E is low. RW is low.
- *  @param theByte is a data to be sent to the desired LCD register.
- *  @return None.
+/**
+ * @brief Send a byte of data to the LCD module
+ * (private function).
+ * @note RS is configured for the desired LCD register output to
+ * begin at the new position. If the cursor is
+ * currently hidden, a call to set_cursor() must not show
+ * the cursor. E is low. RW is low.
+ * @param theByte is a data to be sent to the desired LCD register.
  */
 static void hd44780_write_4(uint8_t theByte)
 {
@@ -110,11 +114,11 @@ static void hd44780_write_4(uint8_t theByte)
     delay_ms(1);
 }
 
-/** @brief Send a byte of data to the LCD instruction register.
- *  (private function).
- *  @note Does not deal with RW (busy flag is not implemented).
- *  @param theByte is a data to be sent to LCD instruction register.
- *  @return None.
+/**
+ * @brief Send a byte of data to the LCD instruction register.
+ * (private function).
+ * @note Does not deal with RW (busy flag is not implemented).
+ * @param theInstruction is a data to be sent to LCD instruction register.
  */
 static void hd44780_write_instruction_4d(uint8_t theInstruction)
 {
@@ -124,8 +128,8 @@ static void hd44780_write_instruction_4d(uint8_t theInstruction)
     hd44780_write_4((uint8_t)(theInstruction << 4)); /* Write the lower 4-bits */
 }
 
-/** @brief Initialize the LCD module for a 4-bit data interface.
- *  @return None.
+/**
+ * @brief Initialize the LCD module for a 4-bit data interface.
  */
 void hd44780_init_4bit_mode()
 {
@@ -216,7 +220,6 @@ void hd44780_init_4bit_mode()
 /** @brief Send a byte of data to the LCD data register.
  *  @note Does not deal with RW (busy flag is not implemented).
  *  @param theCharacter is a data to be sent to LCD data register.
- *  @return None.
  */
 void hd44780_write_character_4d(char theCharacter)
 {
@@ -229,7 +232,6 @@ void hd44780_write_character_4d(char theCharacter)
 /** @brief Display a string of characters on the LCD.
  *  @note Uses time delays rather than checking the busy flag.
  *  @param theString is the string to be displayed.
- *  @return None.
  */
 void hd44780_write_string_4d(const char *theString)
 {
@@ -243,8 +245,6 @@ void hd44780_write_string_4d(const char *theString)
 }
 
 /** @brief Clear display RAM.
- *  @param None.
- *  @return None.
  */
 void hd44780_clear(void)
 {
@@ -253,8 +253,6 @@ void hd44780_clear(void)
 }
 
 /** @brief Set cursor position to zero.
- *  @param None.
- *  @return None.
  */
 void hd44780_home(void)
 {
@@ -265,7 +263,6 @@ void hd44780_home(void)
 /** @brief Set cursor position to Column and Row.
  *  @param col is start position of line of the LCD (0..19).
  *  @param row is start line of the LCD (0..3).
- *  @return None.
  */
 void hd44780_set_cursor(uint8_t col, uint8_t row)
 {
@@ -276,8 +273,6 @@ void hd44780_set_cursor(uint8_t col, uint8_t row)
 }
 
 /** @brief Set display OFF.
- *  @param None.
- *  @return None.
  */
 void hd44780_off(void)
 {
@@ -286,8 +281,6 @@ void hd44780_off(void)
 }
 
 /** @brief Set display ON.
- *  @param None.
- *  @return None.
  */
 void hd44780_on(void)
 {
@@ -296,8 +289,6 @@ void hd44780_on(void)
 }
 
 /** @brief Set display's backlight OFF.
- *  @param None.
- *  @return None.
  */
 void hd44780_backlight_off(void)
 {
@@ -305,8 +296,6 @@ void hd44780_backlight_off(void)
 }
 
 /** @brief Set display's backlight ON.
- *  @param None.
- *  @return None.
  */
 void hd44780_backlight_on(void)
 {
@@ -314,8 +303,6 @@ void hd44780_backlight_on(void)
 }
 
 /** @brief Toggle display's backlight.
- *  @param None.
- *  @return None.
  */
 void hd44780_backlight_toggle(void)
 {
