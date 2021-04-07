@@ -1,4 +1,4 @@
-/** @weakgroup graphics
+/** @weakgroup lcd
  *  @{
  */
 /**
@@ -99,8 +99,9 @@
 
     static void LCD_TEST(void)
     {
+        ///@todo check it on hardware
         LCD_INIT();
-        hd44780_write_string_4d("Hello world! Hello LCD!");
+        hd44780_write("Hello world! Hello LCD!");
     }
 
 #endif //LCD_TYPE==
@@ -191,19 +192,6 @@ static inline void draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color
     }
 }
 #endif // LCD_TYPE is graphic
-
-/**
- * @brief lcd test shell command
- * @param argv, argc 'test' will be test spi transfer
- */
-static inline void shell_lcd_cmd(char* argv[], uint16_t argc)
-{
-    (void)(argv);
-    (void)(argc);
-    DBG("lcd test...\r\n");
-    LCD_TEST();
-    DBG("end\r\n");
-}
 
 #endif // ifndef HW_LCD_H_
 

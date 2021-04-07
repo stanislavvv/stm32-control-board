@@ -15,11 +15,20 @@
  */
 
 #ifndef SHELL_H_
+#define SHELL_H_
 
 #include <stdint.h>
 #include "bool.h"
 
-#define SHELL_PROCESS_H_
+/// shell command handler type
+typedef void (*shell_cmd_handler_t)(char* argv[], uint16_t argc);
+
+/// shell command structure, used in command list
+typedef struct
+{
+    const char* cmd_str;     ///< command name
+    shell_cmd_handler_t cmd; ///< command function
+} shell_cmd_def_t;
 
 /// max length of shell command line
 #define SHELL_MAX_CLI_LENGTH 64

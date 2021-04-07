@@ -15,7 +15,7 @@
 #include "config.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "shell.h"
+#include "shell/shell.h"
 #include "strings_local.h"
 #include "hw.h"
 #include "hw/spi.h"

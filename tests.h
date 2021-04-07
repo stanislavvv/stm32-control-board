@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include "shell.h"
+#include "shell/shell.h"
 #include "strings_local.h"
 
 /// test i2bin

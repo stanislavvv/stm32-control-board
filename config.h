@@ -58,20 +58,28 @@
  * Posible values:
  * - 7789 for ST7789 (16/18bit color)
  * - 8544 for PCD8544 (nokia screen)
+ * - 44780 for text lcd (hd44780-based)
  */
 //#define LCD_TYPE 7789 // st7789
 //#define LCD_TYPE 8544 // nokia lcd
 #define LCD_TYPE 44780 // text lcd
 
 #if LCD_TYPE==44780
-    #define HD44780_PORT GPIOB
-    #define HD44780_E           GPIO10
-    #define HD44780_RS          GPIO11
-    #define HD44780_D4          GPIO12
-    #define HD44780_D5          GPIO13
-    #define HD44780_D6          GPIO14
-    #define HD44780_D7          GPIO15
-    #define HD44780_BACKLIGHT   GPIO1
+    // textmode hd44780-based LCD, 4-bit mode
+    #define HD44780_PORT      GPIOB
+    // not used in module
+    // #define HD44780_RW        GPIO9
+    #define HD44780_E         GPIO10
+    #define HD44780_RS        GPIO11
+    #define HD44780_D4        GPIO12
+    #define HD44780_D5        GPIO13
+    #define HD44780_D6        GPIO14
+    #define HD44780_D7        GPIO15
+    // not implemented
+    // #define HD44780_BACKLIGHT GPIO8
+
+    #define HD44780_SCREEN_WIDTH  16
+    #define HD44780_SCREEN_HEIGHT 2
 #endif
 
 #if LCD_TYPE==7789

@@ -1,73 +1,102 @@
-/*
-hd44780.c file is a part of stm32Basic project.
+/** @weakgroup lcd
+ *  @{
+ */
+/**
+ * @file
+ * @brief hd44780 lcd screen driver with 4-bit interface
+ *
+ * Copyright 2020 Stanislav V. Vlasov <stanislav.v.v@gmail.com>
+ *
+ * LCD_* constants and some ideas taken from
+ * https://github.com/SayidHosseini/STM32LiquidCrystal/blob/master/src/LiquidCrystal.h
+ */
 
-Copyright (c) 2020 vitasam
-
-Based on LCD driver:
-http://web.alfredstate.edu/faculty/weimandn/programming/
-    lcd/ATmega328/LCD_code_gcc_4d.html
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-//#include <stdio.h>
-//#include <string.h>
-#include "hw.h"
-#include "hd44780.h"
+#include <libopencm3/stm32/gpio.h>
+#include "bool.h"
+#include "hw.h"  // for delay and DBG
 #include "config.h"
+#include "hd44780.h"
 
-const char displayName[] = "HD44780 20x4";
+// flags for hd44780_* functions
+#define HD44780_COMMAND TRUE  ///< hd44780_puts: indicate command byte
+#define HD44780_DATA    FALSE ///< hd44780_puts: indicate data byte
+
+#define HD44780_DISPLAY_ON  TRUE  ///< hd44780_display: display on
+#define HD44780_DISPLAY_OFF FALSE ///< hd44780_display: display off
+
+// commands
+#define LCD_CLEARDISPLAY 0x01
+#define LCD_RETURNHOME 0x02
+#define LCD_ENTRYMODESET 0x04
+#define LCD_DISPLAYCONTROL 0x08
+#define LCD_CURSORSHIFT 0x10
+#define LCD_FUNCTIONSET 0x20
+#define LCD_SETCGRAMADDR 0x40
+#define LCD_SETDDRAMADDR 0x80
+
+// flags for display entry mode
+#define LCD_ENTRYRIGHT 0x00
+#define LCD_ENTRYLEFT 0x02
+#define LCD_ENTRYSHIFTINCREMENT 0x01
+#define LCD_ENTRYSHIFTDECREMENT 0x00
+
+// flags for display on/off control
+#define LCD_DISPLAYON 0x04
+#define LCD_DISPLAYOFF 0x00
+#define LCD_CURSORON 0x02
+#define LCD_CURSOROFF 0x00
+#define LCD_BLINKON 0x01
+#define LCD_BLINKOFF 0x00
+
+// flags for display/cursor shift
+#define LCD_DISPLAYMOVE 0x08
+#define LCD_CURSORMOVE 0x00
+#define LCD_MOVERIGHT 0x04
+#define LCD_MOVELEFT 0x00
+
+// flags for function set
+#define LCD_8BITMODE 0x10
+#define LCD_4BITMODE 0x00
+#define LCD_2LINE 0x08
+#define LCD_1LINE 0x00
+#define LCD_5x10DOTS 0x04
+#define LCD_5x8DOTS 0x00
+
+#if HD44780_SCREEN_HEIGHT==1
+uint8_t display_function =
+    LCD_4BITMODE |
+    LCD_1LINE |
+    LCD_5x8DOTS;
+#else
+uint8_t display_function =
+    LCD_4BITMODE |
+    LCD_2LINE |
+    LCD_5x8DOTS;
+#endif
+
+/// send command to LCD
+#define COMMAND(d) hd44780_putc(d, HD44780_COMMAND)
+
+/// send data to LCD
+#define WRITE(d) hd44780_putc(d, HD44780_DATA)
+
+/// current display state
+uint8_t display_control = LCD_CURSOROFF | LCD_BLINKOFF;
+
+/// print left-to-right
+uint8_t display_mode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+
+/// display row offsets
+uint8_t row_offsets[4] = {0x00, 0x40, 0x00 + HD44780_SCREEN_WIDTH, 0x40 + HD44780_SCREEN_WIDTH};
 
 /**
- * @brief init all lcd hardware
+ * @brief (internal) write 4 most bits to LCD
+ * @param data
+ * @todo set proper and shorter delay in pulse
  */
-void hd44780_init(void)
+static void hd44780_send4(uint8_t data)
 {
-    hd44780_init_gpio();
-    hd44780_init_4bit_mode();
-    hd44780_clear();
-    hd44780_home();
-}
-
-/**
- * @brief setup lcd gpio fnctions
- */
-void hd44780_init_gpio(void)
-{
-    // Set digital output functions for LCD pins
-    gpio_set_mode(
-        HD44780_PORT,
-        GPIO_MODE_OUTPUT_50_MHZ,
-        GPIO_CNF_OUTPUT_PUSHPULL,
-        HD44780_E | HD44780_RS |
-        HD44780_D4 | HD44780_D5| HD44780_D6 | HD44780_D7 |
-        HD44780_BACKLIGHT);
-}
-
-/**
- * @brief Send a byte of data to the LCD module
- * (private function).
- * @note RS is configured for the desired LCD register output to
- * begin at the new position. If the cursor is
- * currently hidden, a call to set_cursor() must not show
- * the cursor. E is low. RW is low.
- * @param theByte is a data to be sent to the desired LCD register.
- */
-static void hd44780_write_4(uint8_t theByte)
-{
-    ///@todo fix delays to lower than 1ms
-    if (theByte & (1 << 7))
+    if (data & 0x80)
     {
         gpio_set(HD44780_PORT, HD44780_D7);
     }
@@ -75,8 +104,7 @@ static void hd44780_write_4(uint8_t theByte)
     {
         gpio_clear(HD44780_PORT, HD44780_D7);
     }
-
-    if (theByte & (1 << 6))
+    if (data & 0x40)
     {
         gpio_set(HD44780_PORT, HD44780_D6);
     }
@@ -84,8 +112,7 @@ static void hd44780_write_4(uint8_t theByte)
     {
         gpio_clear(HD44780_PORT, HD44780_D6);
     }
-
-    if (theByte & (1 << 5))
+    if (data & 0x20)
     {
         gpio_set(HD44780_PORT, HD44780_D5);
     }
@@ -93,8 +120,7 @@ static void hd44780_write_4(uint8_t theByte)
     {
         gpio_clear(HD44780_PORT, HD44780_D5);
     }
-
-    if (theByte & (1 << 4))
+    if (data & 0x10)
     {
         gpio_set(HD44780_PORT, HD44780_D4);
     }
@@ -103,208 +129,154 @@ static void hd44780_write_4(uint8_t theByte)
         gpio_clear(HD44780_PORT, HD44780_D4);
     }
 
-    /* Write the data. 'Address set-up time' (40 nS) */
+    // E pin pulse
     gpio_set(HD44780_PORT, HD44780_E);
-
-    /* 'Data set-up time' (80 nS) and 'Enable pulse width' (230 nS) */
-    delay_ms(1);
+    delay_ms(1); // min 450ns
     gpio_clear(HD44780_PORT, HD44780_E);
-
-    /* 'Data hold time' (10 nS) and 'Enable cycle time' (500 nS) */
-    delay_ms(1);
+    delay_ms(1); // min 37us
 }
 
 /**
- * @brief Send a byte of data to the LCD instruction register.
- * (private function).
- * @note Does not deal with RW (busy flag is not implemented).
- * @param theInstruction is a data to be sent to LCD instruction register.
+ * @brief send byte to LCD
+ * @param data - byte for sending
+ * @param cmd - FALSE if character, TRUE if command
  */
-static void hd44780_write_instruction_4d(uint8_t theInstruction)
+static void hd44780_putc(uint8_t data, boolean cmd)
 {
-    gpio_clear(HD44780_PORT, HD44780_RS);
-    gpio_clear(HD44780_PORT, HD44780_E); /* Make sure E is initially low */
-    hd44780_write_4(theInstruction); /* Write the upper 4-bits */
-    hd44780_write_4((uint8_t)(theInstruction << 4)); /* Write the lower 4-bits */
+    if (cmd)
+    { // command
+        gpio_clear(HD44780_PORT, HD44780_RS);
+    }
+    else
+    { // character
+        gpio_set(HD44780_PORT, HD44780_RS);
+    }
+    gpio_clear(HD44780_PORT, HD44780_E);
+    hd44780_send4(data);
+    hd44780_send4((uint8_t)(data<<4));
 }
 
 /**
- * @brief Initialize the LCD module for a 4-bit data interface.
+ * @brief init lcd-related hardware
  */
-void hd44780_init_4bit_mode()
+void hd44780_init(void)
 {
-    /* Power-up delay, at least 40 msec */
-    delay_ms(100); /* 100 msec */
-
-    /*
-    IMPORTANT - At this point the LCD module is in the 8-bit mode
-    and it is expecting to receive 8 bits of data, one bit on each of
-    its 8 data lines, each time the 'E' line is pulsed.
-
-    Since the LCD module is wired for the 4-bit mode, only the
-    upper four data lines are connected to the microprocessor and the
-    lower four data lines are typically left open. Therefore, when
-    the 'E' line is pulsed, the LCD controller will read whatever data
-    has been set up on the upper four data lines and the lower four
-    data lines will be high (due to internal pull-up circuitry).
-
-    Fortunately the 'LCD_FUNCTIONRESET' instruction does not care
-    about what is on the lower four bits so this instruction can be sent
-    on just the four available data lines and it will be interpreted
-    properly by the LCD controller. The 'hd44780_write_4' subroutine will
-    accomplish this if the control lines have previously been configured
-    properly.
-    */
-
-    /* Set up the RS and E lines for the 'hd44780_write_4' subroutine. */
+    gpio_set_mode(
+        HD44780_PORT,
+        GPIO_MODE_OUTPUT_50_MHZ,
+        GPIO_CNF_OUTPUT_PUSHPULL,
+#ifdef HD44780_BACKLIGHT
+        HD44780_BACKLIGHT |
+#endif
+        HD44780_E |
+        HD44780_RS |
+        HD44780_D4 |
+        HD44780_D5 |
+        HD44780_D6 |
+        HD44780_D7
+        );
+    delay_ms(50); // min 40ms after powerup
+    gpio_clear(HD44780_PORT, HD44780_E);
     gpio_clear(HD44780_PORT, HD44780_RS);
-    gpio_clear(HD44780_PORT, HD44780_E); /* Make sure E is initially low */
 
-    /* Reset the LCD controller */
-    hd44780_write_4(LCD_FUNCTIONRESET); /* First part of reset sequence */
-    delay_ms(5); /* 4.1 mS delay (min) */
+    // init 4-bit interface
+    COMMAND(0x3);
+    delay_ms(5); // min 4.3ms
+    COMMAND(0x3);
+    delay_ms(1); // min 100us
+    COMMAND(0x3);
+    delay_ms(1); // min 100us
+    COMMAND(0x2);
+    delay_ms(1); // min 100us
 
-    /* The 2nd part of reset sequence */
-    hd44780_write_4(LCD_FUNCTIONRESET);
-    delay_ms(1); /* 100uS delay (min) */
+    COMMAND(LCD_FUNCTIONSET | display_function);
+    delay_ms(1); // min 53us
 
-    /* The 3rd part of reset sequence */
-    hd44780_write_4(LCD_FUNCTIONRESET);
-    delay_ms(1); /* this delay is omitted in the data sheet */
+    hd44780_display(HD44780_DISPLAY_ON);
 
-    /*
-    Preliminary Function Set instruction - used only to set the 4-bit mode.
-    The number of lines or the font cannot be set at this time since the
-    controller is still in the 8-bit mode, but the data transfer mode can be
-    changed since this parameter is determined by one of the upper four
-    bits of the instruction.
-    */
+    hd44780_clear();
 
-    hd44780_write_4(LCD_FUNCTIONSET4B); /* Set 4-bit mode */
-    delay_ms(1); /* 40uS delay (min) */
-
-    /* Function Set instruction */
-    hd44780_write_instruction_4d(LCD_FUNCTIONSET4B); /* Set mode, lines, font */
-    delay_ms(1); /* 40uS delay (min) */
-
-    /*
-    The next three instructions are specified in the data sheet as part of
-    the initialization routine, so it is a good idea (but probably not
-    necessary) to do them just as specified and then redo them later if
-    the application requires a different configuration.
-    */
-
-    /* Display On/Off Control instruction */
-    hd44780_write_instruction_4d(LCD_DISPLAYOFF); /* Turn display OFF */
-    delay_ms(1); /* 40uS delay (min) */
-
-    /* Clear Display instruction */
-    hd44780_write_instruction_4d(LCD_CLEAR); /* Clear display RAM */
-    delay_ms(2); /* 1.64 mS delay (min) */
-
-    /* Entry Mode Set instruction */
-    hd44780_write_instruction_4d(LCD_ENTRYMODE); /* Set shift characteristics */
-    delay_ms(1); /* 40uS delay (min) */
-
-    /*
-    This is the end of the LCD controller initialization as specified in
-    the data sheet, but the display has been left in the OFF condition.
-    This is a good time to turn the display back ON.
-    */
-
-    /* Display On/Off Control instruction */
-    hd44780_write_instruction_4d(LCD_DISPLAYON); /* Turn the display ON */
-    delay_ms(1); /* 40uS delay (min) */
+    // re-init left-to-right mode
+    display_mode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+    COMMAND(display_mode | LCD_ENTRYMODESET);
 }
 
-/** @brief Send a byte of data to the LCD data register.
- *  @note Does not deal with RW (busy flag is not implemented).
- *  @param theCharacter is a data to be sent to LCD data register.
+/**
+ * @brief move cursor to coordinates
+ * @todo implement it
  */
-void hd44780_write_character_4d(char theCharacter)
-{
-    gpio_set(HD44780_PORT, HD44780_RS);
-    gpio_clear(HD44780_PORT, HD44780_E); /* Make sure E is initially low */
-    hd44780_write_4((uint8_t)theCharacter); /* Write the upper 4-bits */
-    hd44780_write_4((uint8_t)(theCharacter << 4)); /* Write the lower 4-bits */
-}
+void hd44780_goto(uint8_t col, uint8_t row)
+{}
 
-/** @brief Display a string of characters on the LCD.
- *  @note Uses time delays rather than checking the busy flag.
- *  @param theString is the string to be displayed.
+/**
+ * @brief write string to LCD
+ * @param s string for writing to display
  */
-void hd44780_write_string_4d(const char *theString)
+void hd44780_write(const char s[])
 {
-    volatile uint16_t i = 0;
-    while (theString[i] != 0)
+    uint16_t i = 0;
+    while (s[i] != 0)
     {
-        hd44780_write_character_4d((uint8_t)theString[i]);
+        WRITE(s[i]);
         i++;
-        delay_ms(1); /* 40uS delay (min) */
+        ///@todo proper delay
+        delay_ms(1); // min 40us
     }
 }
 
-/** @brief Clear display RAM.
+/**
+ * @brief clear display and set cursor to home
  */
 void hd44780_clear(void)
 {
-    hd44780_write_instruction_4d(LCD_CLEAR);
-    delay_ms(2); /* 1.64 mS delay (min) */
+    COMMAND(LCD_CLEARDISPLAY);
+    ///@todo proper delay
+    delay_ms(3);
 }
 
-/** @brief Set cursor position to zero.
+/**
+ * @brief set cursor to home
  */
 void hd44780_home(void)
 {
-    hd44780_write_instruction_4d(LCD_HOME);
-    delay_ms(2); /* 1.64 mS delay (min) */
+    COMMAND(LCD_RETURNHOME);
+    ///@todo proper delay
+    delay_ms(2);
 }
 
-/** @brief Set cursor position to Column and Row.
- *  @param col is start position of line of the LCD (0..19).
- *  @param row is start line of the LCD (0..3).
+/**
+ * @brief switch display on or off
+ * @param on - FALSE will switch display off, else on
  */
-void hd44780_set_cursor(uint8_t col, uint8_t row)
+void hd44780_display(boolean on)
 {
-    uint8_t row_offsets[] = {0x00, 0x40, 0x14, 0x54};
-
-    hd44780_write_instruction_4d((uint8_t)(LCD_SETCURSOR | (col + row_offsets[row])));
-    delay_ms(2); /* 1.64 mS delay (min) */
+    if (on)
+    {
+        display_control |= LCD_DISPLAYON;
+    }
+    else
+    {
+        display_control = (uint8_t)(display_control & (~LCD_DISPLAYON));
+    }
+    COMMAND(display_control | LCD_DISPLAYCONTROL);
+    ///@todo proper delay
+    delay_ms(1); // min 53us
 }
 
-/** @brief Set display OFF.
+/**
+ * @brief set custom CGRAM char shape
+ * @param char_id - 0..7
+ * @param char_data - array[8] of char data
  */
-void hd44780_off(void)
+void hd44780_createchar(uint8_t char_id, uint8_t char_data[])
 {
-    hd44780_write_instruction_4d(LCD_DISPLAYOFF);
-    delay_ms(2); /* 1.64 mS delay (min) */
+  char_id &= 0x7; // char_id to 0..7
+  COMMAND((uint8_t)(LCD_SETCGRAMADDR | (char_id << 3)));
+  for (int i=0; i<8; i++)
+  {
+    WRITE(char_data[i]);
+  }
 }
 
-/** @brief Set display ON.
- */
-void hd44780_on(void)
-{
-    hd44780_write_instruction_4d(LCD_DISPLAYON);
-    delay_ms(2); /* 1.64 mS delay (min) */
-}
-
-/** @brief Set display's backlight OFF.
- */
-void hd44780_backlight_off(void)
-{
-    gpio_clear(HD44780_PORT, HD44780_BACKLIGHT);
-}
-
-/** @brief Set display's backlight ON.
- */
-void hd44780_backlight_on(void)
-{
-    gpio_set(HD44780_PORT, HD44780_BACKLIGHT);
-}
-
-/** @brief Toggle display's backlight.
- */
-void hd44780_backlight_toggle(void)
-{
-    gpio_toggle(HD44780_PORT, HD44780_BACKLIGHT);
-}
+///@}
+///@}

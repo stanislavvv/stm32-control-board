@@ -12,7 +12,7 @@
 #include "task.h"
 #include "config.h"
 #include "hw.h"
-#include "shell.h"
+#include "shell/shell.h"
 
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
     /**

@@ -13,13 +13,13 @@
 #include <stdint.h>
 #include "strings_local.h"
 #include "shell.h"
+#include "shell_cmds.h"
 
 #ifndef UNITTEST
     #include "FreeRTOS.h"
     #include "task.h"
     #include "hw.h"
     #include "hw/spi.h"
-    #include "lcd/lcd.h"
 #else
     #include <stddef.h>
 #endif
@@ -36,28 +36,6 @@ char shell_output_buffer[SHELL_MAX_OUT_LENGTH] = "\0";
 /// shell output buffer current length
 uint16_t shell_out_lastchar = 0;
 
-/// shell command handler type
-typedef void (*shell_cmd_handler_t)(char* argv[], uint16_t argc);
-
-/// shell command structure, used in command list
-typedef struct
-{
-    const char* cmd_str;     ///< command name
-    shell_cmd_handler_t cmd; ///< command function
-} shell_cmd_def_t;
-
-// internal commands begin
-/**
- * @brief send 'Hello World!!!' string as shell output
- * @param argv, argc -- any strings or none
- */
-static inline void shell_hello_cmd(char* argv[], uint16_t argc)
-{
-    (void)(argv);
-    (void)(argc);
-    shell_out_buffer_add("Hello world!!!\r\n");
-}
-
 /**
  * @brief get command name
  * @param command_s[] - command name will be place here
@@ -73,113 +51,6 @@ static inline void shell_get_cmd(char command_s[])
     }
     command_s[i] = 0;
 }
-
-#ifdef UNITTEST
-
-/**
- * @brief arguments test command
- * @param argv, argc -- any strings or none
- *
- * Send arguments count and its contents.
- *
- * This is reference procedure for argument processing.
- */
-void args_cmd( char* argv[], uint16_t argc )
-{
-    uint16_t i;
-    char num[6];
-    shell_out_buffer_add("arguments count: ");
-    itoa_u16(argc, num);
-    shell_out_buffer_add(num);
-    shell_out_buffer_add("\r\n");
-    for (i = 0; i< argc; ++i)
-    {
-        shell_out_buffer_add("argument ");
-        itoa_u16(i, num);
-        shell_out_buffer_add(num);
-        shell_out_buffer_add(": ");
-        shell_out_buffer_add(argv[i]);
-        shell_out_buffer_add("\r\n");
-    }
-}
-#else // run on hardware
-
-/**
- * @brief show rtos heap usage
- * @param argv, argc - any may be given, none used
- *
- * @ingroup hwrtos_shell
- */
-static inline void shell_rtos_heap_cmd(char* argv[], uint16_t argc)
-{
-    (void)(argv);
-    (void)(argc);
-    HeapStats_t stats;
-    char s[20] = "\0";
-    shell_out_buffer_add("rtos heap stats:");
-    vPortGetHeapStats(&stats);
-
-    itoa_u16((uint16_t)stats.xAvailableHeapSpaceInBytes, s);
-    shell_out_buffer_add("Avail bytes total: ");
-    shell_out_buffer_add(s);
-    shell_out_buffer_add("\r\n");
-
-    itoa_u16((uint16_t)stats.xSizeOfLargestFreeBlockInBytes, s);
-    shell_out_buffer_add("Largest free block in bytes: ");
-    shell_out_buffer_add(s);
-    shell_out_buffer_add("\r\n");
-
-    itoa_u16((uint16_t)stats.xMinimumEverFreeBytesRemaining, s);
-    shell_out_buffer_add("Min free bytes total: ");
-    shell_out_buffer_add(s);
-    shell_out_buffer_add("\r\n");
-}
-#endif
-
-// forward definition
-void shell_ls_cmd(char* argv[], uint16_t argc);
-void shell_spi_cmd(char* argv[], uint16_t argc);
-
-// end of internal commands
-
-/// shell commands list
-static shell_cmd_def_t cmds[] =
-{
-    {"ls",        shell_ls_cmd},
-#ifndef UNITTEST
-// hardware and rtos related commands
-    {"free",      shell_rtos_heap_cmd},
-#ifdef LCD_SPI
-    {"spi",       shell_spi_cmd},
-#endif
-    {"lcd",       shell_lcd_cmd},
-//    {"lcdclk",    shell_lcdclk_cmd},
-#else
-    {"args",      args_cmd},
-#endif
-    {"hello",     shell_hello_cmd},
-    {NULL, NULL}
-};
-
-// shell command, that need cmds[]
-/**
- * @brief send list of available commands
- * @param argv, argc -- any strings or none
- */
-void shell_ls_cmd(char* argv[], uint16_t argc)
-{
-    (void)(argv);
-    (void)(argc);
-    uint16_t i = 0;
-    shell_out_buffer_add("\r\n-- commands --\r\n");
-    while (cmds[i].cmd != NULL)
-    {
-        shell_out_buffer_add(cmds[i].cmd_str);
-        shell_out_buffer_add("\r\n");
-        i++;
-    }
-}
-
 
 /**
  * @brief add string to output buffer
@@ -290,70 +161,6 @@ void shell_process(void)
 }
 
 #ifndef UNITTEST
-// hardware and rtos related functions
-
-#ifdef LCD_SPI
-/**
- * @brief show spi registers and may test spi transfer
- * @param argv, argc 'test' will be test spi transfer
- */
-///@todo move this command to spi module
-void shell_spi_cmd(char* argv[], uint16_t argc)
-{
-    if (argc > 0)
-    {
-        if (compare_strings(argv[0], "test"))
-        {
-            /*
-            we send string directly to uart
-            for indication of current value
-            */
-            send_string("sending test sequence 0...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0);
-            }
-            spi_dump_regs();
-            send_string("0xff...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0xff);
-            }
-            spi_dump_regs();
-            send_string("0x55...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0x55);
-            }
-            spi_dump_regs();
-            send_string("0xAA...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0xAA);
-            }
-            spi_dump_regs();
-            send_string("0x0F...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0x0F);
-            }
-            spi_dump_regs();
-            send_string("0xF0...\r\n");
-            for (uint16_t i = 0; i<=65534; i++)
-            {
-                SPI_SEND(LCD_SPI, 0xF0);
-            }
-            spi_dump_regs();
-        }
-    }
-    else
-    {
-        spi_dump_regs();
-    }
-    shell_out_buffer_add("end\r\n");
-}
-#endif
-
 
 /**
  * @brief send content of {@link #shell_output_buffer} to uart

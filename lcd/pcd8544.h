@@ -1,4 +1,4 @@
-/** @weakgroup graphics
+/** @weakgroup lcd
  *  @{
  */
 /**
