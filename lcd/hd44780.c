@@ -12,7 +12,7 @@
  */
 
 #include <libopencm3/stm32/gpio.h>
-#include "bool.h"
+#include "libs/bool.h"
 #include "hw.h"  // for delay and DBG
 #include "config.h"
 #include "hd44780.h"

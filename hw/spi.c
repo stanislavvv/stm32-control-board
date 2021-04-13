@@ -13,7 +13,7 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/spi.h>
 #include "config.h"
-#include "bool.h"
+#include "libs/bool.h"
 #include "hw/spi.h"
 #include "hw.h"
 

@@ -12,7 +12,7 @@
 #ifndef HW_HD44780_H_
 #define HW_HD44780_H_
 
-#include "bool.h"
+#include "libs/bool.h"
 
 /**
  * @brief init lcd-related hardware

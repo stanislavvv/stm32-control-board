@@ -11,7 +11,7 @@
  */
 
 #include <stdint.h>
-#include "strings_local.h"
+#include "libs/strings_local.h"
 #include "shell.h"
 #include "shell_cmds.h"
 

@@ -12,7 +12,7 @@
  */
 
 #include <libopencm3/stm32/gpio.h>
-#include "bool.h"
+#include "libs/bool.h"
 #include "config.h"
 #include "hw.h"
 #include "hw/spi.h"

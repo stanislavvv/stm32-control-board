@@ -12,7 +12,7 @@
 #include <libopencm3/stm32/usart.h>
 #include "hw/uart.h"
 #include "config.h"
-#include "strings_local.h"
+#include "libs/strings_local.h"
 
 /**
  * @brief send null-terminated string to uart

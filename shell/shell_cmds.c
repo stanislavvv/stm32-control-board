@@ -21,7 +21,7 @@
 #endif
 #include "shell.h"
 #include "shell_cmds.h"
-#include "strings_local.h"
+#include "libs/strings_local.h"
 
 /**
  * @brief send 'Hello World!!!' string as shell output

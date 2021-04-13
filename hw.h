@@ -16,7 +16,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config.h"
-#include "bool.h"
+#include "libs/bool.h"
 #include "hw/uart.h"
 
 #if DEBUG_PRINT==1

@@ -18,7 +18,7 @@
 #define SHELL_H_
 
 #include <stdint.h>
-#include "bool.h"
+#include "libs/bool.h"
 
 /// shell command handler type
 typedef void (*shell_cmd_handler_t)(char* argv[], uint16_t argc);
