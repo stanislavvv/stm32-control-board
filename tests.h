@@ -14,104 +14,28 @@
 #include <stdio.h>
 #include <string.h>
 #include "shell/shell.h"
-#include "strings_local.h"
+#include "libs/strings_local.h"
+#include "libs/utils.h"
 
-/// test i2bin
-void test_i2bin(void)
+/// test shell functions
+void test_shell_funcs(void)
 {
-    uint32_t n = 0x13d800ac;
     char a[40];
-    char b[] = "0001 0011 1101 1000 0000 0000 1010 1100";
-    i2bin(n, a, 8);
-    assert(!strcmp(a, b));
-
-}
-
-/// test i2bin
-void test_itobin_u32(void)
-{
-    uint32_t n = 0x13d800ac;
-    char a[40];
-    char b[] = "10011110110000000000010101100";
-    itobin_u32(n, a);
-    assert(!strcmp(a, b));
-
-}
-
-/// test itohex_u32
-void test_itohex_u32(void)
-{
-    uint32_t n = 508000172;
-    char a[10];
-    char b[10];
-    itohex_u32(n, a);
-    sprintf(b, "%x", n);
-    assert(!strcmp(a, b));
-}
-
-/// test itoa_s16
-void test_itoa_s16(void)
-{
-    uint16_t n = -12345;
-    char a[10];
-    itoa_s16(n, a);
-    assert(!strcmp("-12345", a));
-}
-
-/// test itoa_u16
-void test_itoa_u16(void)
-{
-    uint16_t n = 12345;
-    char a[10];
-    itoa_u16(n, a);
-    assert(!strcmp("12345", a));
-}
-
-/// test reverse
-void test_reverse(void)
-{
-    char a[] = "ABCDEF";
-    reverse(a);
-    assert(!strcmp("FEDCBA", a));
-}
-
-/// test compare_strings
-void test_compare_strings(void)
-{
-    const char a1[] = "ABCDE";
-    const char a2[] = "ABCDE";
-    const char a3[] = "ABCDEF";
-    assert(compare_strings(a1, a2));
-    assert(!compare_strings(a1, a3));
-}
-
-/// test strncmp_local
-void test_strncmp_local(void)
-{
-    const char a1[] = "ABCDE";
-    const char a2[] = "ABCDEF";
-    // strncmp_local return TRUE on compare
-    assert(strncmp(a1, a2, 4) == !strncmp_local(a1, a2, 4));
-    assert(!(strncmp(a1, a2, 6) == !strncmp_local(a1, a2, 6)));
-}
-
-/// test strlen_local
-void test_strlen_local(void)
-{
-    const char a[] = "ABCDE\0";
-    assert(strlen(a) == strlen_local(a));
-}
-
-/// test shell_cmds
-void test_shell_ls_cmd(void)
-{
     shell_cleanup_output();
     strcpy(shell_input_buffer, "ls");
     shell_process();
-    char a[] = "\r\n-- commands --\r\nls\r\n";
-    assert(0 == strncmp(a, shell_output_buffer, strlen(a)));
+    sput_fail_unless(
+        shell_output_buffer != "\r\n-- commands --\r\nls\r\n", "ls: get commands list");
+
+    strcpy(shell_input_buffer, "args aaa bbb");
+    shell_process();
+    sput_fail_unless(
+        shell_output_buffer != "arguments count: 2\r\nargument 0: aaa\r\nargument 1: bbb\r\n",
+        "shell arguments");
 }
 
+
+#if 0
 /// test shell command arguments processing
 void test_shell_args_cmd(void)
 {
@@ -220,5 +144,7 @@ static test_def_t test_list[] =
     {"shell_ls_cmd",          test_shell_ls_cmd, 2},
     {NULL, NULL, 0}
 };
+
+#endif // if 0
 
 /** @}*/

@@ -279,4 +279,3 @@ void hd44780_createchar(uint8_t char_id, uint8_t char_data[])
 }
 
 ///@}
-///@}

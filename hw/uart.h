@@ -42,7 +42,7 @@
  */
 #define send_char(c) usart_send_blocking(UART, (uint16_t)(c))
 
-/**
+/*
  * @brief send null-terminated string to uart
  * @param s[] - string for sending to uart
  * @return none

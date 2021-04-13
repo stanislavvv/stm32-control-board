@@ -1,5 +1,5 @@
-TGT_CFLAGS	+= -I.
-TGT_CXXFLAGS	+= -I.
+TGT_CFLAGS	+= -I./libs -I.
+TGT_CXXFLAGS	+= -I./libs -I.
 
 BINARY		= tests
 SRCFILES	= shell/shell.c shell/shell_cmds.c tests.c
@@ -8,7 +8,7 @@ SRC_EXT = c
 
 # tool macros
 CC := gcc
-CCFLAG := -std=c99 -I. -DUNITTEST
+CCFLAG := -std=c99 $(TGT_CFLAGS) -DUNITTEST
 DBGFLAG := -g
 CCOBJFLAG := $(CCFLAG) -c
 LDFLAGS := -lc -lgcc

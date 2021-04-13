@@ -15,7 +15,7 @@
 
 #ifdef LCD_SPI
 
-#include "bool.h"
+#include "libs/bool.h"
 
 /// delay between bytes - parameter for delay_nop()
 #define PCD8544_BYTE_DELAY 50

@@ -39,7 +39,7 @@ uint16_t shell_out_lastchar = 0;
 /**
  * @brief get command name
  * @param command_s[] - command name will be place here
- * @return none
+ *
  * get first word from shell_input_buffer and place it to command_s */
 static inline void shell_get_cmd(char command_s[])
 {
@@ -55,7 +55,6 @@ static inline void shell_get_cmd(char command_s[])
 /**
  * @brief add string to output buffer
  * @param s[] string which content will be added to {@link #shell_output_buffer}
- * @return none
  */
 void shell_out_buffer_add(const char s[])
 {

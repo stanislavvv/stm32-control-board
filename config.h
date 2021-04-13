@@ -119,5 +119,3 @@
     #define LCD_SDA      GPIO14   ///< LCD SPI SDA(MOSI) pin
     */
 #endif // graphic LCD
-
-///@}
