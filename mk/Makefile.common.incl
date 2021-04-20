@@ -130,8 +130,9 @@ check:
 clean:
 	@#printf "  CLEAN\n"
 	$(RM) *.o *.d generated.* $(OBJS) $(patsubst %.o,%.d,$(OBJS)) $(patsubst %.o,%.su,$(OBJS))
-	$(RM) *.elf *.bin *.hex *.srec *.list *.map tests tests.su
-	$(RM) -r docs
+	$(RM) $(patsubst %.o,%.gcda,$(OBJS)) $(patsubst %.o,%.gcno,$(OBJS))
+	$(RM) *.elf *.bin *.hex *.srec *.list *.map tests tests.su *.gcno *.gcda
+	$(RM) -r docs test_report
 
 docs: clean
 	doxygen Doxyfile

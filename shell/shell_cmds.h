@@ -71,6 +71,15 @@ static inline void shell_lcd_cmd(char* argv[], uint16_t argc)
 }
 
 /**
+ * @brief show spi registers and may test spi transfer
+ * @param argv, argc 'test' will be test spi transfer
+ *
+ * this command for only spi hardware testing, not LCD
+ */
+void shell_spi_cmd(char* argv[], uint16_t argc);
+
+
+/**
  * @brief blink without interrupts with delay_nop()
  * @param argv, argc -- any strings or none
  *
@@ -84,20 +93,25 @@ void shell_delay_noop(char* argv[], uint16_t argc);
 /// shell commands list
 static shell_cmd_def_t cmds[] =
 {
-    {"ls",        shell_ls_cmd},
+    {"ls",        shell_ls_cmd}, // show commands
 #ifndef UNITTEST
-// hardware and rtos related commands
-    {"free",      shell_rtos_heap_cmd},
-#ifdef LCD_SPI
-    {"spi",       shell_spi_cmd},
-//    {"lcdclk",    shell_lcdclk_cmd},
-#endif
-    {"lcd",       shell_lcd_cmd},
-    {"dlyled",    shell_delay_noop},
-#else
-    {"args",      args_cmd},
-#endif
-    {"hello",     shell_hello_cmd},
+
+  #if DEBUG==1
+    // hardware and rtos related commands, can't be tested now
+    {"free",      shell_rtos_heap_cmd}, // show rtos heap stats
+    {"lcd",       shell_lcd_cmd},       // lcd test
+    {"dlyled",    shell_delay_noop},    // noop delay test
+    #ifdef LCD_SPI
+    {"spi",       shell_spi_cmd},       // spi test
+    #endif // LCD_SPI
+  #endif // DEBUG
+
+#else // UNITTEST
+
+    {"args",      args_cmd},            // test command with args
+    {"hello",     shell_hello_cmd},     // test command
+
+#endif // UNITTEST
     {NULL, NULL}
 };
 

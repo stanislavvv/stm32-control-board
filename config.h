@@ -17,11 +17,11 @@
 /// enable initalization messages to uart
 #define BOOT_VERBOSE 1
 
-/// enable debug print to uart
-#define DEBUG_PRINT 1
+/// enable debug logging and some other functions
+#define DEBUG 1
 
 /// hardware or software spi
-#define HW_SPI 1
+#define HW_SPI 0
 
 /// onboard blue pill led port
 #define LED_PORT            GPIOC
@@ -60,9 +60,11 @@
  * - 8544 for PCD8544 (nokia screen)
  * - 44780 for text lcd (hd44780-based)
  */
+#ifndef LCD_TYPE
 //#define LCD_TYPE 7789 // st7789
-//#define LCD_TYPE 8544 // nokia lcd
-#define LCD_TYPE 44780 // text lcd
+#define LCD_TYPE 8544 // nokia lcd
+//#define LCD_TYPE 44780 // text lcd
+#endif
 
 #if LCD_TYPE==44780
     // textmode hd44780-based LCD, 4-bit mode
@@ -94,7 +96,7 @@
     #define LCD_CS_PIN   GPIO6  ///< LCD CS(SS) pin
 #endif
 
-#if ( (LCD_TYPE==7789) || (LCD_TYPE==8544) ) // graphic LCD
+#if ( (LCD_TYPE==7789) || (LCD_TYPE==8544) ) // graphic LCD on SPI
     #define LCD_BYTEORDER SPI_CR1_MSBFIRST
 
     #define LCD_RST_PORT GPIOA ///< LCD RST port

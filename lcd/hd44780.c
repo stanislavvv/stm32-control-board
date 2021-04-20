@@ -17,6 +17,8 @@
 #include "config.h"
 #include "hd44780.h"
 
+#ifdef HD44780_PORT
+
 // flags for hd44780_* functions
 #define HD44780_COMMAND TRUE  ///< hd44780_puts: indicate command byte
 #define HD44780_DATA    FALSE ///< hd44780_puts: indicate data byte
@@ -277,5 +279,7 @@ void hd44780_createchar(uint8_t char_id, uint8_t char_data[])
     WRITE(char_data[i]);
   }
 }
+
+#endif // HD44780_PORT
 
 ///@}

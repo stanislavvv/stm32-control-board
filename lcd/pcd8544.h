@@ -48,11 +48,6 @@ void PCD8544_send_cmd(char data);
 void PCD8544_send_data(char data);
 
 /**
- * @brief send reset impulse to lcd PCD8544
- */
-void PCD8544_reset(void);
-
-/**
  * @brief clear screen cache
  */
 void PCD8544_clear(void);

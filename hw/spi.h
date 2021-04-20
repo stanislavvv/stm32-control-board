@@ -98,12 +98,13 @@ boolean spi_send_buffer_2wire_8bit(uint32_t spi, uint8_t *buffer,
  */
 void spi_dump_regs(void);
 
-#endif
 /**
  * @brief init spi
  *
  * init spi with parameters from config.h
  */
 void init_spi(void);
+
+#endif
 ///@}
 ///@}

@@ -19,7 +19,7 @@
 #include "libs/bool.h"
 #include "hw/uart.h"
 
-#if DEBUG_PRINT==1
+#if DEBUG==1
     /// debug print
     //static inline void DBG(char*s) { send_string(s); }
     #define DBG(s) { send_string(s); }

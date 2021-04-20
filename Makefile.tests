@@ -8,10 +8,10 @@ SRC_EXT = c
 
 # tool macros
 CC := gcc
-CCFLAG := -std=c99 $(TGT_CFLAGS) -DUNITTEST
+CCFLAG := -std=c99 $(TGT_CFLAGS) -DUNITTEST --coverage
 DBGFLAG := -g
 CCOBJFLAG := $(CCFLAG) -c
-LDFLAGS := -lc -lgcc
+LDFLAGS := -lc -lgcc --coverage
 
 # path macros
 BIN_PATH := bin
@@ -34,6 +34,10 @@ default: all
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
 	./$(TARGET)
+	@mkdir -p test_report
+	@lcov -q --capture --directory . --output-file test_report/coverage.info
+	@genhtml -q test_report/coverage.info --output-directory test_report
+
 
 %.o: %.c*
 	echo $(CCOBJFLAG)

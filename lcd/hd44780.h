@@ -12,6 +12,8 @@
 #ifndef HW_HD44780_H_
 #define HW_HD44780_H_
 
+#ifdef HD44780_PORT
+
 #include "libs/bool.h"
 
 /**
@@ -51,6 +53,8 @@ void hd44780_display(boolean on);
  * @param char_data - array[8] of char data
  */
 void hd44780_createchar(uint8_t char_id, uint8_t char_data[]);
+
+#endif // HD44780_PORT
 
 #endif
 ///@}

@@ -149,10 +149,16 @@ uint16_t PCD8544_cache_i = 0;
  */
 void PCD8544_init(void)
 {
-    PCD8544_reset();
 
+    // wait for previous byte is sent to lcd
     while (SPI_BUSY(LCD_SPI)) { };
     LCD_SELECT();
+
+    gpio_clear(LCD_RST_PORT, LCD_RST_PIN); // reset
+    delay_ms(10);
+    gpio_set(LCD_RST_PORT, LCD_RST_PIN);
+    delay_ms(100);
+
     CMD_MODE();
 
     // extended instruction set
@@ -176,13 +182,13 @@ void PCD8544_init(void)
     SPI_SEND(LCD_SPI, 0x20);
 
     // all display segments on
-    SPI_SEND(LCD_SPI, 0x09);
+    //SPI_SEND(LCD_SPI, 0x09);
 
     // display blank
     SPI_SEND(LCD_SPI, 0x08);
 
     // normal mode
-    SPI_SEND(LCD_SPI, 0x0C);
+    //SPI_SEND(LCD_SPI, 0x0C);
 
     // cursor into begin position
     SPI_SEND(LCD_SPI, 0x80);
@@ -237,23 +243,6 @@ void PCD8544_send_data(char data)
 }
 
 /**
- * @brief send reset impulse to lcd PCD8544
- */
-void PCD8544_reset(void)
-{
-    // wait for previous byte is sent to lcd
-    while (SPI_BUSY(LCD_SPI)) { };
-    LCD_SELECT();
-
-    gpio_clear(LCD_RST_PORT, LCD_RST_PIN); // reset
-    delay_ms(10);
-    gpio_set(LCD_RST_PORT, LCD_RST_PIN);
-    delay_ms(100);
-
-    LCD_UNSELECT();
-}
-
-/**
  * @brief clear screen cache
  */
 void PCD8544_clear(void)
@@ -270,11 +259,21 @@ void PCD8544_clear(void)
 void PCD8544_update(void)
 {
     uint16_t i;
-    PCD8544_text_setpos(0, 0);
 
     while (SPI_BUSY(LCD_SPI)) { };
+    // normal instruction set / horizontal adressing mode
+    PCD8544_send_cmd(0x20);
+
+    // set x-position == 0
+    PCD8544_send_cmd(0x40);
+
+    // set y-position == 0
+    PCD8544_send_cmd(0x80);
+
     LCD_SELECT();
     DATA_MODE();
+
+    ///@todo replace for by spi_send_buffer_2wire_8bit
     for (i=0; i<PCD8544_CACHE_SIZE_MEM; i++)
     {
         SPI_SEND(LCD_SPI, PCD8544_cache[i]);
@@ -347,16 +346,9 @@ char PCD8544_text_setpos(char x, char y)
     // check if x, y is in range
     if ((x >= PCD8544_MAX_NUM_ROWS) ||
         (y >= (PCD8544_MAX_NUM_COLS / (FONT_WIDTH + 1) )))
-    { return FALSE; }
-
-    // normal instruction set / horizontal adressing mode
-    PCD8544_send_cmd(0x20);
-
-    // set x-position
-    PCD8544_send_cmd((0x40 | x));
-
-    // set y-position
-    PCD8544_send_cmd((char)( 0x80 | (y * (FONT_WIDTH + 1))) );
+    {
+        return FALSE;
+    }
 
     // calculate index memory
     PCD8544_cache_i = (uint16_t)((y * 6) + (x * PCD8544_MAX_NUM_COLS));
@@ -375,17 +367,9 @@ char PCD8544_px_setpos(uint16_t x, uint16_t y)
     // check if x, y is in range
     if ((x >= (PCD8544_MAX_NUM_ROWS * 8)) ||
         (y >=  PCD8544_MAX_NUM_COLS))
-    { return FALSE; }
-
-    // normal instruction set
-    // horizontal adressing mode
-    PCD8544_send_cmd(0x20);
-
-    // set x-position
-    PCD8544_send_cmd((char)(0x40 | (x / 8)));
-
-    // set y-position
-    PCD8544_send_cmd((char)(0x80 | y));
+    {
+        return FALSE;
+    }
 
     // calculate index memory
     PCD8544_cache_i = (uint16_t)(y + ((x / 8) * PCD8544_MAX_NUM_COLS));
@@ -402,8 +386,10 @@ char PCD8544_px_setpos(uint16_t x, uint16_t y)
 char PCD8544_px_on(uint16_t x, uint16_t y)
 {
     // set pixel position
-    if (0 == PCD8544_px_setpos(x, y))
-    { return FALSE; }
+    if (!PCD8544_px_setpos(x, y))
+    {
+        return FALSE;
+    }
 
     PCD8544_cache[PCD8544_cache_i] |= (char)(1 << (x % 8));
 
@@ -418,8 +404,10 @@ char PCD8544_px_on(uint16_t x, uint16_t y)
 char PCD8544_px_off(uint16_t x, uint16_t y)
 {
     // set pixel position
-    if (0 == PCD8544_px_setpos(x, y))
-    { return FALSE; }
+    if (!PCD8544_px_setpos(x, y))
+    {
+        return FALSE;
+    }
 
     PCD8544_cache[PCD8544_cache_i] &= (char)(~(1 << (x % 8)));
 

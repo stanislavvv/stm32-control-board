@@ -20,7 +20,7 @@ include mk/Makefile.common.incl
 # tests
 test: clean
 	make -f Makefile.tests
-	make clean
+	#make clean
 
 # ci
 ci: clean check all test docs
