@@ -3,6 +3,7 @@
 ## Testing
 
   * test shell processing for overflow by very long command (several times more, than input buffer)
+    -- done, but must be rewritten
 
 ## Flow
 
@@ -14,4 +15,3 @@
   * Refactor all "@todo marks"
   * Refactor/rewrite SPI and graphic LCD code - does not work now
   * Move uart communication from shell to separate task(s?)
-
