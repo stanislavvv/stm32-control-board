@@ -47,9 +47,12 @@
  * @brief uart port definitions
  * @{
  */
-#define UART USART1         ///< uart device
-#define UART_RCC RCC_USART1 ///< uart clock
-#define UART_SPEED 921600   ///< uart speed. 921600 max speed on some usb-uart converters
+#define UART       USART1         ///< uart device
+#define UART_RCC   RCC_USART1     ///< uart clock
+#define UART_SPEED 921600         ///< uart speed. 921600 max speed on some usb-uart converters
+#define UART_PORT  GPIOA          ///< gpio port with uart
+#define UART_TX    GPIO_USART1_TX ///< uart tx pin
+#define UART_RX    GPIO_USART1_RX ///< uart rx pin
 /// @}
 
 /**

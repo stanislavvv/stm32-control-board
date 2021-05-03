@@ -24,10 +24,6 @@ apt-get install make gcc-arm-none-eabi libnewlib-dev doxygen cppcheck vera++ stl
   * `mk/cppcheck.includes` -- config for `cppcheck` in `make check`
   * `mk/vera++.excl` -- config for `vera++` in `make check`
 
-## Near time ToDo:
-
-  * Move uart communication from shell to separate task(s?)
-
 ## Global Roadmap:
 
 ### Ready:

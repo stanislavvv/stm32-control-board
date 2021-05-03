@@ -13,3 +13,5 @@
 
   * Refactor all "@todo marks"
   * Refactor/rewrite SPI and graphic LCD code - does not work now
+  * Move uart communication from shell to separate task(s?)
+

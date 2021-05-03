@@ -189,25 +189,34 @@ void shell_task(void *args __attribute((unused)))
         if (char_is_recv())
         {
             char c = recv_char();
-#if SHELL_ECHO==1
+
+            #if SHELL_ECHO==1
             send_char(c);
-#endif
+            #endif
 
 /** @todo potential uart buffer overrun here, need to refactor this condition
  * to not call taskYIELD() before end of line
  */
-            if (c != 0xa && c != 0xd && shell_in_buffer_add(c))
-            {
+            if (
+                !(
+                    c != 0xa &&
+                    c != 0xd &&
+                    shell_in_buffer_add(c)
+                  )
+                )
+/*            {
                 taskYIELD();
             }
-            else
+            else*/
             {
-                // at end of line or buffer overflow - process string
+                // at end of input line or buffer overflow - process string
                 // and send result.
                 shell_process();
-#if SHELL_ECHO==1
+
+                #if SHELL_ECHO==1
                 send_string("\r\n"); // shift output down
-#endif
+                #endif
+
                 shell_send_result();
             }
         }

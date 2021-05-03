@@ -22,18 +22,37 @@
 
 #include <libopencm3/stm32/usart.h>
 #include "config.h"
+#if (DEBUG == 1)
+    #include "hw.h"
+#endif
 
 /**
  * @brief return true if uart has received char in register
  * @return bool char received state
  */
-#define char_is_recv() (USART_SR(UART) & USART_SR_RXNE) != 0
+#if (DEBUG == 1)
+    static inline char char_is_recv(void)
+    {
+        LED_on();
+        return (USART_SR(UART) & USART_SR_RXNE) != 0;
+    }
+#else
+    #define char_is_recv() (USART_SR(UART) & USART_SR_RXNE) != 0
+#endif // DEBUG
 
 /**
  * @brief receive char from uart
  * @return received char
  */
-#define recv_char() (char)(0xff & usart_recv_blocking(UART))
+#if (DEBUG == 1)
+    static inline char recv_char(void)
+    {
+        LED_off();
+        return (char)(0xff & usart_recv_blocking(UART));
+    }
+#else
+    #define recv_char() (char)(0xff & usart_recv_blocking(UART))
+#endif // DEBUG
 
 /**
  * @brief send char to uart

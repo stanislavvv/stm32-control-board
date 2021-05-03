@@ -17,7 +17,6 @@
 #include "task.h"
 #include "config.h"
 #include "libs/bool.h"
-#include "hw/uart.h"
 
 #if DEBUG==1
     /// debug print
@@ -35,6 +34,10 @@
 
 /// get led state
 #define LED_state() (GPIO_ODR(LED_PORT) && LED_PIN)
+
+
+#include "hw/uart.h"
+
 
 /**
  * @brief init hardware related stuff

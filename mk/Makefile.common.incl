@@ -31,7 +31,7 @@ SIZE		:= $(PREFIX)-size
 OBJDUMP		:= $(PREFIX)-objdump
 GDB		:= $(PREFIX)-gdb
 STFLASH		= $(shell which st-flash)
-OPT		:= -Os -g3
+OPT		:= -O1 -g3
 CSTD		?= -std=c99
 
 TEMP1 		= $(patsubst %.c,%.o,$(SRCFILES))

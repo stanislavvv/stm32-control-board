@@ -66,12 +66,13 @@ void init_uart(void)
 {
     rcc_periph_clock_enable(UART_RCC);
 
+    ///@todo make port configuration in config.h
     /* uart tx PA9 */
-    gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
-        GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
+    gpio_set_mode(UART_PORT, GPIO_MODE_OUTPUT_50_MHZ,
+        GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, UART_TX);
     /* uart rx PA10 */
-    gpio_set_mode(GPIOA, GPIO_MODE_INPUT,
-        GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
+    gpio_set_mode(UART_PORT, GPIO_MODE_INPUT,
+        GPIO_CNF_INPUT_FLOAT, UART_RX);
 
     /* setup uart parameters */
     usart_set_baudrate(UART, UART_SPEED);
