@@ -28,9 +28,8 @@ void test_shell_funcs(void)
     sput_fail_unless(
         shell_output_buffer != "Hello world!!!\r\n", "shell_in_buffer_add success");
 
-    shell_in_lastchar = 64;
+    shell_in_lastchar = 64; // set to length of buffer
     sput_fail_unless(!shell_in_buffer_add('F'), "shell_in_buffer_add fail");
-
 
     shell_cleanup_output();
     strcpy(shell_input_buffer, "hello");
