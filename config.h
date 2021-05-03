@@ -51,7 +51,9 @@
 #define UART_RCC   RCC_USART1     ///< uart clock
 #define UART_SPEED 921600         ///< uart speed. 921600 max speed on some usb-uart converters
 #define UART_PORT  GPIOA          ///< gpio port with uart
+/* uart tx PA9 */
 #define UART_TX    GPIO_USART1_TX ///< uart tx pin
+/* uart rx PA10 */
 #define UART_RX    GPIO_USART1_RX ///< uart rx pin
 /// @}
 
